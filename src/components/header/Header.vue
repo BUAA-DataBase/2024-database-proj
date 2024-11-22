@@ -104,7 +104,7 @@
       color: #00509B
   }
   .custom-divider {
-        width: 110vw;
+        width: 100%;
         height: 1px;
         background-color: #e0e0e0;
         margin-top: 0;
