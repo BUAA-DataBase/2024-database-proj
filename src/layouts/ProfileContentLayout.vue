@@ -13,12 +13,12 @@
                 <t-menu-item value="item3"> 关注课程 </t-menu-item>
             </t-head-menu>
         </div>
-        <t-divider/>
-        <div class="content-container">
-            <ReviewList
-                :show-author="false",
-                :show-avatar="false"
-            />
+        <t-divider style="margin-top: 0; margin-bottom: 0"/>
+        <div style="width:100%">
+            <!-- <ProfileFollowUserList/>
+            <ReviewList></ReviewList>
+            <CourseList></CourseList> -->
+            <router-view/>
         </div>
     </t-space>
 </template>
@@ -26,7 +26,8 @@
 <script lang="ts" setup name="">
     import {ref} from 'vue'
     import avatarImage from '@/assets/img_avatar.jpg'
-    import ReviewList from '@/components/reviews/ReviewList.vue';
+    import ProfileReviewList from '@/pages/profileView/ProfileReviewList.vue';
+    import ProfileFollowUserList from '@/pages/profileView/ProfileFollowUserList.vue';
 
     const userName = ref('jo护车来喽')
     const menuValue = ref('item1')
@@ -41,4 +42,5 @@
         font-size: 20px;
         font-weight: bold;
     }
+    
 </style>

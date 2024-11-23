@@ -48,7 +48,6 @@
                         <span class="countTitle">门课程</span>
                     </t-space>
                 </t-space>
-
             </t-space>
         </div>
 </template>
@@ -67,7 +66,7 @@
 
 <style scoped lang="scss">
     .profileCard {
-        padding: 20px;
+        padding: 30px;
         background-color: #f6f8f9;
         border-radius: 8px;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);

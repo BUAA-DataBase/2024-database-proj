@@ -2,8 +2,10 @@
     <t-layout style="background-color: white;">
         <Header/>
         <t-content class="ProfileContent">
-            <ProfileContent/>
-            <ProfileAside/>
+            <div class="content-container">
+                <ProfileContentLayout/>
+                <ProfileAside class="profile-aside"/>
+            </div>
         </t-content>
     </t-layout>
 </template>
@@ -11,7 +13,7 @@
 <script lang="ts" setup name="">
     import ProfileAside from '@/components/aside/ProfileAside.vue';
     import Header from '@/components/header/Header.vue';
-    import ProfileContent from '@/pages/ProfileContent.vue';
+    import ProfileContentLayout from '@/layouts/ProfileContentLayout.vue';
     import {} from 'vue'
     
 </script>
@@ -24,5 +26,12 @@
         display: flex;
         justify-content: center;
         padding: 20px;
+    }
+    .content-container {
+        display: flex;
+        align-items: flex-start; /* 确保子元素顶部对齐 */
+    }
+    .profile-aside {
+        align-self: flex-start; /* 使 ProfileAside 高度根据内容调整 */
     }
 </style>

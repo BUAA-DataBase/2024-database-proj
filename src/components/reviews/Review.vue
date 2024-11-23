@@ -1,8 +1,8 @@
 <template>
     <div class="review-container">
         <t-space>
-            <div class="avatar-container">
-                <t-avatar v-if="showAvatar" size="50px" :image="avatar" alt="用户头像" shape="circle" />
+            <div v-if="showAvatar" class="avatar-container">
+                <t-avatar  size="50px" :image="avatar" alt="用户头像" shape="circle" />
             </div>
             <div class="info-container">
                 <t-space direction="vertical">
@@ -26,7 +26,9 @@
                     <div class="content-container">
                         <span class="content">
                             {{ truncatedContent }}
+                            <router-link to="/">
                             <span class="read-more">>>更多</span>
+                            </router-link>
                         </span>
                     </div>
                 </t-space>
@@ -79,10 +81,8 @@
     .content {
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
         overflow: hidden;
         text-overflow: ellipsis;
-        positon: relative;
         line-height: 1.8;
         font-size: 14px;
         color: #777;

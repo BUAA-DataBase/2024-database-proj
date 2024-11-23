@@ -1,5 +1,5 @@
 <template>
-    <div v-for="(reviewData, index) in reviews" :key="index" class="comment-container">
+    <div v-for="(reviewData, index) in reviews.slice(0, displayNum)" :key="index" class="comment-container">
       <Review
         :author="reviewData.author"
         :avatar="reviewData.avatar"
@@ -20,7 +20,8 @@
 
     defineProps({
         showAvatar: { type: Boolean, default: true },
-        showAuthor: { type: Boolean, default: true }
+        showAuthor: { type: Boolean, default: true },
+        displayNum: { type: Number, default: 10 }
     })
 
     const reviews = ref([
