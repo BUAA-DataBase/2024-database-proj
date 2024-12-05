@@ -21,6 +21,11 @@
   import { useRouter } from 'vue-router'
   //import ImageBg1 from '@/assets/img_login_bg.png'
   import Typewriter from '@/components/typewriter/Typewriter.vue'
+  import CryptoJS from 'crypto-js';
+  import { ErrorCode } from '@/constants/error-codes'
+  import axios from 'axios'
+import useDestroyOnClose from 'tdesign-vue-next/es/hooks/useDestroyOnClose';
+
   export default defineComponent({
     name: 'Login',
     components: { Typewriter },
@@ -30,34 +35,61 @@
       const password = ref('')
       const loading = ref(false)
       const router = useRouter()
+      const errorMessage = ref('')
       //const message = useMessage()
       const goToRegister = () => {
         router.push({ path: '/register' });
       };
+      const url = () => {
+        return '/api/users/login?token&email=' + username.value + '&password=' + password.value
+      }
       const onLogin = async () => {
+        console.log(url())
         loading.value = true;
-          await new Promise((resolve, reject) => {
-            setTimeout(() => {
-              if (username.value && password.value) {
-                resolve("登录成功!");
-              } else {
-                reject(new Error('登录失败：用户名或密码错误'));
-              }
-            });
-          })
-          .then(() => {
-            // 登录成功后跳转
-            router.push({ path: '/latestComments' });
-          })
-          .catch(error => {
-            // 处理登录失败
-            console.error(error.message);
-            alert(error.message);
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      };
+        try {
+        // 在本地对密码进行哈希处理
+        const hashedPassword = CryptoJS.SHA256(password.value).toString(CryptoJS.enc.Hex);
+
+        // 发送POST请求到后端
+        const response = await axios.post(
+          "/api/users/login?token&email=Kaleid&password=123456", {
+          email: username.value,
+          password: hashedPassword,
+        });
+        // 处理响应
+        if (response.data.result == 'ok') {
+          router
+              .push({
+                path: '/latestComments',
+              })
+              .then(() => {
+                loading.value = false
+              })
+              .catch((error) => {
+                loading.value = false
+                //message.error(error.message)
+              })
+          // 登录成功，保存token和用户id到本地存储或Vuex
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('userId', response.data.userId);
+          // 跳转到其他页面或显示成功消息
+          alert('Login successful!');
+          // 例如，使用router跳转到首页
+          // this.$router.push('/');
+        }
+      } catch (error: any) {
+          switch (error.response.data.error) {
+            case ErrorCode.USER_EXIST_ERROR:
+              errorMessage.value = '用户已存在'
+              alert(errorMessage.value)
+              break
+            case ErrorCode.UNKNOWN_ERROR:
+              errorMessage.value = '未知错误'
+              alert(errorMessage.value)
+              break
+          }
+        }
+    }
       return {
         username,
         password,

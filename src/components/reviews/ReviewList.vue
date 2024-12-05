@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import {ref, defineProps} from 'vue'
+    import {ref, defineProps, onMounted, watch, defineEmits} from 'vue'
     import avatar from '@/assets/img_avatar.jpg';
     import Review from '@/components/reviews/Review.vue';
 
@@ -160,10 +160,24 @@
         teacher: '万寒',
         content: '选课初衷：有机C是辅修生物的选修课，刚好看到不冲突就选了这门课，而且本来也是真的想学一些东西的。老师上课评价：说话不知道是哪里的口音以至于我很多时候会听不懂，也不排除是因为上课没好好听导致听不连贯然后听不懂。建议还没学原子物理的同学不要选，我这学期原子物理结束才意识到老师第一节讲的是什么。课后：没有作业，什么作业都没有。结果就是后来上课不听也没有作业就跟没选课一样（忽略考试的话）最后因为不想因为期中再自学一遍就退课了，所以不能评价给分好坏。（上面选项是随便选的不然发布不了）还有一点接受不了的就是，苏老师一直在课上讲他刚写的一本书有多nb......慎选。',
     },
-    
+
     ])
+
+    const emit = defineEmits(['update:arraySize']);
+
+    function notifyReviewsSizeChange() {
+      emit('update:arraySize', reviews.value.length);
+    }
+
+    watch(reviews, () => {
+      notifyReviewsSizeChange();
+    }, { deep: true });
+
+    onMounted(() => {
+      notifyReviewsSizeChange();
+    });
 </script>
 
 <style scoped lang="scss">
-    
+
 </style>

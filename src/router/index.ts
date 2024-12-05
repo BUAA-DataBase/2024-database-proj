@@ -10,11 +10,15 @@ import Course from '@/components/course/CourseItem.vue'
 const routes = [
   {
     path: '/courses',
+    name: 'courses',
     component: CourseList,
+    //props: true
   },
   {
     path: '/latestComments',
+    name: 'latestComments',
     component: LatestCommentsList,
+    //props: true
   },
   {
     path: '/user',
@@ -38,7 +42,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/login',
+    redirect: '/latestComments',
   },
 ]
 

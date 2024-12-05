@@ -8,16 +8,22 @@
     <ReviewList
       :showAuthor="true"
       :showAvatar="true"
+      @update:array-size="handleArraySizeChange"
     />
-    <Pagination/>
+  <Pagination :totalNum="childArraySize"/>
   </div>
 </template>
 
 <script setup lang="ts">
+  import {ref, onMounted} from 'vue';
   import Pagination from '../utils/Pagination.vue';
   import ReviewList from '@/components/reviews/ReviewList.vue';
-  import Header from '@/components/header/Header.vue';
 
+  const childArraySize = ref(1);
+
+  function handleArraySizeChange(newSize) {
+    childArraySize.value = newSize;
+  }
 </script>
 
 <style lang="css" scoped>

@@ -3,7 +3,7 @@
     class="pagination"
     v-model="current"
     v-model:pageSize="pageSize"
-    :total="101"
+    :total="totalNum"
     show-jumper
     @change="onChange"
     @page-size-change="onPageSizeChange"
@@ -14,8 +14,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, defineProps } from 'vue';
   import { MessagePlugin, type PaginationProps } from 'tdesign-vue-next';
+  const props = defineProps({
+    totalNum: {
+      type: Number,
+      required: true
+    }
+  });
   const current = ref(1);
   const pageSize = ref(10);
   const onPageSizeChange: PaginationProps['onPageSizeChange'] = (size) => {
@@ -32,5 +38,5 @@
 </script>
 
 <style lang="scss" scoped>
-  
+
 </style>
