@@ -36,6 +36,34 @@ export interface UserState {
     registrationDate: Date
 }
 
+export interface CourseState {
+  courseName: string
+  courseTeacher: string
+  courseYear: string[]
+  courseRate: number
+  courseDescription: string
+  teacherImage: string
+  courseType: string
+  courseDepartment: string
+  courseCredit: number
+  courseHours: number
+  courseFollower: number
+  courseRecommend: number
+  courseNotRecommend: number
+  courseRateNum: number
+}
+
+export interface CommentState {
+  author: string
+  avatar: string
+  time: string
+  course: string
+  teacher: string
+  content: string
+  showAuthor: boolean
+  showAvatar: boolean
+}
+
 export interface AppConfigState {
   projectName: string
   theme: ThemeMode
