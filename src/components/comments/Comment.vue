@@ -152,6 +152,6 @@ export default {
   }
 }
 .read_more {
-  color: cornflowerblue;
+  color: var(--read-more-color);
 }
 </style>

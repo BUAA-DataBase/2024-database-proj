@@ -6,6 +6,9 @@ import pinia from './store'
 import router from './router'
 import naive from 'naive-ui'
 import 'tdesign-vue-next/es/style/index.css';
+import './assets/style/global.scss'; // 引入全局样式文件
+
+createApp(App).mount('#app');
 
 const app = createApp(App)
 

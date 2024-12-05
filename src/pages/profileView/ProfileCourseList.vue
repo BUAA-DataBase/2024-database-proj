@@ -1,10 +1,10 @@
 <template>
+    <HeaderRow
+        :num="30"
+        word="门"
+    />
     <div class="CourseListContain">
-
-        <div class="courseType">
-            <CourseType/>
-        </div>
-        <div v-for="course in courses" :key="course.id">
+        <div v-for="course in courses.slice(0, displayNum)" :key="course.id">
         <CourseItem
             :id="course.id"
             :title="course.title"
@@ -18,15 +18,22 @@
             :gain="course.gain"
         />
         </div>
-        <Pagination/>
     </div>
 </template>
 
 <script lang="ts" setup name="">
-    import { ref } from 'vue'
+    import { ref, defineProps } from 'vue'
     import CourseType from '@/components/course/CourseType.vue'
     import CourseItem from '@/components/course/CourseItem.vue';
     import Pagination from '@/utils/Pagination.vue';
+    import HeaderRow from './HeaderRow.vue';
+
+    defineProps({
+        displayNum: { type: Number, default: 5 }
+    })
+
+    const screenWidth = window.innerWidth;
+    console.log(`浏览器屏幕宽度: ${screenWidth}px`);
 
     const courses = ref([
     { 
@@ -395,10 +402,8 @@
 
 <style scoped lang="scss">
     .CourseListContain {
-        width: 1000px;
-        margin-top: 30px;
+        width: 839px;
+        margin-top: 20px;
         margin-bottom: 50px;
-        margin-left: auto;
-        margin-right: auto;
     }
 </style>

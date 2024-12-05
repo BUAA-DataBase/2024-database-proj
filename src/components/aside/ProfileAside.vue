@@ -67,9 +67,9 @@
 <style scoped lang="scss">
     .profileCard {
         padding: 30px;
-        background-color: #f6f8f9;
+        background-color: var(--card-color);
         border-radius: 8px;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px 0 var(--border-color);
         margin: 20px;
         width: 250px;
 
@@ -83,11 +83,11 @@
     }
     .introduction {
         font-size: 12px;
-        color: #666;
+        color: var(--introduction-color);
     }
     .countContent {
         font-size: 14px;
         font-weight: bold;
-        color: rgb(74, 129, 222);
+        color: var(--read-more-color);
     }
 </style>

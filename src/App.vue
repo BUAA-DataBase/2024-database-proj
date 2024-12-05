@@ -1,5 +1,5 @@
 <template>
-    <ProfileLayout/>
+    <CourseHomeLayout/>
 </template>
   
 
@@ -10,6 +10,9 @@
     import ProfileLayout from './layouts/ProfileLayout.vue';
     import Review from './components/reviews/Review.vue';
     import avatar from '@/assets/img_avatar.jpg';
+    import Header from './components/header/Header.vue';
+    import CourseHomeAside from './components/aside/CourseHomeAside.vue';
+    import CourseHomeLayout from './layouts/CourseHomeLayout.vue';
     
     
 </script>

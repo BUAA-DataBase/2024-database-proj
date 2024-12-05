@@ -41,7 +41,7 @@
         justify-content: space-between;
         margin-top: 5;
         margin-bottom: 20px;
-        width: 800px;
+        width: 839px;
     }
     .block1 {
         display: flex;

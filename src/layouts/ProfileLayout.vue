@@ -20,7 +20,7 @@
 
 <style scoped lang="scss">
     .ProfileContent {
-        background-color: white;
+        background-color: var(--background-color);
         width: 80%;
         margin: auto;
         display: flex;

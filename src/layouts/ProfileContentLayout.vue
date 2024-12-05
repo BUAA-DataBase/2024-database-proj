@@ -6,19 +6,18 @@
         </div>
         <div>
             <t-head-menu v-model="menuValue" @change="changeHandler">
-                <t-menu-item value="item1"> <router-link to="/latestComments"> 点评 </router-link></t-menu-item>
+                <t-menu-item value="item1">点评</t-menu-item>
                 <t-divider layout="vertical"/>
-                <t-menu-item value="item2"> <router-link to="/courses"> 关注用户 </router-link> </t-menu-item>
+                <t-menu-item value="item2">关注用户</t-menu-item>
                 <t-divider layout="vertical"/>
                 <t-menu-item value="item3"> 关注课程 </t-menu-item>
             </t-head-menu>
         </div>
         <t-divider style="margin-top: 0; margin-bottom: 0"/>
-        <div style="width:100%">
-            <!-- <ProfileFollowUserList/>
-            <ReviewList></ReviewList>
-            <CourseList></CourseList> -->
-            <router-view/>
+        <div style="width:839px">
+            <ProfileReviewList v-if="menuValue === 'item1'"/>
+            <ProfileCourseList v-if="menuValue === 'item3'"/>
+            <ProfileFollowUserList v-if="menuValue === 'item2'"/>
         </div>
     </t-space>
 </template>
@@ -28,6 +27,7 @@
     import avatarImage from '@/assets/img_avatar.jpg'
     import ProfileReviewList from '@/pages/profileView/ProfileReviewList.vue';
     import ProfileFollowUserList from '@/pages/profileView/ProfileFollowUserList.vue';
+    import ProfileCourseList from '@/pages/profileView/ProfileCourseList.vue';
 
     const userName = ref('jo护车来喽')
     const menuValue = ref('item1')

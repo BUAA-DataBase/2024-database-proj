@@ -1,7 +1,7 @@
 <template>
     <div class="content-container-header">
         <span class="header-style">共{{ num }}{{ word }}</span>
-        <router-link to="/"><span class="header-style1">查看全部>></span></router-link>
+        <router-link to="/"><span class="read-more">查看全部>></span></router-link>
     </div>
 </template>
 
@@ -27,11 +27,11 @@
     }
     .header-style {
         font-size: 18px;
-        color: rgb(74, 129, 222);
+        color: var(--read-more-color);
         font-weight: bold;
     }
-    .header-style1 {
+    .read-more {
         font-size: 14px;
-        color: rgb(74, 129, 222);
+        color: var(--read-more-color);
     }
 </style>

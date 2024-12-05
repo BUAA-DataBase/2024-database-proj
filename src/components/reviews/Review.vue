@@ -43,6 +43,15 @@
     import { defineProps, ref, computed } from 'vue';
     import { useRouter } from 'vue-router';
 
+    import { onMounted } from 'vue';
+
+    onMounted(() => {
+        const reviewElement = document.querySelector('.review-container') as HTMLElement;
+        if (reviewElement) {
+            console.log(`Review 组件宽度: ${reviewElement.offsetWidth}px`);
+        }
+    });
+
     const props = defineProps({
         author: { type: String, required: true },
         avatar: { type: String, required: true },
@@ -85,10 +94,10 @@
         text-overflow: ellipsis;
         line-height: 1.8;
         font-size: 14px;
-        color: #777;
+        color: var(--text-color);
     }
     .read-more {
-        color: cornflowerblue;
+        color: var(--read-more-color);
         cursor: pointer;
         margin-left: 4px;
     }
@@ -105,17 +114,17 @@
     }
 
     .time {
-        color: #999;
+        color: var(--date-color);
         font-size: 12px;
         margin-left: auto; /* 如果不使用 space-between，也可通过 margin-left: auto 推到右侧 */
     }
     .author {
         font-weight: bold;
-        color: cornflowerblue;
+        color: var(--author-name);
     }
     .course-teacher {
         font-weight: bold;
-        color: rgb(11, 94, 248);
+        color: var(--course-teacher-color);
     }
     .large-font {
         font-size: 18px;
