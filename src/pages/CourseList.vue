@@ -18,7 +18,7 @@
             :gain="course.gain"
         />
         </div>
-        <Pagination/>
+        <Pagination :totalNum="30"/>
     </div>
 </template>
 

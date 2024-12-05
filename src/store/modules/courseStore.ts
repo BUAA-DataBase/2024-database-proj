@@ -1,60 +1,32 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
+import type { CourseState } from '../types'
 
-interface Course {
-  courseName: string;
-  courseTeacher: string;
-  courseYear: string[];
-  courseRate: number;
-  courseDescription: string;
-  teacherImage: string;
-  courseType: string;
-  courseDepartment: string;
-  courseCredit: number;
-  courseHours: number;
-  courseFollower: number;
-  courseRecommend: number;
-  courseNotRecommend: number;
-  courseRateNum: number;
-}
-
-export const useCourseStore = defineStore('course', {
+export const useCourseStore = defineStore("course", {
   state: () => ({
-    // 默认课程数据，可能从后端或前端传入
-    course: {} as Course,
+    courses: [] as CourseState[], // 定义 courses 类型为 Course 数组
   }),
-
-  actions: {
-    setCourseData(course: Course) {
-      this.course = course;
-    },
-
-    // 计算推荐比例
-    getRecommendationRate(): string {
-      const total = this.course.courseRecommend + this.course.courseNotRecommend;
-      const recommendRate = (this.course.courseRecommend / total) * 100;
-      return `${recommendRate.toFixed(2)}%`;
-    },
-
-    // 计算课程评分
-    getCourseRating(): string {
-      return `Rating: ${this.course.courseRate} based on ${this.course.courseRateNum} ratings`;
-    },
-
-    // 计算课程信息
-    getCourseInfo(): string {
-      return `${this.course.courseName} by ${this.course.courseTeacher} in ${this.course.courseYear.join(", ")}`;
+  getters: {
+    // 定义一个getter来获取符合条件的课程
+    getCoursesByTeacherName(state) {
+      return (teacherName: string): CourseState[] => {
+        return state.courses.filter(course => course.courseTeacher === teacherName);
+      };
     },
   },
+  actions: {
+    // 新增课程
+    addCourse(course: CourseState) {
+      this.courses.push(course);
+    },
 
-  getters: {
-    courseInfo(state): string {
-      return `${state.course.courseName} - ${state.course.courseTeacher}`;
+    // 根据课程名获取课程
+    getCourseByName(courseName: string): CourseState | undefined {
+      return this.courses.find((course) => course.courseName === courseName);
     },
-    courseFollowers(state): string {
-      return `${state.course.courseFollower} followers`;
-    },
-    courseCreditAndHours(state): string {
-      return `${state.course.courseCredit} credits | ${state.course.courseHours} hours`;
+
+    // 获取所有课程
+    getAllCourses(): CourseState[] {
+      return this.courses;
     },
   },
 });

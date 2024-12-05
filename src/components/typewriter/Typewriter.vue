@@ -42,6 +42,7 @@ export default defineComponent({
   /*font-weight: bold;*/
   white-space: pre;
   overflow: hidden;
+  line-height: 30px;
   animation: caret 0.5s steps(1) infinite;
 }
 

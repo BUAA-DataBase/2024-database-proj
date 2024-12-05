@@ -1,12 +1,12 @@
 <template>
-    <t-header>
+    <t-header >
       <t-head-menu theme="light" v-model="menuValue" height="120px" @change="changeHandler">
         <template #logo>
           <h1 class="title">BUAA评课社区</h1>
         </template>
-        <t-menu-item value="item1"> <router-link to="/latestComments">最新点评 </router-link></t-menu-item>
+        <t-menu-item value="item1" @click="toLatestComments">最新点评</t-menu-item>
         <t-divider layout="vertical" />
-        <t-menu-item value="item2"> <router-link to="/courses">课程</router-link> </t-menu-item>
+        <t-menu-item value="item2" @click="toCourses">课程</t-menu-item>
         <t-divider layout="vertical" />
         <t-menu-item value="item3"> 导师 </t-menu-item>
         <template #operations>
@@ -33,10 +33,10 @@
           <t-dropdown :min-column-width="120" trigger="click">
               <template #dropdown>
                   <t-dropdown-menu>
-                      <t-dropdown-item>
+                      <t-dropdown-item @click="toPerson">
                           <user-circle-icon size="20" style="margin-right: 10px;"/>个人中心
                       </t-dropdown-item>
-                      <t-dropdown-item>
+                      <t-dropdown-item @click="toLogin">
                           <poweroff-icon size="20" style="margin-right: 10px;"/>退出登录
                       </t-dropdown-item>
                   </t-dropdown-menu>
@@ -63,6 +63,7 @@
     import type { AutoCompleteProps } from 'tdesign-vue-next';
     import { SearchIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next';
     import avatarImage from '@/assets/img_avatar.jpg';
+    import { useRouter } from 'vue-router';
     import type { HeadMenuProps } from 'tdesign-vue-next';
 
     const value = ref('');
@@ -70,6 +71,7 @@
     const options = ref<AutoCompleteProps<string>['options']>(['第一个默认联想词', '第二个默认联想词', '第三个默认联想词']);
     const timer = ref(null);
     const menuValue = ref('item1');
+    const router = useRouter()
 
     // 输入框内容发生变化时进行搜索，200ms 搜索一次
     function onChange(value: string) {
@@ -82,10 +84,26 @@
         }, 200);
     }
 
+    function toLatestComments() {
+      router.push({path: "/latestComments"})
+    }
+
+    function toCourses() {
+      router.push({path: "/courses"})
+    }
+
+    function toPerson() {
+      router.push({path: "/user"})
+    }
+
+    function toLogin() {
+      router.push({path: "/login"})
+    }
+
     const changeHandler: HeadMenuProps['onChange'] = (active) => {
         console.log('change', active);
     };
-  
+
 </script>
 
 <style scoped lang="scss">

@@ -1,6 +1,5 @@
 <template>
     <t-layout style="background-color: white;">
-        <Header/>
         <t-content class="ProfileContent">
             <div class="content-container">
                 <ProfileContentLayout/>

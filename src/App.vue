@@ -1,5 +1,5 @@
 <template>
-    <CourseHomeLayout/>
+    <MainLayout/>
 </template>
   
 

@@ -84,7 +84,7 @@ export default defineComponent({
           })
           if (response.data.result == 'ok') {
             router
-              .replace({
+              .push({
                 path: route.query.redirect ? (route.query.redirect as string) : '/login',
               })
               .then(() => {

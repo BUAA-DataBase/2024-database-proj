@@ -1,263 +1,129 @@
 <template>
-  <n-el>
-    <div class="flex login-container">
-      <div class="right">
-        <div class="form-wrapper">
-          <div class="form-title">账号登录</div>
-          <div class="item-wrapper">
-            <n-input
-              v-model:value="username"
-              placeholder="请输入用户名/手机号"
-              prefix-icon="el-icon-user"
-              clearable
-            />
-          </div>
-          <div class="mt-4 item-wrapper">
-            <n-input
-              v-model:value="password"
-              placeholder="请输入密码"
-              type="password"
-              clearable
-              prefix-icon="el-icon-lock"
-            />
-          </div>
-          <div class="mt-6">
-            <n-button type="primary" class="login" :loading="loading" @click="onLogin">
-              登录
-            </n-button>
-          </div>
-          <div class="mt-6 my-width flex-sub">
-            <div class="flex justify-between">
-              <n-checkbox v-model:checked="autoLogin">自动登录</n-checkbox>
-              <n-button type="primary" class="register" @click="goToRegister">
-                前往注册
-              </n-button>
-            </div>
-          </div>
-        </div>
+  <div class="card">
+  <t-card :style="{ width: '450px' }">
+    <div class="container">
+      <div class="title_center">账号登录</div>
+      <t-input v-model="username" placeholder="请输入您的账号" autofocus showClearIconOnEmpty/>
+      <t-input type="password" v-model="password" placeholder="请输入您的密码" autofocus showClearIconOnEmpty />
+      <t-button type="primary" @click="onLogin">
+        登录
+      </t-button>
+      <div class="button-container">
+        <t-button type="primary" shape="round" theme="success" class="right-button" @click="goToRegister">注册账号</t-button>
       </div>
     </div>
-  </n-el>
+  </t-card>
+  </div>
 </template>
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-  import ImageBg1 from '@/assets/img_login_bg.png'
-  import Typewriter from '../typewriter/Typewriter.vue'
+  import { useRouter } from 'vue-router'
+  //import ImageBg1 from '@/assets/img_login_bg.png'
+  import Typewriter from '@/components/typewriter/Typewriter.vue'
+  import { ErrorCode } from '@/constants/error-codes'
+  import axios from 'axios'
+import useDestroyOnClose from 'tdesign-vue-next/es/hooks/useDestroyOnClose';
+
   export default defineComponent({
     name: 'Login',
+    components: { Typewriter },
     setup() {
+      //const { version } = useAppInfo()
       const username = ref('')
       const password = ref('')
-      const autoLogin = ref(true)
       const loading = ref(false)
-      const register = '/register'
       const router = useRouter()
-      const route = useRoute()
+      const errorMessage = ref('')
+      //const message = useMessage()
       const goToRegister = () => {
-        router.replace({ path: register });
+        router.push({ path: '/register' });
       };
-      const onLogin = () => {
-        loading.value = true
-          router
-            .replace({
-              path: route.query.redirect ? (route.query.redirect as string) : '/',
-            })
-            .then(() => {
-              loading.value = false
-            })
+      const url = () => {
+        return '/api/users/login?token&email=' + username.value + '&password=' + password.value
       }
+      const onLogin = async () => {
+        console.log(url())
+        loading.value = true;
+        try {
+        // 在本地对密码进行哈希处理
+        const hashedPassword = CryptoJS.SHA256(password.value).toString(CryptoJS.enc.Hex);
+
+        // 发送POST请求到后端
+        const response = await axios.post(
+          "/api/users/login?token&email=Kaleid&password=123456", {
+          email: username.value,
+          password: hashedPassword,
+        });
+        // 处理响应
+        if (response.data.result == 'ok') {
+          router
+              .push({
+                path: '/latestComments',
+              })
+              .then(() => {
+                loading.value = false
+              })
+              .catch((error) => {
+                loading.value = false
+                //message.error(error.message)
+              })
+          // 登录成功，保存token和用户id到本地存储或Vuex
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('userId', response.data.userId);
+          // 跳转到其他页面或显示成功消息
+          alert('Login successful!');
+          // 例如，使用router跳转到首页
+          // this.$router.push('/');
+        }
+      } catch (error: any) {
+          switch (error.response.data.error) {
+            case ErrorCode.USER_EXIST_ERROR:
+              errorMessage.value = '用户已存在'
+              alert(errorMessage.value)
+              break
+            case ErrorCode.UNKNOWN_ERROR:
+              errorMessage.value = '未知错误'
+              alert(errorMessage.value)
+              break
+          }
+        }
+    }
       return {
         username,
         password,
-        autoLogin,
         loading,
         goToRegister,
         onLogin,
-        ImageBg1,
       }
     },
   })
 </script>
 
 <style lang="scss" scoped>
-  @keyframes left-to-right {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-  .login-container {
-    position: relative;
-    overflow: hidden;
-    height: 100vh;
-    width: 100%;
-    @media screen and (max-width:960px) {
-      .left {
-        display: none !important;
-      }
-    }
-    .left {
-      display: block;
-      position: relative;
-      min-width: 450px;
-      width: 450px;
-      & > img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.6);
-        z-index: 2;
-      }
-      .content-wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 9;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
-        .logo-wrapper {
-          width: 80px;
-          margin-top: 30%;
-        }
-        .title {
-          margin-top: 10px;
-          color: #ffffff;
-          font-weight: bold;
-          font-size: 24px;
-        }
-        .sub-title {
-          margin-top: 10px;
-          color: #f5f5f5;
-          font-size: 16px;
-        }
-        .ttppii {
-          color: #ffffff;
-          font-weight: 500;
-          font-size: 30px;
-          // text-shadow: 1px 1px 2px #f5f5f5;
-          animation: left-to-right 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          text-shadow: 0 0 5px var(--primary-color), 0 0 15px var(--primary-color),
-            0 0 50px var(--primary-color), 0 0 150px var(--primary-color);
-        }
-        .bottom-wrapper {
-          margin-bottom: 5%;
-          color: #c0c0c0;
-          font-size: 16px;
-        }
-      }
-    }
-    .right {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      align-items: center;
-      background: linear-gradient(to bottom, var(--primary-color));
-      .form-wrapper {
-        width: 50%;
-        max-width: 500px;
-        border-radius: 5px;
-        border: 1px solid #f0f0f0;
-        padding: 20px;
-        box-shadow: 0px 0px 7px #dddddd;
-        .form-title {
-          font-size: 26px;
-          margin-bottom: 20px;
-          font-weight: bold;
-        }
-        .item-wrapper {
-          width: 100%;
-        }
-        .login {
-          width: 100%;
-        }
-        .register {
-          width: 20%;
-        }
-      }
-      .third-login {
-        width: 50%;
-      }
-    }
-  }
-  .m-login-container {
-    position: relative;
-    height: 100vh;
-    max-height: 100vh;
-    overflow: hidden;
-    background: linear-gradient(#7a9ad7, #3b5a94, #133064);
-    // background-image: url(../../assets/img_login_mobile_bg_01.jpg);
-    .header {
-      height: 25vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      .the-p {
-        width: 100px;
-        height: 100px;
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid #f5f5f5;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 56px;
-        font-weight: bold;
-      }
-    }
-    .top-line {
-      background-image: linear-gradient(
-        to right,
-        rgba(117, 117, 117, 0.9) 25%,
-        rgba(255, 255, 255, 0.3) 50%,
-        rgba(117, 117, 117, 0.9) 75%
-      );
-      height: 1px;
-      background-color: #ffffff;
-    }
-    .content {
-      height: 40vh;
-      margin: 5% 10%;
-      border-radius: 10px;
-      :deep(.n-input) {
-        background-color: rgba(183, 183, 183, 0);
-      }
-      :deep(.n-input .n-input__input-el, .n-input .n-input__textarea-el) {
-        color: #fff;
-      }
-      :deep(.n-checkbox .n-checkbox__label) {
-        color: #fff;
-      }
-    }
-    .footer {
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      bottom: 10%;
-      :deep(.n-divider .n-divider__title) {
-        color: #c3c3c3;
-        font-size: 14px;
-      }
-      :deep(.n-divider:not(.n-divider--dashed) .n-divider__line) {
-        background-color: rgba(117, 117, 117);
-      }
-    }
-  }
+.card{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+.title_center {
+  text-align: center;
+  font-family: 'Heiti SC', 'STHeiti', sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.container {
+  display: grid;
+  gap: 12px;
+}
+.button-container {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+}
+.right-button {
+  margin-left: auto;
+}
 </style>

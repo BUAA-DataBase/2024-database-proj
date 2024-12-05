@@ -8,7 +8,7 @@
             <span class="courseYear">{{ year }}</span>
           </t-space>
         </div>
-  
+
         <!-- 评分和评分人数 -->
         <div>
           <t-space align="baseline">
@@ -17,7 +17,7 @@
             <span class="NumberOfRater">({{ raterCount }}人评分)</span>
           </t-space>
         </div>
-  
+
         <!-- 课程评价 -->
         <div>
           <t-space size="35px">
@@ -31,10 +31,11 @@
     </div>
     <t-divider class="dividerStyle"></t-divider>
   </template>
-  
+
 
 <script lang="ts" setup name="CourseItem">
-    import { ref, defineProps } from 'vue'
+    import { ref, defineProps, computed } from 'vue'
+    import { useRoute } from 'vue-router'
 
     // 定义传递给组件的属性
     const props = defineProps({
@@ -80,6 +81,8 @@
     },
     });
 
+    const route = useRoute()
+    const userId = computed(() => route.params.id)
     const courseRate = ref(props.courseRate)
 
 </script>
@@ -95,9 +98,9 @@
         margin-bottom: 0;
     }
     .dividerStyle {
-        margin-top: 15px; 
+        margin-top: 15px;
         margin-bottom: 15px;
-        margin-left: auto; 
+        margin-left: auto;
         margin-right: auto
     }
     .courseTitle {

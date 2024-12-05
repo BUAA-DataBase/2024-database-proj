@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import {ref, defineProps} from 'vue'
+    import {ref, defineProps, onMounted, watch, defineEmits} from 'vue'
     import avatar from '@/assets/img_avatar.jpg';
     import Review from '@/components/reviews/Review.vue';
 
@@ -163,6 +163,20 @@
     },
     
     ])
+
+    const emit = defineEmits(['update:arraySize']);
+
+    function notifyReviewsSizeChange() {
+      emit('update:arraySize', reviews.value.length);
+    }
+
+    watch(reviews, () => {
+      notifyReviewsSizeChange();
+    }, { deep: true });
+
+    onMounted(() => {
+      notifyReviewsSizeChange();
+    });
 </script>
 
 <style scoped lang="scss">
