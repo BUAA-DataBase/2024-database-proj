@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import ProfileAside from '@/components/aside/ProfileAside.vue';
+    import ProfileAside from '@/pages/profileView/ProfileAside.vue';
     import Header from '@/components/header/Header.vue';
     import ProfileContentLayout from '@/layouts/ProfileContentLayout.vue';
     import {} from 'vue'

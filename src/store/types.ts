@@ -59,9 +59,19 @@ export interface CommentState {
   time: string
   course: string
   teacher: string
-  content: string
+  courseYear: string
+  content: CommentContent
   showAuthor: boolean
   showAvatar: boolean
+}
+
+export interface CommentContent {
+  difficulty: number
+  workload: number
+  grading: number
+  gain: number
+  rate: number
+  comment: string
 }
 
 export interface AppConfigState {

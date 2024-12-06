@@ -1,10 +1,10 @@
 <template>
-    <t-content class="course-content-container">
+    <div class="course-content-container">
         <div class="course-title-container">
-            <span class="course-title"> {{ props.courseName }} </span>
+            <span class="course-title"> &nbsp;{{props.courseName }} </span>
             <span v-for="(year,index) in props.courseYear" :key="index" class="course-year"> {{ year }} </span>
         </div>
-        <t-divider />
+        <t-divider style="margin-top:20px"/>
         <div>
             <t-space direction="vertical">
                 <div>
@@ -50,11 +50,38 @@
                 </t-space>
             </t-space>
         </div>
-    </t-content>
+        <div class="buttons">
+            <t-space>
+                <t-button>
+                    <template #icon>
+                        <HeartIcon />
+                    </template>
+                    关注
+                </t-button>
+                <t-button theme="default">
+                    <template #icon>
+                        <ThumbUpIcon />
+                    </template>
+                    推荐
+                </t-button>
+                <t-button theme="default">
+                    <template #icon>
+                        <ThumbDownIcon />
+                    </template>
+                    不推荐
+                </t-button>
+            </t-space>
+        </div>
+        <CourseHomeReViewList
+            :courseYear="props.courseYear"
+        />
+    </div>
 </template>
 
 <script lang="ts" setup name="">
     import {defineProps, ref} from 'vue'
+    import { HeartIcon, ThumbUpIcon, ThumbDownIcon} from 'tdesign-icons-vue-next';
+    import CourseHomeReViewList from './CourseHomeReViewList.vue';
 
     const props = defineProps({
   courseName: { type: String, required: true },
@@ -89,9 +116,10 @@
         display: flex;
         align-items: baseline;
         flex-wrap: wrap;
+        margin-top: 10px;
     }
     .course-title {
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
         color: var(--course-teacher-color);
         margin-right: 5px;
@@ -119,5 +147,8 @@
         justify-content: space-between;
         margin-top: 20px;
         margin-left: 5px;
+    }
+    .buttons {
+        margin-top: 25px;
     }
 </style>
