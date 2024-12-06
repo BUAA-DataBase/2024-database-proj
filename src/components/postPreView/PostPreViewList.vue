@@ -1,6 +1,6 @@
 <template>
     <div v-for="(post, index) in posts.slice(0, displayNum)" :key="index" class="post-container">
-      <Review
+      <PostPreView
         :author="post.author"
         :avatar="post.avatar"
         :time="post.time"
@@ -19,7 +19,7 @@
     import PostPreView from '@/components/postPreView/PostPreView.vue';
     import { useRoute } from 'vue-router';
     import { usePostStore } from '@/store/modules/postStore';
-    import type { PostState, PostContent } from '@/store/types';
+    import type { PostState, CommentContent } from '@/store/types';
 
     defineProps({
         showAvatar: { type: Boolean, default: true },

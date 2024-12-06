@@ -4,7 +4,7 @@
             :num="25"
             word="条"
         />
-        <ReviewList
+        <PostPreViewList
             :show-author="false"
             :show-avatar="false"
             :display-num="5"

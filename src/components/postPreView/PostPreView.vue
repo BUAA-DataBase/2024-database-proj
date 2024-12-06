@@ -8,13 +8,13 @@
                 <t-space direction="vertical">
                     <div class="top-row">
                         <t-space>
-                            <router-link v-if="showAuthor" to="\">
+                            <router-link v-if="showAuthor" :to="{name: 'user', params:{id : 1}}">
                             <span  class="author">
                                 {{ author }}
                             </span>
                             </router-link>
                             <span v-if="showAuthor" class="tip">点评了</span>
-                            <router-link to="\">
+                            <router-link :to="{name: 'course', params:{id : 1}}">
                             <span class="course-teacher"
                             :class="{'large-font': !showAuthor}">
                                 {{ course }}({{ teacher }})
@@ -26,7 +26,7 @@
                     <div class="content-container">
                         <span class="content">
                             {{ truncatedContent }}
-                            <router-link to="/">
+                            <router-link :to="{name: 'course', params:{id : 1, reviewId: 1}}">
                             <span class="read-more">>>更多</span>
                             </router-link>
                         </span>
