@@ -72,7 +72,7 @@
                 </t-button>
             </t-space>
         </div>
-        <CourseHomeReViewList
+        <CourseHomePostList
             :courseYear="props.courseYear"
         />
     </div>
@@ -81,7 +81,7 @@
 <script lang="ts" setup name="">
     import {defineProps, ref} from 'vue'
     import { HeartIcon, ThumbUpIcon, ThumbDownIcon} from 'tdesign-icons-vue-next';
-    import CourseHomeReViewList from './CourseHomeReViewList.vue';
+    import CourseHomePostList from './CourseHomePostList.vue';
 
     const props = defineProps({
   courseName: { type: String, required: true },

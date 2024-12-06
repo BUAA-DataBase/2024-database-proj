@@ -1,6 +1,6 @@
 <template>
     <div v-for="(comment, index) in comments.slice(0, displayNum)" :key="index" class="comment-container">
-      <Review
+      <PostPreView
         :author="comment.author"
         :avatar="comment.avatar"
         :time="comment.time"
@@ -16,7 +16,7 @@
 <script lang="ts" setup name="">
     import {ref, defineProps, onMounted, watch, defineEmits, computed} from 'vue'
     import avatar from '@/assets/img_avatar.jpg';
-    import Review from '@/components/reviews/Review.vue';
+    import PostPreView from '@/components/postPreView/PostPreView.vue';
     import { useRoute } from 'vue-router';
     import { useCommentStore } from '@/store/modules/commentStore';
     import type { CommentState, CommentContent } from '@/store/types';

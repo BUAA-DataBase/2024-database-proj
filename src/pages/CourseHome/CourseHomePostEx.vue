@@ -1,5 +1,5 @@
 <template>
-    <div class="review-container">
+    <div class="post-container">
         <t-space direction="vertical" size="10px">
             <t-space align="baseline">
                 <span class="author">{{ props.author }}</span>
@@ -29,6 +29,16 @@
                     </div>
                 </t-space>
             </t-space>
+
+            <div v-if="reply_count != 0" class="review-container">
+                <div v-for="(reply, index) in props.replies" :key="index">
+                    <Review
+                        :review="reply"
+                        :belongAuthor="props.author"
+                    />
+                </div>
+            </div>
+
             <LittleCommentEditor
                 :name="props.author"
             />
@@ -38,12 +48,13 @@
 </template>
 
 <script lang="ts" setup name="">
-    import type { CommentContent } from '@/store/types';
+    import type { CommentContent, ReviewState } from '@/store/types';
     import { convertDifficulty, convertGain, convertGrading, convertWorkload } from '@/constants/map';
     import {ref, defineProps} from 'vue'
     import { marked } from 'marked'
     import { ChatIcon, ThumbUpIcon } from 'tdesign-icons-vue-next';
     import LittleCommentEditor from '@/components/editor/LittleCommentEditor.vue';
+    import Review from '@/components/reviews/Review.vue';
     
     const props = defineProps<{
         author: string,
@@ -55,7 +66,7 @@
         content: CommentContent,
         likes: number,
         reply_count: number,
-        replies: Comment[],
+        replies: ReviewState[],
     }>()
 
     const difficulty = convertDifficulty(props.content.difficulty)
@@ -125,4 +136,13 @@
     .reply-button:hover {
         color: #09adeb;
     }
+    .review-container {
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+        padding: 16px; /* 增加内边距 */
+        max-width: 600px; /* 限制最大宽度 */
+        gap: 10px;
+    }
+
 </style>

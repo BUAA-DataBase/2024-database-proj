@@ -57,16 +57,33 @@ export interface CourseState {
   courseRateNum: number
 }
 
-export interface CommentState {
+export interface PostState {
+  postId: number
   author: string
   avatar: string
   time: string
+  mtime: string
   course: string
   courseYear: string
   teacher: string
   content: CommentContent
+  likeNum: number
+  reviews: ReviewState[]
   showAuthor: boolean
   showAvatar: boolean
+}
+
+export interface ReviewState {
+  reviewId: number
+  toPostId: number
+  toAuthor: string
+  toAvatar: string
+  author: string
+  avatar: string
+  time: string
+  mtime: string
+  content: string
+  likeNum: number
 }
 
 export interface CommentContent {
