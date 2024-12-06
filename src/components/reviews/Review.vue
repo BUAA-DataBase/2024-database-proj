@@ -1,136 +1,86 @@
 <template>
-    <div class="review-container">
-        <t-space>
-            <div v-if="showAvatar" class="avatar-container">
-                <t-avatar  size="50px" :image="avatar" alt="用户头像" shape="circle" />
+    <div class="review-wrapper">
+        <span class="author">{{ review.author }}</span>
+        <span v-if="review.toAuthor && review.toAuthor !== belongAuthor" class="tip"> 回复 </span>
+        <span v-if="review.toAuthor && review.toAuthor !== belongAuthor" class="to-author">@{{ review.toAuthor }}</span>
+        <div class="content-container">
+            <span class="content">{{ review.content }}</span>
+        </div>
+        <t-space size="30px">
+            <div>
+                <span class="date">{{ review.time }}</span>
             </div>
-            <div class="info-container">
-                <t-space direction="vertical">
-                    <div class="top-row">
-                        <t-space>
-                            <router-link v-if="showAuthor" :to="{ name: 'user', params: { id: 1 } }">
-                            <span  class="author">
-                                {{ author }}
-                            </span>
-                            </router-link>
-                            <span v-if="showAuthor" class="tip">点评了</span>
-                            <router-link :to="{ name: 'course', params: { id: 1 } }">
-                            <span class="course-teacher"
-                            :class="{'large-font': !showAuthor}">
-                                {{ course }}({{ teacher }})
-                            </span>
-                            </router-link>
-                        </t-space>
-                        <span class="time">{{ time }}</span>
-                    </div>
-                    <div class="content-container">
-                        <span class="content">
-                            {{ truncatedContent }}
-                            <router-link :to="{ name: 'course', params: { id: 1 , reviewId: 1}}">
-                            <span class="read-more">>>更多</span>
-                            </router-link>
-                        </span>
-                    </div>
-                </t-space>
-            </div>
+            <t-space>
+                <div class="like-button" @click="handleLikeClick">
+                    <ThumbUpIcon size="14px"/>
+                    <span class="like-num">{{ review.likeNum }}</span>
+                </div>
+                <div class="reply-button" @click="handleReplyClick">
+                    <span class="like-num">回复</span>
+                </div>
+            </t-space>
         </t-space>
-        <t-divider />
     </div>
 </template>
 
+<script lang="ts" setup name="">
+    import {defineProps} from 'vue'
+    import type { ReviewState } from '@/store/types'
+    import { ThumbUpIcon } from 'tdesign-icons-vue-next'
+    
+    const props = defineProps<{
+        review: ReviewState
+        belongAuthor: string // 评论帖子的作者，如果和toAuthor字段相同的话，不用显示@
+    }>()
 
-<script lang="ts" setup>
-    import { defineProps, ref, computed } from 'vue';
-    import { useRouter } from 'vue-router';
+    const handleLikeClick = () => {
+        props.review.likeNum += 1
+        console.log('点赞')
+    }
 
-    import { onMounted } from 'vue';
-    import { Content } from 'tdesign-vue-next';
+    const handleReplyClick = () => {
+        console.log('回复')
+    }
 
-    onMounted(() => {
-        const reviewElement = document.querySelector('.review-container') as HTMLElement;
-        if (reviewElement) {
-            console.log(`Review 组件宽度: ${reviewElement.offsetWidth}px`);
-        }
-    });
-
-    const props = defineProps({
-        author: { type: String, required: true },
-        avatar: { type: String, required: true },
-        time: { type: String, required: true },
-        course: { type: String, required: true },
-        teacher: { type: String, required: true },
-        content: { type: String, required: true },
-        showAuthor: { type: Boolean, default: true },
-        showAvatar: { type: Boolean, default: true },
-    });
-
-    const maxLength = 100; // 最大显示字符数
-    const router = useRouter();
-
-    const isTruncated = computed(() => cleanedText.value.length > maxLength);
-    const truncatedContent = computed(() =>
-        isTruncated.value ? cleanedText.value.slice(0, maxLength) + '...' : cleanedText.value
-    );
-
-    const cleanedText = ref<string>(props.content.replace(/[#*]/g, ''));
-
-    const readMoreHandler = () => {
-        
-    };
 </script>
 
-
 <style scoped lang="scss">
-    a {
-        text-decoration: none;
-    }
-    .review-container {
-        padding: 10px 0;
-    }
-    .avatar-container {
-        margin-right: 10px;
-    }
-    .content {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 1.8;
-        font-size: 14px;
-        color: var(--text-color);
-    }
-    .read-more {
-        color: var(--read-more-color);
-        cursor: pointer;
-        margin-left: 4px;
-    }
-    .info-container {
-        display: flex;
-        flex-direction: column;
-        width: 880px; /* 确保占据整个可用空间 */
-    }
-    .top-row {
-        display: flex;
-        align-items: center; /* 垂直居中 */
-        justify-content: space-between; /* 左右分布 */
-        width: 100%;
-    }
-
-    .time {
-        color: var(--date-color);
-        font-size: 12px;
-        margin-left: auto; /* 如果不使用 space-between，也可通过 margin-left: auto 推到右侧 */
-    }
     .author {
-        font-weight: bold;
+        font-size: 14px;
         color: var(--author-name);
     }
-    .course-teacher {
-        font-weight: bold;
-        color: var(--course-teacher-color);
+    .to-author {
+        font-size: 14px;
+        color: var(--author-name);
     }
-    .large-font {
-        font-size: 18px;
+    .date {
+        font-size: 12px;
+        color: var(--date-color);
     }
-
+    .review-bottom {
+        display: flex;
+        justify-content: space-between;
+    }
+    .like-button {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        color: var(--date-color);
+    }
+    .like-button:hover {
+        color: #09adeb;
+    }
+    .like-num {
+        margin-left: 3px;
+        font-size: 14px;
+    }
+    .reply-button {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        color: var(--date-color);
+    }
+    .reply-button:hover {
+        color: #09adeb;
+    }
 </style>

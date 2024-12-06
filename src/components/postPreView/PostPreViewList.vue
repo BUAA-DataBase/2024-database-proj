@@ -16,7 +16,7 @@
 <script lang="ts" setup name="">
     import {ref, defineProps, onMounted, watch, defineEmits, computed} from 'vue'
     import avatar from '@/assets/img_avatar.jpg';
-    import Review from '@/components/reviews/Review.vue';
+    import PostPreView from '@/components/postPreView/PostPreView.vue';
     import { useRoute } from 'vue-router';
     import { usePostStore } from '@/store/modules/postStore';
     import type { PostState, PostContent } from '@/store/types';

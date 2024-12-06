@@ -5,7 +5,7 @@
     </div>
     <br>
     <br>
-    <ReviewList
+    <PostPreViewList
       :showAuthor="true"
       :showAvatar="true"
       @update:array-size="handleArraySizeChange"
@@ -17,11 +17,11 @@
 <script setup lang="ts">
   import {ref, onMounted, computed} from 'vue';
   import Pagination from '../utils/Pagination.vue';
-  import ReviewList from '@/components/reviews/ReviewList.vue';
+  import PostPreViewList from '@/components/postPreView/PostPreViewList.vue';
 
   const childArraySize = ref(1);
 
-  function handleArraySizeChange(newSize) {
+  function handleArraySizeChange(newSize: number) {
     childArraySize.value = newSize;
   }
 </script>

@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import ReviewList from '@/components/reviews/ReviewList.vue';
+    import PostPreViewList from '@/components/postPreView/PostPreViewList.vue';
     import HeaderRow from '@/pages/profileView/HeaderRow.vue';
 </script>
 

@@ -27,8 +27,8 @@
                 :rate="comment.content.rate"
                 :content="comment.content"
                 :likes="0"
-                :reply_count="0"
-                :replies="[]"
+                :reply_count="comment.reviews.length"
+                :replies="comment.reviews"
             />
         </div>
     </div>
@@ -38,27 +38,58 @@
     import {ref, defineProps} from 'vue'
     import { PenBrushIcon } from 'tdesign-icons-vue-next';
     import ReViewSelector from './ReViewSelector.vue';
-    import CourseHomeReViewEx from './CourseHomeReViewEx.vue';
-    import type { CommentState } from '@/store/types';
+    import CourseHomeReViewEx from './CourseHomePostEx.vue';
+    import type { PostState } from '@/store/types';
 
     const props = defineProps({
         courseYear: { type: Array, required: true }
     })
 
-    const comments: CommentState[] = [
+    const comments: PostState[] = [
   {
+    postId: 1,
     author: "张三",
     avatar: "https://example.com/avatar1.jpg",
     time: "2024-12-05 14:00",
+    mtime: "2024-12-05 14:30",
     course: "计算机网络",
-    teacher: "李建华",
     courseYear: "2024春",
+    teacher: "李建华",
+    likeNum: 100,
+    reviews: [
+      {
+        reviewId: 1,
+        toPostId: 1,
+        toAuthor: "李四",
+        toAvatar: "https://example.com/avatar2.jpg",
+        author: "王五",
+        avatar: "https://example.com/avatar3.jpg",
+        time: "2024-12-05 16:00",
+        mtime: "2024-12-05 16:05",
+        content: "这门课程非常实用，老师讲解清晰易懂，作业量适中，值得推荐！",
+        likeNum: 10
+      },
+      {
+        reviewId: 2,
+        toPostId: 1,
+        toAuthor: "赵六",
+        toAvatar: "https://example.com/avatar3.jpg",
+        author: "王八",
+        avatar: "https://example.com/avatar4.jpg",
+        time: "2024-12-06 09:30",
+        mtime: "2024-12-06 09:35",
+        content: "课程内容有挑战性，值得挑战，但作业量稍多，希望能简化一些。",
+        likeNum: 5
+      }
+    ],
+    showAuthor: true,
+    showAvatar: true,
     content: {
-      difficulty: 4,   // 较难
-      workload: 3,     // 适中
-      grading: 4,      // 较好
-      gain: 5,         // 很大
-      rate: 4.5,       // 评分为4.5
+      difficulty: 4,
+      workload: 3,
+      grading: 4,
+      gain: 5,
+      rate: 4.5,
       comment: `
 # 计算机网络课程评估
 
@@ -71,23 +102,52 @@
 
 总体来说，是一门值得推荐的课程！
 `
-    },
-    showAuthor: true,
-    showAvatar: true
+    }
   },
   {
+    postId: 2,
     author: "李四",
     avatar: "https://example.com/avatar2.jpg",
     time: "2024-12-05 15:30",
+    mtime: "2024-12-05 16:00",
     course: "数据库原理",
     courseYear: "2024春",
     teacher: "王五",
+    likeNum: 50,
+    reviews: [
+      {
+        reviewId: 3,
+        toPostId: 2,
+        toAuthor: "张三",
+        toAvatar: "https://example.com/avatar1.jpg",
+        author: "赵六",
+        avatar: "https://example.com/avatar3.jpg",
+        time: "2024-12-05 17:00",
+        mtime: "2024-12-05 17:10",
+        content: "对数据库的理论有了更深的了解，课程内容生动有趣，讲解通俗易懂。",
+        likeNum: 12
+      },
+      {
+        reviewId: 4,
+        toPostId: 2,
+        toAuthor: "张三",
+        toAvatar: "https://example.com/avatar1.jpg",
+        author: "王八",
+        avatar: "https://example.com/avatar4.jpg",
+        time: "2024-12-06 11:30",
+        mtime: "2024-12-06 11:35",
+        content: "作业量适中，虽然有点挑战，但总体来说是对知识的巩固。作业量适中，虽然有点挑战，但总体来说是对知识的巩固。作业量适中，虽然有点挑战，但总体来说是对知识的巩固。作业量适中，虽然有点挑战，但总体来说是对知识的巩固。作业量适中，虽然有点挑战，但总体来说是对知识的巩固。作业量适中，虽然有点挑战，但总体来说是对知识的巩固。作业量适中，虽然有点挑战，但总体来说是对知识的巩固。",
+        likeNum: 7
+      }
+    ],
+    showAuthor: false,
+    showAvatar: true,
     content: {
-      difficulty: 3,   // 适中
-      workload: 2,     // 较少
-      grading: 5,      // 很好
-      gain: 4,         // 较大
-      rate: 4.2,       // 评分为4.2
+      difficulty: 3,
+      workload: 2,
+      grading: 5,
+      gain: 4,
+      rate: 4.2,
       comment: `
 ## 数据库原理课程评估
 
@@ -100,23 +160,52 @@
 
 如果你对数据库设计感兴趣，强烈推荐这门课程！
 `
-    },
-    showAuthor: false,
-    showAvatar: true
+    }
   },
   {
+    postId: 3,
     author: "赵六",
     avatar: "https://example.com/avatar3.jpg",
     time: "2024-12-06 10:00",
+    mtime: "2024-12-06 10:30",
     course: "操作系统",
     courseYear: "2024春",
     teacher: "孙七",
+    likeNum: 70,
+    reviews: [
+      {
+        reviewId: 5,
+        toPostId: 3,
+        toAuthor: "李四",
+        toAvatar: "https://example.com/avatar2.jpg",
+        author: "王五",
+        avatar: "https://example.com/avatar3.jpg",
+        time: "2024-12-06 12:00",
+        mtime: "2024-12-06 12:05",
+        content: "操作系统的概念非常清晰，作业量适中，值得深入学习。",
+        likeNum: 8
+      },
+      {
+        reviewId: 6,
+        toPostId: 3,
+        toAuthor: "李四",
+        toAvatar: "https://example.com/avatar2.jpg",
+        author: "王八",
+        avatar: "https://example.com/avatar4.jpg",
+        time: "2024-12-07 09:00",
+        mtime: "2024-12-07 09:10",
+        content: "课程内容适合基础学习者，但也缺少一些更深层次的细节。",
+        likeNum: 6
+      }
+    ],
+    showAuthor: true,
+    showAvatar: false,
     content: {
-      difficulty: 2,   // 较易
-      workload: 4,     // 较多
-      grading: 3,      // 中等
-      gain: 3,         // 中等
-      rate: 3.5,       // 评分为3.5
+      difficulty: 2,
+      workload: 4,
+      grading: 3,
+      gain: 3,
+      rate: 3.5,
       comment: `
 ### 操作系统课程评估
 
@@ -129,23 +218,52 @@
 
 总体来说，适合想了解操作系统基本知识的同学，但如果希望深入了解操作系统，可能需要额外的学习。
 `
-    },
-    showAuthor: true,
-    showAvatar: false
+    }
   },
   {
+    postId: 4,
     author: "王八",
     avatar: "https://example.com/avatar4.jpg",
     time: "2024-12-07 08:00",
+    mtime: "2024-12-07 08:30",
     course: "人工智能",
     courseYear: "2024春",
     teacher: "周八",
+    likeNum: 10,
+    reviews: [
+      {
+        reviewId: 7,
+        toPostId: 4,
+        toAuthor: "张三",
+        toAvatar: "https://example.com/avatar1.jpg",
+        author: "赵六",
+        avatar: "https://example.com/avatar3.jpg",
+        time: "2024-12-07 10:00",
+        mtime: "2024-12-07 10:05",
+        content: "这门课程确实很有挑战性，但内容深度很有价值，值得推荐。",
+        likeNum: 15
+      },
+      {
+        reviewId: 8,
+        toPostId: 4,
+        toAuthor: "张三",
+        toAvatar: "https://example.com/avatar1.jpg",
+        author: "王五",
+        avatar: "https://example.com/avatar2.jpg",
+        time: "2024-12-07 11:00",
+        mtime: "2024-12-07 11:10",
+        content: "虽然课程难度大，但学习后对人工智能有了更深刻的认识，收益很大。",
+        likeNum: 20
+      }
+    ],
+    showAuthor: true,
+    showAvatar: true,
     content: {
-      difficulty: 5,   // 困难
-      workload: 5,     // 很多
-      grading: 2,      // 较差
-      gain: 4,         // 较大
-      rate: 2.0,       // 评分为2.0
+      difficulty: 5,
+      workload: 5,
+      grading: 2,
+      gain: 4,
+      rate: 2.0,
       comment: `
 # 人工智能课程评估
 
@@ -160,11 +278,11 @@
 ## 总结：
 这门课对于想深入学习人工智能的同学非常合适，但如果对数学不够有信心，可能会感到有点吃力。
 `
-    },
-    showAuthor: true,
-    showAvatar: true
+    }
   }
 ];
+
+
 
     
 </script>
