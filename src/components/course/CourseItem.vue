@@ -12,9 +12,9 @@
         <!-- 评分和评分人数 -->
         <div>
           <t-space align="baseline">
-            <t-rate v-model="courseRate" size="20px" allowHalf disabled />
+            <t-rate v-model="newRate" size="20px" allowHalf disabled />
             <span class="Rate">{{ courseRate }}</span>
-            <span class="NumberOfRater">({{ raterCount }}人评分)</span>
+            <span class="NumberOfRater">({{ rateCount }}人评分)</span>
           </t-space>
         </div>
 
@@ -59,7 +59,7 @@
         type: Number,
         required: true,
     },
-    raterCount: {
+    rateCount: {
         type: Number,
         required: true,
     },
@@ -84,6 +84,7 @@
     const route = useRoute()
     const userId = computed(() => route.params.id)
     const courseRate = ref(props.courseRate)
+    const newRate = ref(Math.round(props.courseRate * 2 - 0.1)/2)
 
 </script>
 

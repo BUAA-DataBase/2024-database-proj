@@ -9,16 +9,16 @@ import Course from '@/components/course/CourseItem.vue'
 
 const routes = [
   {
-    path: '/courses',
+    path: '/courses/:page',
     name: 'courses',
     component: CourseList,
-    //props: true
+    props: true
   },
   {
-    path: '/latestComments',
+    path: '/latestComments/:page',
     name: 'latestComments',
     component: LatestCommentsList,
-    //props: true
+    props: true
   },
   {
     path: '/user',
@@ -42,7 +42,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/latestComments',
+    redirect: '/login',
   },
 ]
 

@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-  import {ref, onMounted} from 'vue';
+  import {ref, onMounted, computed} from 'vue';
   import Pagination from '../utils/Pagination.vue';
   import ReviewList from '@/components/reviews/ReviewList.vue';
 

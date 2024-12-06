@@ -15,6 +15,7 @@
 
 <script lang="ts" setup>
   import { ref, defineProps } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
   import { MessagePlugin, type PaginationProps } from 'tdesign-vue-next';
   const props = defineProps({
     totalNum: {
@@ -22,6 +23,9 @@
       required: true
     }
   });
+
+  const route = useRoute();
+  const router = useRouter();
   const current = ref(1);
   const pageSize = ref(10);
   const onPageSizeChange: PaginationProps['onPageSizeChange'] = (size) => {
@@ -30,6 +34,8 @@
   };
   const onCurrentChange: PaginationProps['onCurrentChange'] = (index, pageInfo) => {
     MessagePlugin.success(`转到第${index}页`);
+    const name = route.name;
+    router.push({ name: name, params: { page: index }})
     console.log(pageInfo);
   };
   const onChange: PaginationProps['onChange'] = (pageInfo) => {

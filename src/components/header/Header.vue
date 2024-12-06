@@ -85,11 +85,11 @@
     }
 
     function toLatestComments() {
-      router.push({path: "/latestComments"})
+      router.push({ path: `/latestComments/${1}`})
     }
 
     function toCourses() {
-      router.push({path: "/courses"})
+      router.push({ path: `/courses/${1}`})
     }
 
     function toPerson() {

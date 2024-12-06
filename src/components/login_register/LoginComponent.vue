@@ -22,8 +22,8 @@
   //import ImageBg1 from '@/assets/img_login_bg.png'
   import Typewriter from '@/components/typewriter/Typewriter.vue'
   import { ErrorCode } from '@/constants/error-codes'
+  import CryptoJS from 'crypto-js';
   import axios from 'axios'
-import useDestroyOnClose from 'tdesign-vue-next/es/hooks/useDestroyOnClose';
 
   export default defineComponent({
     name: 'Login',
@@ -46,48 +46,53 @@ import useDestroyOnClose from 'tdesign-vue-next/es/hooks/useDestroyOnClose';
         console.log(url())
         loading.value = true;
         try {
-        // 在本地对密码进行哈希处理
-        const hashedPassword = CryptoJS.SHA256(password.value).toString(CryptoJS.enc.Hex);
-
-        // 发送POST请求到后端
-        const response = await axios.post(
-          "/api/users/login?token&email=Kaleid&password=123456", {
-          email: username.value,
-          password: hashedPassword,
+    // 在本地对密码进行哈希处理
+    const hashedPassword = CryptoJS.SHA256(password.value).toString(CryptoJS.enc.Hex);
+ 
+    // 发送POST请求到后端（注意：移除了URL中的查询参数）
+    const response = await axios.post(url(), {
+        email: username.value,
+        password: hashedPassword,
+    });
+ 
+    // 检查response.data是否存在
+    if (response.data && response.data.result == 'ok') {
+        router.push({
+            path: '/latestComments',
+        }).then(() => {
+            loading.value = false;
+        }).catch((error) => {
+            loading.value = false;
+            // 处理路由错误（可选）
         });
-        // 处理响应
-        if (response.data.result == 'ok') {
-          router
-              .push({
-                path: '/latestComments',
-              })
-              .then(() => {
-                loading.value = false
-              })
-              .catch((error) => {
-                loading.value = false
-                //message.error(error.message)
-              })
-          // 登录成功，保存token和用户id到本地存储或Vuex
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('userId', response.data.userId);
-          // 跳转到其他页面或显示成功消息
-          alert('Login successful!');
-          // 例如，使用router跳转到首页
-          // this.$router.push('/');
-        }
-      } catch (error: any) {
-          switch (error.response.data.error) {
-            case ErrorCode.USER_EXIST_ERROR:
-              errorMessage.value = '用户已存在'
-              alert(errorMessage.value)
-              break
+ 
+        // 登录成功，保存token和用户id到本地存储
+        /* TODO */
+ 
+        alert('Login successful!');
+    }
+} catch (error:any) {
+    // 检查error.response是否存在
+    if (error.response && error.response.data && error.response.data.error) {
+        switch (error.response.data.error) {
+            case ErrorCode.USER_NOT_EXIST_ERROR:
+                errorMessage.value = '用户不存在';
+                break;
+            case ErrorCode.WRONG_PASSWORD_ERROR:
+                errorMessage.value = '密码错误';
+                break;
             case ErrorCode.UNKNOWN_ERROR:
-              errorMessage.value = '未知错误'
-              alert(errorMessage.value)
-              break
-          }
+            default:
+                errorMessage.value = '未知错误';
+                break;
         }
+        alert(errorMessage.value);
+    } else {
+        // 处理非服务器响应错误（如网络错误）
+        errorMessage.value = '请求失败，请检查您的网络连接';
+        alert(errorMessage.value);
+    }
+}
     }
       return {
         username,

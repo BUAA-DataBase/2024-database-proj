@@ -12,6 +12,7 @@
     import avatar from '@/assets/img_avatar.jpg';
     import Header from './components/header/Header.vue';
     import CourseHomeLayout from './layouts/CourseHomeLayout.vue';
+import LatestReviewList from './pages/LatestReviewList.vue';
     
     
 </script>

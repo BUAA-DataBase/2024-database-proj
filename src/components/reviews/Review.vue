@@ -44,6 +44,7 @@
     import { useRouter } from 'vue-router';
 
     import { onMounted } from 'vue';
+    import { Content } from 'tdesign-vue-next';
 
     onMounted(() => {
         const reviewElement = document.querySelector('.review-container') as HTMLElement;
@@ -66,10 +67,12 @@
     const maxLength = 100; // 最大显示字符数
     const router = useRouter();
 
-    const isTruncated = computed(() => props.content.length > maxLength);
+    const isTruncated = computed(() => cleanedText.value.length > maxLength);
     const truncatedContent = computed(() =>
-        isTruncated.value ? props.content.slice(0, maxLength) + '...' : props.content
+        isTruncated.value ? cleanedText.value.slice(0, maxLength) + '...' : cleanedText.value
     );
+
+    const cleanedText = ref<string>(props.content.replace(/[#*]/g, ''));
 
     const readMoreHandler = () => {
         
@@ -104,7 +107,7 @@
     .info-container {
         display: flex;
         flex-direction: column;
-        width: 100%; /* 确保占据整个可用空间 */
+        width: 880px; /* 确保占据整个可用空间 */
     }
     .top-row {
         display: flex;
