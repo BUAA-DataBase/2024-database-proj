@@ -1,7 +1,7 @@
 <template>
     <div class="content-container-header">
         <span class="header-style">共{{ num }}{{ word }}</span>
-        <router-link to="/"><span class="read-more">查看全部>></span></router-link>
+        <router-link to="/latestComments/1"><span class="read-more">查看全部>></span></router-link>
     </div>
 </template>
 

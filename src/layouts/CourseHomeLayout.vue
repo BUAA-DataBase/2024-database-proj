@@ -1,6 +1,5 @@
 <template>
     <t-layout style="background-color: white;">
-        <Header/>
         <div class="course-home-layout">
             <div class="content-container">
                 <CourseHomeContent

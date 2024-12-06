@@ -5,7 +5,7 @@ import CourseList from '@/pages/CourseList.vue'
 import Login from '@/components/login_register/LoginComponent.vue'
 import Register from '@/components/login_register/RegisterComponent.vue'
 import User from '@/layouts/ProfileLayout.vue'
-import Course from '@/components/course/CourseItem.vue'
+import Course from '@/layouts/CourseHomeLayout.vue'
 
 const routes = [
   {
@@ -21,15 +21,15 @@ const routes = [
     props: true
   },
   {
-    path: '/user',
-    //name: 'user',
-    component: User,
-    //props: true
-  },
-  {
-    path: '/course/:id',
+    path: '/course/:id/:reviewId?',
     name: 'course',
     component: Course,
+    props: true
+  },
+  {
+    path: '/user/:id',
+    name: 'user',
+    component: User,
     props: true
   },
   {

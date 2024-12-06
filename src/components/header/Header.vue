@@ -93,7 +93,7 @@
     }
 
     function toPerson() {
-      router.push({path: "/user"})
+      router.push({path: "/user/1"})
     }
 
     function toLogin() {

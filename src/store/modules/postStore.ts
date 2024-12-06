@@ -1,13 +1,15 @@
 import { defineStore } from 'pinia'
-import type { CommentState } from '../types'
+import type { PostState, ReviewState } from '../types'
 
-export const useCommentStore = defineStore("comment", {
+export const usePostStore = defineStore("post", {
   state: () => ({
-    comments: [
+    posts: [
       {
+        postId: 1,
         author: "张三",
         avatar: "https://example.com/avatar1.jpg",
         time: "2024-12-05 14:00",
+        mtime: "2024-12-05 14:00",
         course: "计算机网络",
         teacher: "李建华",
         courseYear: "2024春",
@@ -30,13 +32,17 @@ export const useCommentStore = defineStore("comment", {
     总体来说，是一门值得推荐的课程！
     `
         },
+        likeNum: 0,
+        reviews: [],
         showAuthor: true,
         showAvatar: true
       },
       {
+        postId: 2,
         author: "李四",
         avatar: "https://example.com/avatar2.jpg",
         time: "2024-12-05 15:30",
+        mtime: "2024-12-05 15:30",
         course: "数据库原理",
         courseYear: "2024春",
         teacher: "王五",
@@ -59,13 +65,17 @@ export const useCommentStore = defineStore("comment", {
     如果你对数据库设计感兴趣，强烈推荐这门课程！
     `
         },
+        likeNum: 0,
+        reviews: [],
         showAuthor: false,
         showAvatar: true
       },
       {
+        postId: 3,
         author: "赵六",
         avatar: "https://example.com/avatar3.jpg",
         time: "2024-12-06 10:00",
+        mtime: "2024-12-06 10:00",
         course: "操作系统",
         courseYear: "2024春",
         teacher: "孙七",
@@ -88,13 +98,17 @@ export const useCommentStore = defineStore("comment", {
     总体来说，适合想了解操作系统基本知识的同学，但如果希望深入了解操作系统，可能需要额外的学习。
     `
         },
+        likeNum: 0,
+        reviews: [],
         showAuthor: true,
         showAvatar: false
       },
       {
+        postId: 4,
         author: "王八",
         avatar: "https://example.com/avatar4.jpg",
         time: "2024-12-07 08:00",
+        mtime: "2024-12-07 08:00",
         course: "人工智能",
         courseYear: "2024春",
         teacher: "周八",
@@ -119,51 +133,123 @@ export const useCommentStore = defineStore("comment", {
     这门课对于想深入学习人工智能的同学非常合适，但如果对数学不够有信心，可能会感到有点吃力。
     `
         },
+        likeNum: 0,
+        reviews: [],
         showAuthor: true,
         showAvatar: true
       }
-    ] as CommentState[], // 定义 comments 类型为 Comment 数组
+    ] as PostState[], // 定义 posts 类型为 post 数组
   }),
   actions: {
     // 新增评论
-    addComment(comment: CommentState) {
-      this.comments.push(comment);
+    addPost(post: PostState) {
+      this.posts.push(post);
     },
 
     // 根据课程名获取评论
-    getCommentsByCourse(courseName: string): CommentState[] {
-      return this.comments.filter((comment) => comment.course === courseName);
+    getPostsByCourse(courseName: string): PostState[] {
+      return this.posts.filter((post) => post.course === courseName);
     },
 
     // 根据作者名获取评论
-    getCommentsByAuthor(author: string): CommentState[] {
-      return this.comments.filter(comment => comment.author === author);
+    getPostsByAuthor(author: string): PostState[] {
+      return this.posts.filter(post => post.author === author);
     },
 
     // 根据教师名获取评论
-    getCommentsByTeacher(teacher: string): CommentState[] {
-      return this.comments.filter(comment => comment.teacher === teacher);
+    getPostsByTeacher(teacher: string): PostState[] {
+      return this.posts.filter(post => post.teacher === teacher);
     },
 
     // 获取所有评论
-    getAllComments(): CommentState[] {
-      return this.comments;
+    getAllPosts(): PostState[] {
+      return this.posts;
     },
 
     // 按照时间顺序获取一页评论
-    getSortedComments(page: number): CommentState[] {
-      const sortedComments = [...this.comments].sort((a, b) => {
+    getSortedPosts(page: number): PostState[] {
+      const sortedPosts = [...this.posts].sort((a, b) => {
         const timeA = new Date(a.time).getTime();
         const timeB = new Date(b.time).getTime();
         return timeB - timeA;
       });
       const startIndex = (page - 1) * 10;
       const endIndex = page * 10;
-      return sortedComments.slice(startIndex, endIndex);
+      return sortedPosts.slice(startIndex, endIndex);
     },
     // 获取评论数组的大小
-    getCommentsSize() {
-      return this.comments.length;
+    getPostsSize() {
+      return this.posts.length;
+    },
+
+    // 点赞！！！
+    updateLikeNum(postId: number) {
+      const updatedPosts = this.posts.map(post =>
+        post.postId === postId
+          ? { ...post, likeNum: post.likeNum + 1 }
+          : post
+      );
+      this.posts = updatedPosts;
+    },
+
+    // 添加评论
+    addReview(review: ReviewState, postId: number) {
+      const post = this.posts.find(p => p.postId === postId);
+      if (post) {
+        post.reviews.push(review);
+      } else {
+        console.error(`No post found with postId: ${postId}`);
+      }
+    },
+
+    // 获取指定 postId 的帖子中的 reviews 数组长度
+    getReviewCount(postId: number): number {
+      const post = this.posts.find(p => p.postId === postId);
+      return post ? post.reviews.length : 0;
+    },
+
+    // 修改帖子元素
+    updatePostAttributes(postId: number, attributes: Partial<PostState>) {
+      const post = this.posts.find(p => p.postId === postId);
+      if (post) {
+        if (attributes.author !== undefined) {
+          post.author = attributes.author;
+        }
+        if (attributes.avatar !== undefined) {
+          post.avatar = attributes.avatar;
+        }
+        if (attributes.mtime !== undefined) {
+          post.mtime = attributes.mtime;
+        }
+        if (attributes.course !== undefined) {
+          post.course = attributes.course;
+        }
+        if (attributes.courseYear !== undefined) {
+          post.courseYear = attributes.courseYear;
+        }
+        if (attributes.teacher !== undefined) {
+          post.teacher = attributes.teacher;
+        }
+        if (attributes.content !== undefined) {
+          post.content = attributes.content;
+        }
+      } else {
+        console.error(`No post found with postId: ${postId}`);
+      }
+    },
+
+    // 找到对应的帖子并返回所需属性
+    getPostById(postId: number): { postId: number; author: string; avatar: string } | null {
+      const post = this.posts.find(p => p.postId === postId);
+      if (post) {
+        return {
+          postId: post.postId,
+          author: post.author,
+          avatar: post.avatar,
+        };
+      } else {
+        return null;
+      }
     },
   },
 });

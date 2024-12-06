@@ -5,6 +5,7 @@ import { Role } from '../types'
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
+    userId: 0,
     userName: '',
     password: '', // 通常密码不应该存储在前端，但这里是演示
     email: '',
@@ -26,6 +27,7 @@ export const useUserStore = defineStore('user', {
     login(userData: Partial<UserState>) {
       if (userData.userName && userData.password) {
         // 模拟登录逻辑
+        this.userId = userData.userId || 0
         this.userName = userData.userName
         //this.password = userData.password 
         // 不建议存储密码，仅为演示

@@ -1,12 +1,12 @@
 <template>
-    <div v-for="(comment, index) in comments.slice(0, displayNum)" :key="index" class="comment-container">
+    <div v-for="(post, index) in posts.slice(0, displayNum)" :key="index" class="post-container">
       <Review
-        :author="comment.author"
-        :avatar="comment.avatar"
-        :time="comment.time"
-        :course="comment.course"
-        :teacher="comment.teacher"
-        :content="comment.content.comment"
+        :author="post.author"
+        :avatar="post.avatar"
+        :time="post.time"
+        :course="post.course"
+        :teacher="post.teacher"
+        :content="post.content.comment"
         :showAuthor="showAuthor"
         :showAvatar="showAvatar"
       />
@@ -18,8 +18,8 @@
     import avatar from '@/assets/img_avatar.jpg';
     import Review from '@/components/reviews/Review.vue';
     import { useRoute } from 'vue-router';
-    import { useCommentStore } from '@/store/modules/commentStore';
-    import type { CommentState, CommentContent } from '@/store/types';
+    import { usePostStore } from '@/store/modules/postStore';
+    import type { PostState, PostContent } from '@/store/types';
 
     defineProps({
         showAvatar: { type: Boolean, default: true },
@@ -29,9 +29,9 @@
 
     const route = useRoute();
 
-    const useStore = useCommentStore();
+    const useStore = usePostStore();
 
-    const comments = ref<CommentState[]>([]);
+    const posts = ref<PostState[]>([]);
     const currentPage = computed<number>(() => {
         const pageParam = route.params.page;
         // 如果pageParam是字符串，则尝试解析为数字；否则，使用默认值1
@@ -40,32 +40,32 @@
         : 1;
     });
 
-    function fetchComments(page: number): CommentState[] {
-        // 从 commentStore 中获取排序后的评论数组
-        return useStore.getSortedComments(page);
+    function fetchPosts(page: number): PostState[] {
+        // 从 postStore 中获取排序后的评论数组
+        return useStore.getSortedPosts(page);
     }
 
     onMounted(() => {
-        comments.value = fetchComments(currentPage.value);
+        posts.value = fetchPosts(currentPage.value);
     });
  
     // 监听currentPage的变化，并在变化时重新获取数据
     watch(currentPage, (newPage) => {
-        comments.value = fetchComments(newPage);
+        posts.value = fetchPosts(newPage);
     });
 
     const emit = defineEmits(['update:arraySize']);
 
-    function notifyCommentsSizeChange() {
-      emit('update:arraySize', comments.value.length);
+    function notifyPostsSizeChange() {
+      emit('update:arraySize', posts.value.length);
     }
 
-    watch(comments, () => {
-      notifyCommentsSizeChange();
+    watch(posts, () => {
+      notifyPostsSizeChange();
     }, { deep: true });
 
     onMounted(() => {
-      notifyCommentsSizeChange();
+      notifyPostsSizeChange();
     });
 </script>
 
