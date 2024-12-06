@@ -37,11 +37,15 @@ export interface UserState {
 }
 
 export interface CourseState {
+  courseId: number
   courseName: string
   courseTeacher: string
-  courseYear: string[]
+  courseYear: string
   courseRate: number
-  courseDescription: string
+  courseDifficulty: number
+  courseWorkload: number
+  courseGrading: number
+  courseGain: number
   teacherImage: string
   courseType: string
   courseDepartment: string
@@ -58,10 +62,20 @@ export interface CommentState {
   avatar: string
   time: string
   course: string
+  courseYear: string
   teacher: string
-  content: string
+  content: CommentContent
   showAuthor: boolean
   showAvatar: boolean
+}
+
+export interface CommentContent {
+  difficulty: number
+  workload: number
+  grading: number
+  gain: number
+  rate: number
+  comment: string
 }
 
 export interface AppConfigState {

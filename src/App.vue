@@ -13,6 +13,7 @@
     import Header from './components/header/Header.vue';
     import CourseHomeAside from './components/aside/CourseHomeAside.vue';
     import CourseHomeLayout from './layouts/CourseHomeLayout.vue';
+import LatestReviewList from './pages/LatestReviewList.vue';
     
     
 </script>

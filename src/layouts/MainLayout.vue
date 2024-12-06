@@ -3,9 +3,9 @@
       <div v-if="notLogin()">
         <Header/>
       </div>
-        <t-content style="background-color: white;">
-            <RouterView></RouterView>
-        </t-content>
+      <t-content style="background-color: white;">
+        <RouterView></RouterView>
+      </t-content>
     </t-layout>
 </template>
 
