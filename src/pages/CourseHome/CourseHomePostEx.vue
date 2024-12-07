@@ -90,7 +90,7 @@
         // 如果pageParam是字符串，则尝试解析为数字；否则，使用默认值1
         return (typeof reviewId === 'string' && !isNaN(parseInt(reviewId, 10)))
         ? parseInt(reviewId, 10)
-        : 1;
+        : 0;
     });
  
     onMounted(() => {
