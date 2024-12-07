@@ -1,8 +1,7 @@
 <template>
     <t-layout style="background-color: white;">
-        <Header/>
         <t-content>
-            <PostEditor/>
+            <MainLayout/>
         </t-content>
     </t-layout>
 </template>
