@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import {ref, defineProps} from 'vue'
+    import {ref, defineProps, defineEmits, watch} from 'vue'
     import type { SelectProps } from 'tdesign-vue-next'
 
     const props = defineProps({
@@ -67,6 +67,21 @@
     const onBlur: SelectProps['onBlur'] = (ctx) => {
         console.log('blur:', ctx);
     };
+ 
+    // 在 <script setup> 中，emit 函数是自动可用的，无需从 setup 函数参数中解构
+    // 声明组件发出的事件类型（可选，但有助于类型检查和 IDE 提示）
+    const emit = defineEmits(['updateValues']);
+
+    const emitUpdate = () => {
+        // 使用 emit 函数发送自定义事件，并传递当前的值作为参数
+        emit('updateValues', { value1: value1.value, value2: value2.value, value3: value3.value });
+    };
+
+    watch([value1, value2, value3], (newValues, oldValues) => {
+        // 注意：newValues 和 oldValues 都是数组，与 watch 的源数组对应
+        // 但在这个场景下，我们可能不需要 oldValues
+        emitUpdate();
+    }, { immediate: true });
 </script>
 
 <style scoped lang="scss">

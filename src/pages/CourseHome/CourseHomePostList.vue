@@ -13,6 +13,7 @@
         <div class="all-review-container">
             <ReViewSelector
                 :courseYear="props.courseYear"
+                @updateValues="handleUpdateValues"
             />
         </div>
         <div class="all-review">
@@ -40,12 +41,23 @@
     import ReViewSelector from './ReViewSelector.vue';
     import CourseHomeReViewEx from './CourseHomePostEx.vue';
     import type { PostState } from '@/store/types';
+    import { usePostStore } from '@/store/modules/postStore';
 
     const props = defineProps({
-        courseYear: { type: Array, required: true }
+        courseYear: { type: Array, required: true },
+        courseName: { type: String, required: true},
+        courseTeacher: { type: String, required: true }
     })
 
-    const comments: PostState[] = [
+    const useStore = usePostStore()
+
+    const handleUpdateValues = (payload: { value1: string; value2: string; value3: string }) => {
+      comments.value = useStore.filterAndSortPosts(props.courseName,props.courseTeacher,
+      payload.value1,payload.value2,payload.value3);
+      console.log(comments.value);
+    };
+
+    const comments = ref<PostState[]> ([
   {
     postId: 1,
     author: "张三",
@@ -280,7 +292,7 @@
 `
     }
   }
-];
+]);
 
 
 

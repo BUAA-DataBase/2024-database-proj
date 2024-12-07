@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { PostState, ReviewState } from '../types'
+import type { SelectProps } from 'tdesign-vue-next'
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -137,6 +138,70 @@ export const usePostStore = defineStore("post", {
         reviews: [],
         showAuthor: true,
         showAvatar: true
+      },
+      { postId: 5,
+        author: "周子皓",
+        avatar: "https://example.com/avatar1.jpg",
+        time: "2024-12-05 16:00",
+        mtime: "2024-12-05 16:00",
+        course: "计算机网络",
+        teacher: "李建华",
+        courseYear: "2024春",
+        content: {
+          difficulty: 4,   // 较难
+          workload: 3,     // 适中
+          grading: 4,      // 较好
+          gain: 5,         // 很大
+          rate: 3.2,       // 评分为4.5
+          comment: `
+    # 计算机网络课程评估
+    
+    这门课程的内容非常实用，老师讲解得非常清晰，但作业量稍大。以下是我的具体评价：
+    
+    - **课程难度**：较难，但内容有一定的挑战性，学习后能掌握非常有价值的技能。
+    - **作业量**：适中，作业量虽然较大，但能够帮助加深理解。
+    - **给分情况**：较好，老师评分公正，注重实际能力。
+    - **收获**：非常大，课程内容涵盖了网络的各个方面，学习后能大大提升自己对计算机网络的理解。
+    
+    总体来说，是一门值得推荐的课程！
+    `
+        },
+        likeNum: 0,
+        reviews: [],
+        showAuthor: true,
+        showAvatar: true
+      },
+      { postId: 6,
+        author: "方启迪",
+        avatar: "https://example.com/avatar1.jpg",
+        time: "2024-12-05 15:00",
+        mtime: "2024-12-05 15:00",
+        course: "计算机网络",
+        teacher: "李建华",
+        courseYear: "2024秋",
+        content: {
+          difficulty: 4,   // 较难
+          workload: 3,     // 适中
+          grading: 4,      // 较好
+          gain: 5,         // 很大
+          rate: 2.7,       // 评分为4.5
+          comment: `
+    # 计算机网络课程评估
+    
+    这门课程的内容非常实用，老师讲解得非常清晰，但作业量稍大。以下是我的具体评价：
+    
+    - **课程难度**：较难，但内容有一定的挑战性，学习后能掌握非常有价值的技能。
+    - **作业量**：适中，作业量虽然较大，但能够帮助加深理解。
+    - **给分情况**：较好，老师评分公正，注重实际能力。
+    - **收获**：非常大，课程内容涵盖了网络的各个方面，学习后能大大提升自己对计算机网络的理解。
+    
+    总体来说，是一门值得推荐的课程！
+    `
+        },
+        likeNum: 0,
+        reviews: [],
+        showAuthor: true,
+        showAvatar: true
       }
     ] as PostState[], // 定义 posts 类型为 post 数组
   }),
@@ -178,45 +243,47 @@ export const usePostStore = defineStore("post", {
       return sortedPosts.slice(startIndex, endIndex);
     },
 
-    getSortedPostsByMTimeInCourse(course: string, teacher: string): PostState[] {
-      const filteredPosts = this.posts.filter(post => {
-        return post.course === course && post.teacher === teacher;
-      });
-     
+    filterAndSortPosts(
+      course: string,
+      teacher: string,
+      value1: string, // options1 的 value
+      value2?: string, // options2 的 value，可能是 courseYear
+      value3?: string // options3 的 value，表示星数
+    ): PostState[] {
+      // 创建 posts 数组的副本以避免修改原始数组
+      let filteredPosts = [...this.posts];
+ 
+      // 根据 course 和 teacher 过滤
+      filteredPosts = filteredPosts.filter(post => post.course === course && post.teacher === teacher);
+ 
+      // 如果提供了 value2（courseYear），则进一步过滤
+      if (value2) {
+        filteredPosts = filteredPosts.filter(post => post.courseYear === value2);
+      }
+ 
+      // 如果提供了 value3（星数），则进一步过滤
+      if (value3) {
+        const starRating = parseInt(value3, 10);
+        filteredPosts = filteredPosts.filter(post => post.content.rate >= starRating - 1 && post.content.rate < starRating);
+      }
+ 
+      // 根据 value1 排序
       const sortedPosts = [...filteredPosts].sort((a, b) => {
-        const timeA = new Date(a.mtime).getTime();
-        const timeB = new Date(b.mtime).getTime();
-        return timeB - timeA;
-      });
-     
-      return sortedPosts;
-    },
-
-    getSortedPostsByRateInCourse(course: string, teacher: string, ascending: boolean): PostState[] {
-      const filteredPosts = this.posts.filter(post => {
-        return post.course === course && post.teacher === teacher;
-      });
-     
-      const sortedPosts = [...filteredPosts].sort((a, b) => {
-        if (ascending) {
-          return a.content.rate - b.content.rate; // 升序排序
+        if (value1 === 'new') {
+          return new Date(b.mtime).getTime() - new Date(a.mtime).getTime(); // 最新（mtime 从新到旧）
+        } else if (value1 === 'hot') {
+          return b.likeNum - a.likeNum; // 最热（likeNum 从高到低）
+        } else if (value1 === 'good') {
+          return b.content.rate - a.content.rate; // 评分高-低（rate 从高到低）
+        } else if (value1 === 'bad') {
+          return a.content.rate - b.content.rate; // 评分低-高（rate 从低到高）
         } else {
-          return b.content.rate - a.content.rate; // 降序排序
+          // 如果没有匹配到有效的排序选项或 value1 为 undefined，则默认按 mtime 从新到旧排序
+          return new Date(b.mtime).getTime() - new Date(a.mtime).getTime();
         }
       });
-     
-      return sortedPosts;
-    },
-
-    getSortedPostsByCourseAndTeacherInCourse(course: string, teacher: string): PostState[] {
-      const filteredPosts = this.posts.filter(post => {
-        return post.course === course && post.teacher === teacher;
-      });
-     
-      const sortedPosts = [...filteredPosts].sort((a, b) => {
-        return b.likeNum - a.likeNum;
-      });
-     
+ 
+      // 返回排序后的数组副本，不修改原始 posts 数组
       return sortedPosts;
     },
 

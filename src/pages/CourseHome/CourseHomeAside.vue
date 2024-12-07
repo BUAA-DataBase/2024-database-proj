@@ -32,6 +32,8 @@
 </template>
 
 <script lang="ts" setup name="">
+    import type { CourseState } from '@/store/types';
+    import { useCourseStore } from '@/store/modules/courseStore';
     import {ref, defineProps} from 'vue'
 
     const props = defineProps({
@@ -39,132 +41,12 @@
         teacher: { type: String, required: true },
         teacher_avatar: { type: String, required: true },
     })
-    
-    const courseList_sameTeacher = ref([
-    {
-        courseName: '计算机组成原理',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.5,
-        courseRateNum: 100,
-    },
-    {
-        courseName: '数据结构与算法',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.2,
-        courseRateNum: 120,
-    },
-    {
-        courseName: '操作系统',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.0,
-        courseRateNum: 80,
-    },
-    {
-        courseName: '数据库原理',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.7,
-        courseRateNum: 150,
-    },
-    {
-        courseName: '人工智能基础',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.8,
-        courseRateNum: 200,
-    },
-    {
-        courseName: '计算机网络',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.3,
-        courseRateNum: 90,
-    },
-    {
-        courseName: '软件工程导论',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.1,
-        courseRateNum: 50,
-    },
-    {
-        courseName: '编译原理',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.6,
-        courseRateNum: 130,
-    },
-    {
-        courseName: '云计算与大数据',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.4,
-        courseRateNum: 110,
-    },
-    {
-        courseName: '计算机视觉',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.9,
-        courseRateNum: 180,
-    }
-]);
 
-const courseList_samecourse = ref([
-    {
-        teacher: '张声秋',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.9,
-        courseRateNum: 180,
-    },
-    {
-        teacher: '李明',
-        courseyear: ['2022春'],
-        courseRate: 4.6,
-        courseRateNum: 220,
-    },
-    {
-        teacher: '王婷婷',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.7,
-        courseRateNum: 150,
-    },
-    {
-        teacher: '赵亮',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.3,
-        courseRateNum: 110,
-    },
-    {
-        teacher: '孙静',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.8,
-        courseRateNum: 190,
-    },
-    {
-        teacher: '周杰',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.5,
-        courseRateNum: 130,
-    },
-    {
-        teacher: '陈婷',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.2,
-        courseRateNum: 80,
-    },
-    {
-        teacher: '刘华',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.4,
-        courseRateNum: 170,
-    },
-    {
-        teacher: '杨鹏',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.0,
-        courseRateNum: 100,
-    },
-    {
-        teacher: '黄琪',
-        courseyear: ['2022春', '2022秋', '2023春'],
-        courseRate: 4.7,
-        courseRateNum: 160,
-    }
-]);
+    const useStore = useCourseStore()
+    
+    const courseList_sameTeacher = useStore.getCourseByTeacher(props.teacher)
+
+    const courseList_samecourse = useStore.getCourseByName(props.courseName)
 
 
 </script>

@@ -74,6 +74,8 @@
         </div>
         <CourseHomePostList
             :courseYear="props.courseYear"
+            :courseName="props.courseName"
+            :courseTeacher="props.courseTeacher"
         />
     </div>
 </template>
