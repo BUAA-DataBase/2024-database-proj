@@ -1,5 +1,5 @@
 <template>
-    <div class="post-container">
+    <div class="post-container" ref="reviewSection">
         <t-space direction="vertical" size="10px">
             <t-space align="baseline">
                 <span class="author">{{ props.author }}</span>
@@ -50,14 +50,18 @@
 <script lang="ts" setup name="">
     import type { CommentContent, ReviewState } from '@/store/types';
     import { convertDifficulty, convertGain, convertGrading, convertWorkload } from '@/constants/map';
-    import {ref, defineProps} from 'vue'
+    import {ref, defineProps, watch, onMounted, computed} from 'vue'
     import { marked } from 'marked'
     import { ChatIcon, ThumbUpIcon } from 'tdesign-icons-vue-next';
     import LittleCommentEditor from '@/components/editor/LittleCommentEditor.vue';
     import Review from '@/components/reviews/Review.vue';
+    import { useRoute } from 'vue-router';
+    import { usePostStore } from '@/store/modules/postStore';
     
     const props = defineProps<{
         author: string,
+        course: string,
+        teacher: string,
         date_published: string,
         date_updated: string,
         avatar: string,
@@ -75,6 +79,28 @@
     const gain = convertGain(props.content.gain)
 
     const likes = ref(props.likes)
+
+    // 定义一个ref来引用需要滚动到的DOM元素
+    const reviewSection = ref<HTMLElement>();
+    const route = useRoute();
+    const useStore = usePostStore();
+
+    const reviewId = computed<number>(() => {
+        const reviewId = route.params.reviewId;
+        // 如果pageParam是字符串，则尝试解析为数字；否则，使用默认值1
+        return (typeof reviewId === 'string' && !isNaN(parseInt(reviewId, 10)))
+        ? parseInt(reviewId, 10)
+        : 1;
+    });
+ 
+    onMounted(() => {
+        console.log(reviewId.value);
+        const thisId = useStore.getPostId(props.author,props.course,props.teacher);
+        console.log(thisId);
+        if (reviewId.value === thisId && reviewSection.value) {
+            reviewSection.value.scrollIntoView({ behavior: 'auto' });
+        }
+    })
 
     // 点赞按钮的点击处理函数
     const handleLikeClick = () => {

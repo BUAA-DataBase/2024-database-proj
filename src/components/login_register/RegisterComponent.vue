@@ -61,7 +61,7 @@ export default defineComponent({
     const emailCorrect = ref(false)
     const errorMessage = ref('')
     const returnToLogin = () => {
-      router.replace({ path: '/login' })
+      router.push({ path: '/login' })
     }
     const handlePositiveClick = async () => {
       if (

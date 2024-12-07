@@ -103,7 +103,6 @@
   courseRecommend: { type: Number, required: true },
   courseNotRecommend: { type: Number, required: true },
   courseRateNum: { type: Number, required: true },
-  ReViewList: { type: Array, required: true },
 });
 
 

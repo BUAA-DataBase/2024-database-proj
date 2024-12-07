@@ -44,9 +44,9 @@ export const usePostStore = defineStore("post", {
         avatar: "https://example.com/avatar2.jpg",
         time: "2024-12-05 15:30",
         mtime: "2024-12-05 15:30",
-        course: "数据库原理",
+        course: "数据结构",
         courseYear: "2024春",
-        teacher: "王五",
+        teacher: "张老师",
         content: {
           difficulty: 3,   // 适中
           workload: 2,     // 较少
@@ -78,8 +78,8 @@ export const usePostStore = defineStore("post", {
         time: "2024-12-06 10:00",
         mtime: "2024-12-06 10:00",
         course: "操作系统",
-        courseYear: "2024春",
-        teacher: "孙七",
+        courseYear: "2023春",
+        teacher: "李建华",
         content: {
           difficulty: 2,   // 较易
           workload: 4,     // 较多
@@ -110,9 +110,9 @@ export const usePostStore = defineStore("post", {
         avatar: "https://example.com/avatar4.jpg",
         time: "2024-12-07 08:00",
         mtime: "2024-12-07 08:00",
-        course: "人工智能",
+        course: "c语言",
         courseYear: "2024春",
-        teacher: "周八",
+        teacher: "李建华",
         content: {
           difficulty: 5,   // 困难
           workload: 5,     // 很多
@@ -290,6 +290,15 @@ export const usePostStore = defineStore("post", {
     // 获取评论数组的大小
     getPostsSize() {
       return this.posts.length;
+    },
+
+    getPostId(author: string, course: string, teacher: string) : number {
+      const post = this.posts.find((post) => post.author === author && post.course === course && post.teacher === teacher);
+      if (!post) {
+        console.error(`Course with ID ${author} not found!`);
+        throw new Error(`Course with ID ${author} not found.`);
+      }
+      return post.postId;
     },
 
     // 点赞！！！

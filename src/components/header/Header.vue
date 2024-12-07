@@ -87,21 +87,21 @@
     }
 
     function toLatestComments() {
-      router.push({ path: `/latestComments/${1}`})
+        router.push({ path: `/latestComments/${1}`})
     }
 
     function toCourses() {
-      router.push({ path: `/courses/${1}`})
+        router.push({ path: `/courses/${1}`})
     }
 
     function toPerson() {
-      router.push({path: "/user/1"})
+        router.push({path: "/user/1"})
     }
 
     function toLogin() {
-      useStore.logout();
-      console.log(useStore.getNowUser());
-      router.push({path: "/login"})
+        useStore.logout();
+        console.log(useStore.getNowUser());
+        router.push({path: "/login"})
     }
 
     const changeHandler: HeadMenuProps['onChange'] = (active) => {

@@ -51,4 +51,15 @@ const router = createRouter({
   routes,
 })
 
+router.afterEach((to, from) => {
+  // 检查目标路由的名称是否为'course'且params中是否包含reviewId
+  if (to.name === 'course' && to.params.reviewId) {
+    // 如果条件满足，则不执行滚动操作
+    // 可以选择在这里添加一些日志或其他逻辑
+  } else {
+    // 如果条件不满足，则滚动到页面顶部
+    window.scrollTo(0, 0);
+  }
+});
+
 export default router

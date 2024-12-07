@@ -6,15 +6,15 @@ export const useCourseStore = defineStore("course", {
     courses: [
       {
         courseId: 1,
-        courseName: "计算机组成",
-        courseTeacher: "张老师",
-        courseYear: ["2022春", "2022秋"],
+        courseName: "计算机网络",
+        courseTeacher: "李建华",
+        courseYear: ["2024春", "2024秋"],
         courseRate: 4.6,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
         courseGain: 4,
-        teacherImage: "https://example.com/zhangteacher.jpg",
+        teacherImage: "https://scse.buaa.edu.cn/__local/4/19/16/256EA87700037E4DEE08B6C726A_FB09112F_1E27C.jpg",
         courseType: "必修",
         courseDepartment: "数学系",
         courseCredit: 3,
@@ -27,14 +27,14 @@ export const useCourseStore = defineStore("course", {
       {
         courseId: 2,
         courseName: "操作系统",
-        courseTeacher: "李老师",
+        courseTeacher: "李建华",
         courseYear: ["2023春", "2023秋"],
         courseRate: 4.4,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
         courseGain: 4,
-        teacherImage: "https://example.com/zhangteacher.jpg",
+        teacherImage: "https://scse.buaa.edu.cn/__local/4/19/16/256EA87700037E4DEE08B6C726A_FB09112F_1E27C.jpg",
         courseType: "必修",
         courseDepartment: "数学系",
         courseCredit: 3,
@@ -66,7 +66,7 @@ export const useCourseStore = defineStore("course", {
       },
       {
         courseId: 4,
-        courseName: "离散数学",
+        courseName: "计算机网络",
         courseTeacher: "杜老师",
         courseYear: ["2023秋", "2024春"],
         courseRate: 4.7,
@@ -87,14 +87,14 @@ export const useCourseStore = defineStore("course", {
       {
         courseId: 5,
         courseName: "c语言",
-        courseTeacher: "裴老师",
+        courseTeacher: "李建华",
         courseYear: ["2024春"],
         courseRate: 4.2,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
         courseGain: 4,
-        teacherImage: "https://example.com/zhangteacher.jpg",
+        teacherImage: "https://scse.buaa.edu.cn/__local/4/19/16/256EA87700037E4DEE08B6C726A_FB09112F_1E27C.jpg",
         courseType: "必修",
         courseDepartment: "数学系",
         courseCredit: 3,
@@ -106,7 +106,7 @@ export const useCourseStore = defineStore("course", {
       },
       {
         courseId: 6,
-        courseName: "数学分析",
+        courseName: "计算机网络",
         courseTeacher: "王老师",
         courseYear: ["2022秋", "2023春", "2023秋"],
         courseRate: 3.3,
@@ -126,7 +126,7 @@ export const useCourseStore = defineStore("course", {
       },
       {
         courseId: 7,
-        courseName: "大学英语",
+        courseName: "计算机网络",
         courseTeacher: "彭老师",
         courseYear: ["2024春", "2024秋"],
         courseRate: 4.8,
@@ -146,7 +146,7 @@ export const useCourseStore = defineStore("course", {
       },
       {
         courseId: 8,
-        courseName: "高等代数",
+        courseName: "计算机网络",
         courseTeacher: "石老师",
         courseYear: ["2023春", "2023秋", "2024春"],
         courseRate: 4.6,
@@ -372,14 +372,38 @@ export const useCourseStore = defineStore("course", {
       this.courses.push(course);
     },
 
+    getCourseById(courseId: number): CourseState {
+      const course = this.courses.find((course) => course.courseId === courseId);
+      
+      if (!course) {
+        console.error(`Course with ID ${courseId} not found!`);
+        throw new Error(`Course with ID ${courseId} not found.`);
+      }
+      
+      return course;
+    },
+
+    getCourseIdByNameAndTeacher(courseName: string, courseTeacher: string): number {
+      const course = this.courses.find((course) => course.courseName === courseName && course.courseTeacher === courseTeacher);
+      
+      if (!course) {
+        console.error(`Course with ID ${courseName} not found!`);
+        throw new Error(`Course with ID ${courseName} not found.`);
+      }
+      
+      return course.courseId;
+    },
+
     // 根据课程名获取课程
-    getCourseByName(courseName: string): CourseState | undefined {
-      return this.courses.find((course) => course.courseName === courseName);
+    getCourseByName(courseName: string, courseTeacher: string): CourseState[] {
+      return this.courses.filter((course) => course.courseName === courseName && course.courseTeacher !== courseTeacher)
+      .sort((a, b) => b.courseRate - a.courseRate);
     },
 
     // 根据教师名获取课程
-    getCourseByTeacher(teacherName: string): CourseState[] {
-      return this.courses.filter(course => course.courseTeacher === teacherName);
+    getCourseByTeacher(courseName: string, courseTeacher: string): CourseState[] {
+      return this.courses.filter(course => course.courseTeacher === courseTeacher && course.courseName !== courseName)
+      .sort((a, b) => b.courseRate - a.courseRate);
     },
 
     // 获取所有课程

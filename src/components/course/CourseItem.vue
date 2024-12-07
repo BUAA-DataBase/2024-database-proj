@@ -52,7 +52,7 @@
         required: true, // 任课老师必须传递
     },
     year: {
-        type: String,
+        type: Array,
         required: true, // 课程发布时间必须传递
     },
     courseRate: {

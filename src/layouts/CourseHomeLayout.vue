@@ -3,31 +3,30 @@
         <div class="course-home-layout">
             <div class="content-container">
                 <CourseHomeContent
-                courseName="计算机网络"
-                courseTeacher="李建华"
-                :courseYear='["2024秋", "2024春","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋","2024秋",]'
-                :courseRate="4.5"
-                difficulty="较难"
-                workload="适中"
-                grading="中等"
-                gain="较大"
-                :teacherImage="avatar"
-                courseType="必修"
-                courseDepartment="计算机学院"
-                :courseCredit="3"
-                :courseHours="48"
-                :courseFollower="100"
-                :courseRecommend="90"
-                :courseNotRecommend="10"
-                :courseRateNum="20"
-                :ReViewList="[]"
+                :courseName="course.courseName"
+                :courseTeacher="course.courseTeacher"
+                :courseYear="course.courseYear"
+                :courseRate="course.courseRate"
+                :difficulty="convertDifficulty(course.courseDifficulty)"
+                :workload="convertWorkload(course.courseWorkload)"
+                :grading="convertGrading(course.courseGrading)"
+                :gain="convertGain(course.courseGain)"
+                :teacherImage="course.teacherImage"
+                :courseType="course.courseType"
+                :courseDepartment="course.courseDepartment"
+                :courseCredit="course.courseCredit"
+                :courseHours="course.courseHours"
+                :courseFollower="course.courseFollower"
+                :courseRecommend="course.courseRecommend"
+                :courseNotRecommend="course.courseNotRecommend"
+                :courseRateNum="course.courseRateNum"
                 />
             </div>
             <div class="aside-container">
                 <CourseHomeAside
-                    courseName="计算机网络"
-                    teacher="李建华"
-                    teacher_avatar="avatar"
+                    :courseName="course.courseName"
+                    :teacher="course.courseTeacher"
+                    :teacher_avatar="course.teacherImage"
                 />
             </div>
         </div>
@@ -39,8 +38,134 @@
     import CourseHomeContent from '@/pages/CourseHome/CourseHomeContent.vue';
     import avatar from '@/assets/img_avatar.jpg';
 
-    import {} from 'vue'
+    import {ref,computed,onMounted,watch} from 'vue'
     import CourseHomeAside from '@/pages/CourseHome/CourseHomeAside.vue';
+    import { useRoute, useRouter } from 'vue-router';
+    import type { CourseState } from '@/store/types';
+    import { useCourseStore } from '@/store/modules/courseStore';
+
+    const route = useRoute()
+    const useStore = useCourseStore()
+
+    const course = ref<CourseState>({
+          courseId: 0,
+          courseName: "",
+          courseTeacher: "",
+          courseYear: [],
+          courseRate: 0,
+          courseDifficulty: 0,
+          courseWorkload: 0,
+          courseGrading: 0,
+          courseGain: 0,
+          teacherImage: "",
+          courseType: "",
+          courseDepartment: "",
+          courseCredit: 0,
+          courseHours: 0,
+          courseFollower: 0,
+          courseRecommend: 0,
+          courseNotRecommend: 0,
+          courseRateNum: 0,
+    })
+
+    const currentId = computed<number>(() => {
+        const idParam = route.params.id;
+        // 如果pageParam是字符串，则尝试解析为数字；否则，使用默认值1
+        return (typeof idParam === 'string' && !isNaN(parseInt(idParam, 10)))
+        ? parseInt(idParam, 10)
+        : 0;
+    });
+
+    function fetchCourse(id: number): CourseState {
+        // 从 commentStore 中获取排序后的评论数组
+        return useStore.getCourseById(id);
+    }
+
+    onMounted(() => {
+        course.value = fetchCourse(currentId.value);
+    });
+ 
+    // 监听currentPage的变化，并在变化时重新获取数据
+    watch(currentId, (newId) => {
+        console.log(currentId.value);
+        course.value = fetchCourse(newId);
+    }, {immediate: true}) ;
+
+    function convertDifficulty(difficultyNumber: number) {
+        const difficultyMap = {
+            1: '简单',
+            2: '较易',
+            3: '适中',
+            4: '较难',
+            5: '困难'
+        };
+        // 检查输入是否在有效范围内
+        switch (difficultyNumber) {
+            case 1: return difficultyMap[1];
+            case 2: return difficultyMap[2];
+            case 3: return difficultyMap[3];
+            case 4: return difficultyMap[4];
+            case 5: return difficultyMap[5];
+            default: return "";
+        }
+    }
+
+    function convertWorkload(workloadNumber: number) {
+        const workloadMap = {
+            1: '很少',
+            2: '较少',
+            3: '适中',
+            4: '较多',
+            5: '很多'
+        };
+        // 检查输入是否在有效范围内
+        switch (workloadNumber) {
+            case 1: return workloadMap[1];
+            case 2: return workloadMap[2];
+            case 3: return workloadMap[3];
+            case 4: return workloadMap[4];
+            case 5: return workloadMap[5];
+            default: return "";
+        }
+    }
+
+    function convertGrading(gradingNumber: number) {
+        const gradingMap = {
+            1: '很差',
+            2: '较差',
+            3: '中等',
+            4: '较好',
+            5: '很好'
+        };
+        // 检查输入是否在有效范围内
+        switch (gradingNumber) {
+            case 1: return gradingMap[1];
+            case 2: return gradingMap[2];
+            case 3: return gradingMap[3];
+            case 4: return gradingMap[4];
+            case 5: return gradingMap[5];
+            default: return "";
+        }
+    }
+
+    function convertGain(gainNumber: number) {
+        const gainMap = {
+            1: '很小',
+            2: '较小',
+            3: '中等',
+            4: '较大',
+            5: '很大'
+        };
+        // 检查输入是否在有效范围内
+        switch (gainNumber) {
+            case 1: return gainMap[1];
+            case 2: return gainMap[2];
+            case 3: return gainMap[3];
+            case 4: return gainMap[4];
+            case 5: return gainMap[5];
+            default: return "";
+        }
+    }
     
 </script>
 

@@ -8,27 +8,22 @@
                 <t-space direction="vertical">
                     <div class="top-row">
                         <t-space>
-                            <router-link v-if="showAuthor" :to="{name: 'user', params:{id : 1}}">
-                            <span  class="author">
+                            <span  class="author" @click="toAuthor">
                                 {{ author }}
                             </span>
-                            </router-link>
                             <span v-if="showAuthor" class="tip">点评了</span>
-                            <router-link :to="{name: 'course', params:{id : 1}}">
                             <span class="course-teacher"
-                            :class="{'large-font': !showAuthor}">
+                            :class="{'large-font': !showAuthor}"
+                            @click="toCourse">
                                 {{ course }}({{ teacher }})
                             </span>
-                            </router-link>
                         </t-space>
                         <span class="time">{{ time }}</span>
                     </div>
                     <div class="content-container">
                         <span class="content">
                             {{ truncatedContent }}
-                            <router-link :to="{name: 'course', params:{id : 1, reviewId: 1}}">
-                            <span class="read-more">>>更多</span>
-                            </router-link>
+                            <span class="read-more" @click="toPost">>>更多</span>
                         </span>
                     </div>
                 </t-space>
@@ -42,6 +37,8 @@
 <script lang="ts" setup>
     import { defineProps, ref, computed } from 'vue';
     import { useRouter } from 'vue-router';
+    import { useCourseStore } from '@/store/modules/courseStore';
+    import { usePostStore} from '@/store/modules/postStore';
 
     import { onMounted } from 'vue';
     import { Content } from 'tdesign-vue-next';
@@ -66,6 +63,8 @@
 
     const maxLength = 100; // 最大显示字符数
     const router = useRouter();
+    const useStore = useCourseStore();
+    const useStore2 = usePostStore();
 
     const isTruncated = computed(() => cleanedText.value.length > maxLength);
     const truncatedContent = computed(() =>
@@ -74,9 +73,20 @@
 
     const cleanedText = ref<string>(props.content.replace(/[#*]/g, ''));
 
-    const readMoreHandler = () => {
-        
-    };
+    function toAuthor() {
+        router.push({name: "user", params:{id : 1}});
+    }
+
+    function toCourse() {
+        const courseId =  useStore.getCourseIdByNameAndTeacher(props.course,props.teacher);
+        router.push({name: "course", params:{id : courseId}});
+    }
+
+    function toPost() {
+        const courseId =  useStore.getCourseIdByNameAndTeacher(props.course,props.teacher);
+        const reviewId = useStore2.getPostId(props.author,props.course,props.teacher);
+        router.push({name: "course", params:{id : courseId, reviewId: reviewId}});
+    }
 </script>
 
 
