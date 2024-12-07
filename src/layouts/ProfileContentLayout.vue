@@ -6,7 +6,7 @@
         </div>
         <div>
             <t-head-menu v-model="menuValue" @change="changeHandler">
-                <t-menu-item value="item1">点评</t-menu-item>
+                <t-menu-item value="item1">我的点评</t-menu-item>
                 <t-divider layout="vertical"/>
                 <t-menu-item value="item2">关注用户</t-menu-item>
                 <t-divider layout="vertical"/>
@@ -14,7 +14,7 @@
             </t-head-menu>
         </div>
         <t-divider style="margin-top: 0; margin-bottom: 0"/>
-        <div style="width:839px">
+        <div style="width:57.07vw">
             <ProfileReviewList v-if="menuValue === 'item1'"/>
             <ProfileCourseList v-if="menuValue === 'item3'"/>
             <ProfileFollowUserList v-if="menuValue === 'item2'"/>
@@ -37,6 +37,8 @@
     .user-container {
         display: flex;
         align-items: flex-end;
+        gap: 20px;
+        width: 100%;
     }
     .UserName {
         font-size: 20px;

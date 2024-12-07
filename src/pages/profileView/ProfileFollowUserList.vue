@@ -1,5 +1,5 @@
 <template>
-    <UserItemList />
+    <UserItemList style="width: 100%;"/>
 </template>
 
 <script lang="ts" setup name="">

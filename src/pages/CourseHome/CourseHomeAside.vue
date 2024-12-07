@@ -4,7 +4,7 @@
             <t-avatar :image="teacher_avatar" size="100px" />
             <div class="teacherName">{{ teacher }}</div>
         </t-space>
-        <t-space direction="vertical">
+        <t-space direction="vertical" style="width: 20vw;">
             <t-divider dashed/>
             <span class="title">其他老师的「{{ courseName }}」课程</span>
             <div v-for="(course, index) in courseList_samecourse" :key="index">
@@ -15,9 +15,12 @@
                 <span class="courseRateNum">{{ course.courseRateNum }}人评价</span>
               </div>
             </div>
+            <div v-if="courseList_samecourse.length == 0">
+                <span class="temp-no">暂无</span>
+            </div>
             <t-divider dashed/>
         </t-space>
-        <t-space direction="vertical">
+        <t-space direction="vertical" style="width: 20vw;">
             <span class="title">{{ teacher }}老师的其他课程</span>
             <div v-for = "(course, index) in courseList_sameTeacher" :key="index">
                 <div class="item1">
@@ -26,6 +29,9 @@
                         <span class="rate">{{ course.courseRate.toFixed(1) }}</span>
                         <span class="courseRateNum">{{ course.courseRateNum }}人评价</span>
                 </div>
+            </div>
+            <div v-if="courseList_sameTeacher.length == 0">
+                <span class="temp-no">暂无</span>
             </div>
         </t-space>
     </div>
@@ -74,7 +80,6 @@
     .rate,
     .courseRateNum,
     .courseyear,
-    .title,
     .more {
         white-space: nowrap;    /* 防止文本换行 */
     }
@@ -99,5 +104,10 @@
     .courseRateNum {
         font-size: 10px;
         color: #999;
+    }
+    .temp-no {
+        font-size: 14px;
+        color: #999;
+        margin-left: 5px;
     }
 </style>

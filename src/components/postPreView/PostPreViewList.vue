@@ -1,5 +1,5 @@
 <template>
-    <div v-for="(post, index) in posts.slice(0, displayNum)" :key="index" class="post-container">
+    <div v-for="(post, index) in posts.slice(0, displayNum)" :key="index">
       <PostPreView
         :author="post.author"
         :avatar="post.avatar"

@@ -28,19 +28,12 @@
 
 <style lang="css" scoped>
 .card {
-  width: 1000px;
+  width: 80%;
   margin: 0 auto;
   background-color: var(--background-color);
   padding: 16px;
   box-shadow: 0 2px 4px var(--border-color);
   border-radius: 8px;
-}
-.comment-container {
-  text-align: left;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
 }
 .latest-reviews-text {
   text-align: center;
@@ -50,5 +43,7 @@
 }
 .latest-reviews-container {
   text-align: center;
+  margin-top: 10px;
+  width: 100%;
 }
 </style>
