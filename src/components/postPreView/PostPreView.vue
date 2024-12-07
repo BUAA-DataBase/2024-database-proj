@@ -44,14 +44,20 @@
     import { useRouter } from 'vue-router';
 
     import { onMounted } from 'vue';
-    import { Content } from 'tdesign-vue-next';
 
     onMounted(() => {
-        const reviewElement = document.querySelector('.review-container') as HTMLElement;
+        const reviewElement = document.querySelector('.info-container') as HTMLElement;
+        
         if (reviewElement) {
-            console.log(`Review 组件宽度: ${reviewElement.offsetWidth}px`);
+            const elementWidthPx = reviewElement.offsetWidth; // 元素宽度 (px)
+            const viewportWidth = window.innerWidth;  // 视口宽度 (px)
+            
+            const elementWidthInVw = (elementWidthPx / viewportWidth) * 100;
+            
+            console.log(`Review 组件宽度: ${elementWidthInVw.toFixed(2)}vw`);
         }
     });
+
 
     const props = defineProps({
         author: { type: String, required: true },
@@ -112,7 +118,7 @@
     .info-container {
         display: flex;
         flex-direction: column;
-        width: 100%; /* 确保占据整个可用空间 */
+        width: 60.11vw; /* 确保占据整个可用空间 */
     }
     .top-row {
         display: flex;

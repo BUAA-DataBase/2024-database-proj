@@ -7,6 +7,7 @@
                 :options="options1"
                 @focus="onFocus"
                 @blur="onBlur"
+                auto-width
             ></t-select>
         </t-space>
         <t-space align="baseline">
@@ -16,6 +17,7 @@
                 :options="options2"
                 @focus="onFocus"
                 @blur="onBlur"
+                auto-width
             ></t-select>
         </t-space>
         <t-space align="baseline">
@@ -25,6 +27,7 @@
                 :options="options3"
                 @focus="onFocus"
                 @blur="onBlur"
+                auto-width
             ></t-select>
         </t-space>
     </t-space>

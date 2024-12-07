@@ -28,7 +28,7 @@
 
 <style lang="css" scoped>
 .card {
-  width: 1000px;
+  width: 80%;
   margin: 0 auto;
   background-color: var(--background-color);
   padding: 16px;

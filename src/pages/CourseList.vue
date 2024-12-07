@@ -143,7 +143,7 @@
 
 <style scoped lang="scss">
     .CourseListContain {
-        width: 1000px;
+        width: 70%;
         margin-top: 30px;
         margin-bottom: 50px;
         margin-left: auto;

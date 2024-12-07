@@ -29,6 +29,7 @@
     .content-container {
         display: flex;
         align-items: flex-start; /* 确保子元素顶部对齐 */
+        width: 100%;
     }
     .profile-aside {
         align-self: flex-start; /* 使 ProfileAside 高度根据内容调整 */
