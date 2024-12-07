@@ -139,6 +139,7 @@ export const usePostStore = defineStore("post", {
         showAuthor: true,
         showAvatar: true
       },
+<<<<<<< Updated upstream
       { postId: 5,
         author: "周子皓",
         avatar: "https://example.com/avatar1.jpg",
@@ -196,6 +197,27 @@ export const usePostStore = defineStore("post", {
     - **收获**：非常大，课程内容涵盖了网络的各个方面，学习后能大大提升自己对计算机网络的理解。
     
     总体来说，是一门值得推荐的课程！
+=======
+      {
+        postId: 5,
+        author: "王一",
+        avatar: "https://example.com/avatar4.jpg",
+        time: "2024-12-07 08:00",
+        mtime: "2024-12-07 08:00",
+        course: "人工智能",
+        courseYear: "2024春",
+        teacher: "周八",
+        content: {
+          difficulty: 5,   // 困难
+          workload: 5,     // 很多
+          grading: 2,      // 较差
+          gain: 4,         // 较大
+          rate: 2.0,       // 评分为2.0
+          comment: `
+    # 人工智能课程评估
+    
+    这门课程内容非常具有挑战性
+>>>>>>> Stashed changes
     `
         },
         likeNum: 0,

@@ -86,6 +86,7 @@
     }
     .review-container {
         padding: 10px 0;
+        width: 100%;
     }
     .avatar-container {
         margin-right: 10px;
@@ -99,6 +100,10 @@
         font-size: 14px;
         color: var(--text-color);
     }
+    .content-container {
+        display: flex;
+        width: 100%;
+    }
     .read-more {
         color: var(--read-more-color);
         cursor: pointer;
@@ -107,7 +112,7 @@
     .info-container {
         display: flex;
         flex-direction: column;
-        width: 880px; /* 确保占据整个可用空间 */
+        width: 100%; /* 确保占据整个可用空间 */
     }
     .top-row {
         display: flex;

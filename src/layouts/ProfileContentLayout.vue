@@ -14,7 +14,7 @@
             </t-head-menu>
         </div>
         <t-divider style="margin-top: 0; margin-bottom: 0"/>
-        <div style="width:839px">
+        <div style="width:100%">
             <ProfileReviewList v-if="menuValue === 'item1'"/>
             <ProfileCourseList v-if="menuValue === 'item3'"/>
             <ProfileFollowUserList v-if="menuValue === 'item2'"/>
@@ -37,6 +37,8 @@
     .user-container {
         display: flex;
         align-items: flex-end;
+        gap: 20px;
+        width: 100%;
     }
     .UserName {
         font-size: 20px;

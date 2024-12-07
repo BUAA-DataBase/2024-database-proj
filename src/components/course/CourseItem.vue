@@ -5,7 +5,10 @@
         <div>
           <t-space size="8px" align="baseline">
             <span class="courseTitle">{{ title }}（{{ teacher }}）</span>
-            <span class="courseYear">{{ year }}</span>
+            <div class="year-container">
+                <span v-for="(y, index) in year.slice(0, 2)" class="courseYear">{{ y }}</span>
+                <span v-if="year.length > 2" class="courseYear">...</span>
+            </div>
           </t-space>
         </div>
 
@@ -111,6 +114,11 @@
     .courseYear {
         font-size: 12px;
         color: #999;
+    }
+    .year-container {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
     }
     .Rate {
         font-size: 25px;
