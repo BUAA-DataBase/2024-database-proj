@@ -4,7 +4,7 @@
         <div class="courseType">
             <CourseType/>
         </div>
-        <div v-for="course in courses" :key="course.courseId">
+        <div v-for="course in courses" :key="course.courseId" @click="goToCourse(course.courseId)" class="pointer">
         <CourseItem
             :id="course.courseId"
             :title="course.courseName"
@@ -27,13 +27,18 @@
     import CourseType from '@/components/course/CourseType.vue'
     import CourseItem from '@/components/course/CourseItem.vue';
     import Pagination from '@/utils/Pagination.vue';
-    import { useRoute } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
     import {useCourseStore} from '../store/modules/courseStore'
     import type { CourseState } from '../store/types'
 
+    const router = useRouter();
     const route = useRoute();
 
     const useStore = useCourseStore();
+
+    const goToCourse = (courseId: number) => {
+        router.push({name: 'course' , params:{id : courseId}})
+    }
 
     const courses = ref<CourseState[]>([]);
     const currentPage = computed<number>(() => {
@@ -46,7 +51,7 @@
 
     function fetchCourses(page: number): CourseState[] {
         // 从 commentStore 中获取排序后的评论数组
-        return useStore.getSortedCoursesByRate(page);
+        return useStore.getSortedCoursesByRate(page, false);
     }
 
     onMounted(() => {
@@ -143,5 +148,9 @@
         margin-bottom: 50px;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .pointer {
+        cursor: pointer;
     }
 </style>

@@ -248,8 +248,14 @@ export const useCourseStore = defineStore("course", {
     },
 
     // 按照评分获取刚好一页课程
-    getSortedCoursesByRate(page: number): CourseState[] {
-      const sortedCourses = [...this.courses].sort((a, b) => b.courseRate - a.courseRate);
+    getSortedCoursesByRate(page: number, ascending: boolean): CourseState[] {
+      const sortedCourses = [...this.courses].sort((a, b) => {
+        if (ascending) {
+          return a.courseRate - b.courseRate; // 升序排序
+        } else {
+          return b.courseRate - a.courseRate; // 降序排序
+        }
+      });
       const startIndex = (page - 1) * 10;
       const endIndex = page * 10;
       return sortedCourses.slice(startIndex, endIndex);

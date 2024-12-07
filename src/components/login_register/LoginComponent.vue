@@ -3,7 +3,7 @@
   <t-card :style="{ width: '450px' }">
     <div class="container">
       <div class="title_center">账号登录</div>
-      <t-input v-model="username" placeholder="请输入您的邮箱" autofocus showClearIconOnEmpty/>
+      <t-input v-model="email" placeholder="请输入您的邮箱" autofocus showClearIconOnEmpty/>
       <t-input type="password" v-model="password" placeholder="请输入您的密码" autofocus showClearIconOnEmpty />
       <t-button type="primary" @click="onLogin">
         登录
@@ -33,6 +33,7 @@
     components: { Typewriter },
     setup() {
       const userStore = useUserStore()
+      const email = ref('')
       const username = ref('')
       const password = ref('')
       const userId = ref('')
@@ -40,24 +41,43 @@
       const loading = ref(false)
       const router = useRouter()
       const errorMessage = ref('')
+      const registrationDate = ref('')
+      const user = ref<UserState>({
+        userId: 0,
+        verificationCode: '',
+        userName: '',
+        password: '',
+        email: '',
+        role: Role.Student,
+        major: '',
+        grade: '',
+        avatar: '',
+        college: '',
+        gender: '',
+        followedPosts: [],
+        followers: [],
+        following: [],
+        blockedUsers: [],
+        registrationDate: new Date(), // 或者其他默认值
+      });
       const goToRegister = () => {
         router.push({ path: '/register' });
       };
       const url = () => {
-        return '/api/users/login?token&email=' + username.value + '&password=' + password.value
+        return '/api/users/login?token&email=' + email.value + '&password=' + password.value
       }
       const onLogin = async () => {
-        console.log(url())
         loading.value = true;
         try {
           // 在本地对密码进行哈希处理
           const hashedPassword = CryptoJS.SHA256(password.value).toString(CryptoJS.enc.Hex);
           // 发送POST请求到后端（注意：移除了URL中的查询参数）
           const response = await axios.post(url(), {
-              email: username.value,
+              email: email.value,
               password: hashedPassword,
           });
           // 检查response.data是否存在
+          console.log(response.data);
           if (response.data && response.data.result == 'ok') {
             router.push({
                 path: '/latestComments/1',
@@ -68,9 +88,13 @@
                 // 处理路由错误（可选）
             });
             // 登录成功，保存token和用户id到本地存储
+            
             if (response.data.token && response.data.id) {
                 token.value = response.data.token;
                 userId.value = response.data.id;
+            }
+            else {
+              alert('Something\'s Wrong!');
             }
             alert('Login successful!');
           }
@@ -96,9 +120,25 @@
             alert(errorMessage.value);
           }
         }
-    }
+        if (token.value && userId.value) {
+          try {
+            const responseGetInfo = await axios.get(`/api/users/info?id=${userId.value}`); // 发送GET请求到后端API
+            if (responseGetInfo.data.result == 'ok') {
+              username.value = responseGetInfo.data.name;
+            }
+          } catch (error) {
+            console.error('Error fetching user info:', error);
+          }
+          user.value.userName = username.value;
+          user.value.email = email.value;
+          user.value.registrationDate = new Date();
+          user.value.userId = parseInt(userId.value);
+          user.value.verificationCode = token.value;
+          userStore.login(user.value);
+        }
+      }
       return {
-        username,
+        email,
         password,
         loading,
         goToRegister,

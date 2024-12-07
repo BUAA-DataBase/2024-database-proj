@@ -42,7 +42,7 @@
 
     function fetchPosts(page: number): PostState[] {
         // 从 postStore 中获取排序后的评论数组
-        return useStore.getSortedPosts(page);
+        return useStore.getSortedPostsByMTime(page);
     }
 
     onMounted(() => {

@@ -21,6 +21,7 @@ export enum ThemeMode {
 
 export interface UserState {
     userId: number
+    verificationCode: string
     userName: string
     password: string
     email: string

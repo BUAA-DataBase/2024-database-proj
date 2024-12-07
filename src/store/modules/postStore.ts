@@ -167,16 +167,59 @@ export const usePostStore = defineStore("post", {
     },
 
     // 按照时间顺序获取一页评论
-    getSortedPosts(page: number): PostState[] {
+    getSortedPostsByMTime(page: number): PostState[] {
       const sortedPosts = [...this.posts].sort((a, b) => {
-        const timeA = new Date(a.time).getTime();
-        const timeB = new Date(b.time).getTime();
+        const timeA = new Date(a.mtime).getTime();
+        const timeB = new Date(b.mtime).getTime();
         return timeB - timeA;
       });
       const startIndex = (page - 1) * 10;
       const endIndex = page * 10;
       return sortedPosts.slice(startIndex, endIndex);
     },
+
+    getSortedPostsByMTimeInCourse(course: string, teacher: string): PostState[] {
+      const filteredPosts = this.posts.filter(post => {
+        return post.course === course && post.teacher === teacher;
+      });
+     
+      const sortedPosts = [...filteredPosts].sort((a, b) => {
+        const timeA = new Date(a.mtime).getTime();
+        const timeB = new Date(b.mtime).getTime();
+        return timeB - timeA;
+      });
+     
+      return sortedPosts;
+    },
+
+    getSortedPostsByRateInCourse(course: string, teacher: string, ascending: boolean): PostState[] {
+      const filteredPosts = this.posts.filter(post => {
+        return post.course === course && post.teacher === teacher;
+      });
+     
+      const sortedPosts = [...filteredPosts].sort((a, b) => {
+        if (ascending) {
+          return a.content.rate - b.content.rate; // 升序排序
+        } else {
+          return b.content.rate - a.content.rate; // 降序排序
+        }
+      });
+     
+      return sortedPosts;
+    },
+
+    getSortedPostsByCourseAndTeacherInCourse(course: string, teacher: string): PostState[] {
+      const filteredPosts = this.posts.filter(post => {
+        return post.course === course && post.teacher === teacher;
+      });
+     
+      const sortedPosts = [...filteredPosts].sort((a, b) => {
+        return b.likeNum - a.likeNum;
+      });
+     
+      return sortedPosts;
+    },
+
     // 获取评论数组的大小
     getPostsSize() {
       return this.posts.length;

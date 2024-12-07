@@ -64,6 +64,7 @@
     import { SearchIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next';
     import avatarImage from '@/assets/img_avatar.jpg';
     import { useRouter } from 'vue-router';
+    import { useUserStore } from '@/store/modules/userStore';
     import type { HeadMenuProps } from 'tdesign-vue-next';
 
     const value = ref('');
@@ -72,6 +73,7 @@
     const timer = ref(null);
     const menuValue = ref('item1');
     const router = useRouter()
+    const useStore = useUserStore() 
 
     // 输入框内容发生变化时进行搜索，200ms 搜索一次
     function onChange(value: string) {
@@ -97,6 +99,8 @@
     }
 
     function toLogin() {
+      useStore.logout();
+      console.log(useStore.getNowUser());
       router.push({path: "/login"})
     }
 

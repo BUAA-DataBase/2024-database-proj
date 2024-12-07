@@ -6,6 +6,7 @@ import { Role } from '../types'
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
     userId: 0,
+    verificationCode: '',
     userName: '',
     password: '', // 通常密码不应该存储在前端，但这里是演示
     email: '',
@@ -25,14 +26,13 @@ export const useUserStore = defineStore('user', {
   actions: {
     /** 登录操作 */
     login(userData: Partial<UserState>) {
-      if (userData.userName && userData.password) {
+      if (userData.userName && userData.email && userData.verificationCode) {
         // 模拟登录逻辑
         this.userId = userData.userId || 0
-        this.userName = userData.userName
-        //this.password = userData.password 
-        // 不建议存储密码，仅为演示
+        this.verificationCode = userData.verificationCode || ''
+        this.userName = userData.userName || ''
         this.email = userData.email || ''
-        this.role = Role.Student
+        this.role = userData.role || Role.Student
         this.major = userData.major || ''
         this.grade = userData.grade || ''
         this.avatar = userData.avatar || ''
@@ -47,6 +47,10 @@ export const useUserStore = defineStore('user', {
     /** 登出操作 */
     logout() {
       this.$reset() // 使用 Pinia 提供的 $reset 方法恢复初始状态
+    },
+
+    getNowUser() :UserState{
+      return this.$state;
     },
 
     /** 更新用户信息 */
