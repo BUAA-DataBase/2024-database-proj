@@ -1,5 +1,10 @@
 <template>
-    <MainLayout/>
+    <t-layout style="background-color: white;">
+        <Header/>
+        <t-content>
+            <PostEditor/>
+        </t-content>
+    </t-layout>
 </template>
   
 
