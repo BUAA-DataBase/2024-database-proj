@@ -42,7 +42,7 @@ export interface CourseState {
   courseId: number
   courseName: string
   courseTeacher: string
-  courseYear: string
+  courseYear: string[]
   courseRate: number
   courseDifficulty: number
   courseWorkload: number
