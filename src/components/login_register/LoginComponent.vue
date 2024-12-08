@@ -54,7 +54,7 @@
         avatar: '',
         college: '',
         gender: '',
-        followedPosts: [],
+        followedCourses: [],
         followers: [],
         following: [],
         blockedUsers: [],

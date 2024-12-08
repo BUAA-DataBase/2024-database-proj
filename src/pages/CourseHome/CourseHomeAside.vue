@@ -10,7 +10,7 @@
             <div v-for="(course, index) in courseList_samecourse" :key="index">
               <div class="item1">
                 <span class="teacher">{{ course.courseTeacher }}</span>
-                <t-rate v-model="course.courseRate" disabled size="small"/>
+                <t-rate v-model="course.roundRate" disabled size="small"/>
                 <span class="rate">{{ course.courseRate.toFixed(1) }}</span>
                 <span class="courseRateNum">{{ course.courseRateNum }}人评价</span>
               </div>
@@ -25,7 +25,7 @@
             <div v-for = "(course, index) in courseList_sameTeacher" :key="index">
                 <div class="item1">
                         <span class="teacher">{{ course.courseName }}</span>
-                        <t-rate v-model="course.courseRate" disabled size="small"/>
+                        <t-rate v-model="course.roundRate" disabled size="small"/>
                         <span class="rate">{{ course.courseRate.toFixed(1) }}</span>
                         <span class="courseRateNum">{{ course.courseRateNum }}人评价</span>
                 </div>
@@ -40,7 +40,10 @@
 <script lang="ts" setup name="">
     import type { CourseState } from '@/store/types';
     import { useCourseStore } from '@/store/modules/courseStore';
-    import {ref, defineProps} from 'vue'
+    import {ref, defineProps, computed, watch} from 'vue'
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter()
 
     const props = defineProps({
         courseName: { type: String, required: true },
@@ -53,7 +56,6 @@
     const courseList_sameTeacher = ref<CourseState[]>(useStore.getCourseByTeacher(props.courseName,props.teacher))
 
     const courseList_samecourse = ref<CourseState[]>(useStore.getCourseByName(props.courseName,props.teacher))
-
 
 </script>
 

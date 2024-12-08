@@ -10,6 +10,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "李建华",
         courseYear: ["2024春", "2024秋"],
         courseRate: 4.6,
+        roundRate:4.5,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -30,6 +31,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "李建华",
         courseYear: ["2023春", "2023秋"],
         courseRate: 4.4,
+        roundRate:4.5,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -50,6 +52,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "王老师",
         courseYear: ["2024春"],
         courseRate: 4.5,
+        roundRate:4.5,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -70,6 +73,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "杜老师",
         courseYear: ["2023秋", "2024春"],
         courseRate: 4.7,
+        roundRate:4.5,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -90,6 +94,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "李建华",
         courseYear: ["2024春"],
         courseRate: 4.2,
+        roundRate:4.0,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -110,6 +115,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "王老师",
         courseYear: ["2022秋", "2023春", "2023秋"],
         courseRate: 3.3,
+        roundRate:3.5,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -130,6 +136,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "彭老师",
         courseYear: ["2024春", "2024秋"],
         courseRate: 4.8,
+        roundRate:5.0,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -150,6 +157,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "石老师",
         courseYear: ["2023春", "2023秋", "2024春"],
         courseRate: 4.6,
+        roundRate:4.5,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -170,6 +178,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "周老师",
         courseYear: ["2022春"],
         courseRate: 4.7,
+        roundRate:4.5,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -190,6 +199,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "汪老师",
         courseYear: ["2023春", "2023秋", "2024春"],
         courseRate: 3.5,
+        roundRate:3.5,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -210,6 +220,7 @@ export const useCourseStore = defineStore("course", {
         courseTeacher: "高老师",
         courseYear: ["2023春", "2023秋", "2024春"],
         courseRate: 4.9,
+        roundRate:5.0,
         courseDifficulty: 3,
         courseWorkload: 4,
         courseGrading: 3,
@@ -230,6 +241,7 @@ export const useCourseStore = defineStore("course", {
           courseTeacher: "李老师",
           courseYear: ["2023春", "2023秋", "2024春"],
           courseRate: 4.2,
+          roundRate:4.0,
           courseDifficulty: 4,
           courseWorkload: 3,
           courseGrading: 3,
@@ -250,6 +262,7 @@ export const useCourseStore = defineStore("course", {
           courseTeacher: "王老师",
           courseYear: ["2023春", "2023秋", "2024春"],
           courseRate: 4.0,
+          roundRate:4.0,
           courseDifficulty: 3,
           courseWorkload: 4,
           courseGrading: 4,
@@ -270,6 +283,7 @@ export const useCourseStore = defineStore("course", {
           courseTeacher: "张老师",
           courseYear: ["2023春", "2023秋", "2024春"],
           courseRate: 4.8,
+          roundRate:5.0,
           courseDifficulty: 4,
           courseWorkload: 5,
           courseGrading: 4,
@@ -290,6 +304,7 @@ export const useCourseStore = defineStore("course", {
           courseTeacher: "张老师",
           courseYear: ["2023春", "2023秋", "2024春"],
           courseRate: 4.7,
+          roundRate:4.5,
           courseDifficulty: 5,
           courseWorkload: 4,
           courseGrading: 4,
@@ -310,6 +325,7 @@ export const useCourseStore = defineStore("course", {
           courseTeacher: "李老师",
           courseYear: ["2023春", "2023秋", "2024春"],
           courseRate: 4.5,
+          roundRate:4.5,
           courseDifficulty: 3,
           courseWorkload: 4,
           courseGrading: 4,
@@ -330,6 +346,7 @@ export const useCourseStore = defineStore("course", {
           courseTeacher: "李老师",
           courseYear: ["2023春", "2023秋", "2024春"],
           courseRate: 4.3,
+          roundRate:4.5,
           courseDifficulty: 3,
           courseWorkload: 3,
           courseGrading: 4,
@@ -350,6 +367,7 @@ export const useCourseStore = defineStore("course", {
           courseTeacher: "王老师",
           courseYear: ["2023春", "2023秋", "2024春"],
           courseRate: 4.6,
+          roundRate:4.5,
           courseDifficulty: 4,
           courseWorkload: 3,
           courseGrading: 5,
@@ -369,6 +387,7 @@ export const useCourseStore = defineStore("course", {
   actions: {
     // 新增课程
     addCourse(course: CourseState) {
+      course.roundRate = Math.round(course.courseRate * 2 - 0.1)/2
       this.courses.push(course);
     },
 
@@ -408,7 +427,10 @@ export const useCourseStore = defineStore("course", {
 
     // 获取所有课程
     getAllCourses(): CourseState[] {
-      return this.courses;
+      const sortedCourses = [...this.courses].sort((a, b) => {
+        return b.courseRate - a.courseRate; // 降序排序
+      });
+      return sortedCourses;
     },
 
     // 按照评分获取刚好一页课程

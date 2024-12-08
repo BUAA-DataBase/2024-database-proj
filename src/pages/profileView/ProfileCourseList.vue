@@ -1,32 +1,34 @@
 <template>
     <HeaderRow
-        :num="30"
+        :num="num"
         word="门"
     />
     <div class="CourseListContain">
-        <div v-for="course in courses.slice(0, displayNum)" :key="course.id">
-        <CourseItem
-            :id="course.id"
-            :title="course.title"
-            :teacher="course.teacher"
-            :year="course.year"
-            :courseRate="course.rate"
-            :raterCount="course.raterCount"
-            :difficulty="course.difficulty"
-            :workload="course.workload"
-            :grading="course.grading"
-            :gain="course.gain"
+        <div v-for="course in courses.slice(0, displayNum)" :key="course.courseId" @click="goToCourse(course.courseId)" class="pointer">
+            <CourseItem
+            :id="course.courseId"
+            :title="course.courseName"
+            :teacher="course.courseTeacher"
+            :year="course.courseYear"
+            :courseRate="course.courseRate"
+            :rateCount="course.courseRateNum"
+            :difficulty="convertDifficulty(course.courseDifficulty)"
+            :workload="convertWorkload(course.courseWorkload)"
+            :grading="convertGrading(course.courseGrading)"
+            :gain="convertGain(course.courseGain)"
         />
         </div>
     </div>
 </template>
 
 <script lang="ts" setup name="">
-    import { ref, defineProps } from 'vue'
+    import { ref, defineProps, computed } from 'vue'
     import CourseType from '@/components/course/CourseType.vue'
     import CourseItem from '@/components/course/CourseItem.vue';
     import Pagination from '@/utils/Pagination.vue';
     import HeaderRow from './HeaderRow.vue';
+    import { useRouter } from 'vue-router';
+    import { useCourseStore } from '@/store/modules/courseStore';
 
     defineProps({
         displayNum: { type: Number, default: 5 }
@@ -35,368 +37,97 @@
     const screenWidth = window.innerWidth;
     console.log(`浏览器屏幕宽度: ${screenWidth}px`);
 
-    const courses = ref([
-    { 
-        id: 1, 
-        title: '工科数学分析(1)',
-        teacher: '孙玉泉',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 2, 
-        title: '工科数学分析(2)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 3, 
-        title: '工科高等代数',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 4, 
-        title: '概率统计 A',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 5, 
-        title: '基础物理学(信息类)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 6, 
-        title: '工科大学物理(2)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 7, 
-        title: '程序设计基础',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 8, 
-        title: '离散数学(信息类)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 9, 
-        title: '数据结构与程序设计(信息类)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 10, 
-        title: '大学英语 A(1)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 11, 
-        title: '大学英语 A(2)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 12, 
-        title: '思想道德与法治',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 13, 
-        title: '形势与政策(1)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 14, 
-        title: '军事理论',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 15, 
-        title: '体育(1)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 16, 
-        title: '体育(2)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 17, 
-        title: '体育(3)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 18, 
-        title: '体育(4)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 19, 
-        title: '体育(5)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 20, 
-        title: '体育(6)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 21, 
-        title: '体质健康标准测试',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 22, 
-        title: '素质教育(博雅课程)(1)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 23, 
-        title: '素质教育(博雅课程)(2)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 24, 
-        title: '素质教育(博雅课程)(3)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 25, 
-        title: '素质教育(博雅课程)(4)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 26, 
-        title: '素质教育(博雅课程)(5)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 27, 
-        title: '素质教育(博雅课程)(6)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 28, 
-        title: '素质教育(博雅课程)(7)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 29, 
-        title: '素质教育(博雅课程)(8)',
-        teacher: '李四',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
-    },
-    { 
-        id: 30, 
-        title: '心理健康(1)',
-        teacher: '张三',
-        year: '2023春',
-        rate: 4.2,
-        raterCount: 1500,
-        difficulty: '较难',
-        workload: '适中',
-        grading: '中等',
-        gain: '较大',
+    const router = useRouter()
+
+    const goToCourse = (courseId: number) => {
+        router.push({name: 'course' , params:{id : courseId}})
     }
-    ]);
+
+    const useStore = useCourseStore()
+
+    const courses = computed(() => {
+        return useStore.getAllCourses();
+    })
+
+    const num = computed(() => {
+        return useStore.getCoursesSize();
+    })
+
+    function convertDifficulty(difficultyNumber: number) {
+        const difficultyMap = {
+            1: '简单',
+            2: '较易',
+            3: '适中',
+            4: '较难',
+            5: '困难'
+        };
+        // 检查输入是否在有效范围内
+        switch (difficultyNumber) {
+            case 1: return difficultyMap[1];
+            case 2: return difficultyMap[2];
+            case 3: return difficultyMap[3];
+            case 4: return difficultyMap[4];
+            case 5: return difficultyMap[5];
+            default: return "";
+        }
+    }
+
+    function convertWorkload(workloadNumber: number) {
+        const workloadMap = {
+            1: '很少',
+            2: '较少',
+            3: '适中',
+            4: '较多',
+            5: '很多'
+        };
+        // 检查输入是否在有效范围内
+        switch (workloadNumber) {
+            case 1: return workloadMap[1];
+            case 2: return workloadMap[2];
+            case 3: return workloadMap[3];
+            case 4: return workloadMap[4];
+            case 5: return workloadMap[5];
+            default: return "";
+        }
+    }
+
+    function convertGrading(gradingNumber: number) {
+        const gradingMap = {
+            1: '很差',
+            2: '较差',
+            3: '中等',
+            4: '较好',
+            5: '很好'
+        };
+        // 检查输入是否在有效范围内
+        switch (gradingNumber) {
+            case 1: return gradingMap[1];
+            case 2: return gradingMap[2];
+            case 3: return gradingMap[3];
+            case 4: return gradingMap[4];
+            case 5: return gradingMap[5];
+            default: return "";
+        }
+    }
+
+    function convertGain(gainNumber: number) {
+        const gainMap = {
+            1: '很小',
+            2: '较小',
+            3: '中等',
+            4: '较大',
+            5: '很大'
+        };
+        // 检查输入是否在有效范围内
+        switch (gainNumber) {
+            case 1: return gainMap[1];
+            case 2: return gainMap[2];
+            case 3: return gainMap[3];
+            case 4: return gainMap[4];
+            case 5: return gainMap[5];
+            default: return "";
+        }
+    }
 
 </script>
 
@@ -406,5 +137,9 @@
         width: 100%;
         margin-top: 20px;
         margin-bottom: 50px;
+    }
+
+    .pointer {
+        cursor: pointer;
     }
 </style>

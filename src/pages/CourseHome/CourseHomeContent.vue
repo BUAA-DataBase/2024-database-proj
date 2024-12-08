@@ -9,7 +9,7 @@
             <t-space direction="vertical">
                 <div>
                     <t-space>
-                        <t-rate v-model="props.courseRate" size="20px" allowHalf disabled />
+                        <t-rate v-model="newRate" size="20px" allowHalf disabled />
                         <span class="Rate">{{ props.courseRate }}</span>
                         <span class="NumberOfRater">({{ props.courseRateNum }}人评分)</span>
                     </t-space>
@@ -105,6 +105,7 @@
   courseRateNum: { type: Number, required: true },
 });
 
+const newRate = ref(Math.round(props.courseRate * 2 - 0.1)/2)
 
 </script>
 
