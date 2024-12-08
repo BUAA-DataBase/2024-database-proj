@@ -8,6 +8,7 @@ export const usePostStore = defineStore("post", {
       {
         postId: 1,
         author: "张三",
+        authorId: 3,
         avatar: "https://example.com/avatar1.jpg",
         time: "2024-12-05 14:00",
         mtime: "2024-12-05 14:00",
@@ -41,6 +42,7 @@ export const usePostStore = defineStore("post", {
       {
         postId: 2,
         author: "李四",
+        authorId: 4,
         avatar: "https://example.com/avatar2.jpg",
         time: "2024-12-05 15:30",
         mtime: "2024-12-05 15:30",
@@ -74,6 +76,7 @@ export const usePostStore = defineStore("post", {
       {
         postId: 3,
         author: "赵六",
+        authorId: 5,
         avatar: "https://example.com/avatar3.jpg",
         time: "2024-12-06 10:00",
         mtime: "2024-12-06 10:00",
@@ -107,6 +110,7 @@ export const usePostStore = defineStore("post", {
       {
         postId: 4,
         author: "王八",
+        authorId: 6,
         avatar: "https://example.com/avatar4.jpg",
         time: "2024-12-07 08:00",
         mtime: "2024-12-07 08:00",
@@ -141,6 +145,7 @@ export const usePostStore = defineStore("post", {
       },
       { postId: 5,
         author: "周子皓",
+        authorId: 1,
         avatar: "https://example.com/avatar1.jpg",
         time: "2024-12-05 16:00",
         mtime: "2024-12-05 16:00",
@@ -173,6 +178,7 @@ export const usePostStore = defineStore("post", {
       },
       { postId: 6,
         author: "方启迪",
+        authorId: 2,
         avatar: "https://example.com/avatar1.jpg",
         time: "2024-12-05 15:00",
         mtime: "2024-12-05 15:00",
@@ -243,6 +249,19 @@ export const usePostStore = defineStore("post", {
       return sortedPosts.slice(startIndex, endIndex);
     },
 
+    getMTimeSortedPostsByAuthorId(authorId: number, page: number) : PostState[] {
+      let filteredPosts = [...this.posts];
+      filteredPosts = filteredPosts.filter(post => post.authorId === authorId);
+      const sortedPosts = [...filteredPosts].sort((a, b) => {
+        const timeA = new Date(a.mtime).getTime();
+        const timeB = new Date(b.mtime).getTime();
+        return timeB - timeA;
+      });
+      const startIndex = (page - 1) * 10;
+      const endIndex = page * 10;
+      return sortedPosts.slice(startIndex, endIndex);
+    },
+
     filterAndSortPosts(
       course: string,
       teacher: string,
@@ -264,7 +283,7 @@ export const usePostStore = defineStore("post", {
       // 如果提供了 value3（星数），则进一步过滤
       if (value3) {
         const starRating = parseInt(value3, 10);
-        filteredPosts = filteredPosts.filter(post => post.content.rate >= starRating - 1 && post.content.rate < starRating);
+        filteredPosts = filteredPosts.filter(post => (Math.round(Math.round(post.content.rate * 2 - 0.1)/2) >= starRating && Math.round(Math.round(post.content.rate * 2 - 0.1)/2) < starRating + 1));
       }
  
       // 根据 value1 排序
@@ -299,6 +318,15 @@ export const usePostStore = defineStore("post", {
         throw new Error(`Course with ID ${author} not found.`);
       }
       return post.postId;
+    },
+
+    getPostAuthorId(author: string, course: string, teacher: string) : number {
+      const post = this.posts.find((post) => post.author === author && post.course === course && post.teacher === teacher);
+      if (!post) {
+        console.error(`Course with ID ${author} not found!`);
+        throw new Error(`Course with ID ${author} not found.`);
+      }
+      return post.authorId;
     },
 
     // 点赞！！！

@@ -3,7 +3,7 @@
         <t-space direction="vertical" size="10px">
             <t-space align="baseline">
                 <span class="author">{{ props.author }}</span>
-                <t-rate v-model="props.rate" disabled size=""/>
+                <t-rate v-model="newRate" disabled size=""/>
                 <span class="date">{{ props.year }}</span>
             </t-space>
             <t-space>
@@ -79,6 +79,12 @@
     const gain = convertGain(props.content.gain)
 
     const likes = ref(props.likes)
+
+    const newRate = ref(Math.round(props.rate * 2 - 0.1)/2)
+
+    watch(props,(newProps) => {
+        newRate.value = Math.round(newProps.rate * 2 - 0.1)/2;
+    },{immediate:true})
 
     // 定义一个ref来引用需要滚动到的DOM元素
     const reviewSection = ref<HTMLElement>();

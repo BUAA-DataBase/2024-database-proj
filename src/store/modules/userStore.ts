@@ -16,7 +16,7 @@ export const useUserStore = defineStore('user', {
     avatar: '',
     college: '',
     gender: '',
-    followedPosts: [],
+    followedCourses: [],
     followers: [],
     following: [],
     blockedUsers: [],
@@ -59,38 +59,38 @@ export const useUserStore = defineStore('user', {
     },
 
     /** 关注帖子 */
-    followPost(postId: string) {
-      if (!this.followedPosts.includes(postId)) {
-        this.followedPosts.push(postId)
+    followPost(postId: number) {
+      if (!this.followedCourses.includes(postId)) {
+        this.followedCourses.push(postId)
       }
     },
 
     /** 取消关注帖子 */
-    unfollowPost(postId: string) {
-      this.followedPosts = this.followedPosts.filter(id => id !== postId)
+    unfollowPost(postId: number) {
+      this.followedCourses = this.followedCourses.filter(id => id !== postId)
     },
 
     /** 关注用户 */
-    followUser(userId: string) {
+    followUser(userId: number) {
       if (!this.following.includes(userId)) {
         this.following.push(userId)
       }
     },
 
     /** 取消关注用户 */
-    unfollowUser(userId: string) {
+    unfollowUser(userId: number) {
       this.following = this.following.filter(id => id !== userId)
     },
 
     /** 屏蔽用户 */
-    blockUser(userId: string) {
+    blockUser(userId: number) {
       if (!this.blockedUsers.includes(userId)) {
         this.blockedUsers.push(userId)
       }
     },
 
     /** 取消屏蔽用户 */
-    unblockUser(userId: string) {
+    unblockUser(userId: number) {
       this.blockedUsers = this.blockedUsers.filter(id => id !== userId)
     },
 

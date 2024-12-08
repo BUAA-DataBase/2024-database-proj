@@ -31,10 +31,10 @@ export interface UserState {
     avatar: string
     college: string
     gender: string
-    followedPosts: string[]
+    followedCourses: number[]
     followers: string[]
-    following: string[]
-    blockedUsers: string[]
+    following: number[]
+    blockedUsers: number[]
     registrationDate: Date
 }
 
@@ -44,6 +44,7 @@ export interface CourseState {
   courseTeacher: string
   courseYear: string[]
   courseRate: number
+  roundRate?: number
   courseDifficulty: number
   courseWorkload: number
   courseGrading: number
@@ -62,6 +63,7 @@ export interface CourseState {
 export interface PostState {
   postId: number
   author: string
+  authorId: number
   avatar: string
   time: string
   mtime: string

@@ -39,6 +39,7 @@
     import { useRouter } from 'vue-router';
     import { useCourseStore } from '@/store/modules/courseStore';
     import { usePostStore} from '@/store/modules/postStore';
+    import type { PostState } from '@/store/types';
 
     import { onMounted } from 'vue';
 
@@ -80,7 +81,9 @@
     const cleanedText = ref<string>(props.content.replace(/[#*]/g, ''));
 
     function toAuthor() {
-        router.push({name: "user", params:{id : 1}});
+        const authorId = useStore2.getPostAuthorId(props.author,props.course,props.teacher);
+        console.log(authorId);
+        router.push({name: "user", params:{id : authorId}});
     }
 
     function toCourse() {
@@ -143,10 +146,12 @@
         margin-left: auto; /* 如果不使用 space-between，也可通过 margin-left: auto 推到右侧 */
     }
     .author {
+        cursor: pointer;
         font-weight: bold;
         color: var(--author-name);
     }
     .course-teacher {
+        cursor: pointer;
         font-weight: bold;
         color: var(--course-teacher-color);
     }
