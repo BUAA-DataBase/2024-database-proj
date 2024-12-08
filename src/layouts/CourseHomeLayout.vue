@@ -174,12 +174,12 @@
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 50px;
         background-color: var(--background-color);
         width: 80%;
         margin: 20px auto;
         border-radius: 8px;
         box-shadow: 0 2px 4px 3px var(--border-color);
+        gap: 3%;
     }
     .content-container {
         margin-left: 20px;
@@ -187,5 +187,6 @@
     }
     .aside-container {
         width: 30%;
+        margin-right: 20px;
     }
 </style>

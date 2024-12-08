@@ -1,5 +1,5 @@
 <template>
-    <t-space direction="vertical">
+    <div class="content-container">
         <div class="user-container">
             <t-avatar size="100px" :image="avatarImage" alt="用户头像" shape="circle"/>
             <span class="UserName">{{ userName }}</span>
@@ -14,12 +14,12 @@
             </t-head-menu>
         </div>
         <t-divider style="margin-top: 0; margin-bottom: 0"/>
-        <div style="width:57.07vw">
+        <div style="width:100%">
             <ProfileReviewList v-if="menuValue === 'item1'"/>
             <ProfileCourseList v-if="menuValue === 'item3'"/>
             <ProfileFollowUserList v-if="menuValue === 'item2'"/>
         </div>
-    </t-space>
+    </div>
 </template>
 
 <script lang="ts" setup name="">
@@ -34,6 +34,13 @@
 </script>
 
 <style scoped lang="scss">
+    .content-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+    }
     .user-container {
         display: flex;
         align-items: flex-end;

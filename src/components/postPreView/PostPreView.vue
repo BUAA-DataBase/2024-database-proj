@@ -1,6 +1,5 @@
 <template>
     <div class="review-container">
-        <t-space>
             <div v-if="showAvatar" class="avatar-container">
                 <t-avatar  size="50px" :image="avatar" alt="用户头像" shape="circle" />
             </div>
@@ -28,9 +27,8 @@
                     </div>
                 </t-space>
             </div>
-        </t-space>
-        <t-divider />
     </div>
+    <t-divider style="margin-top: 15px; margin-bottom: 15px;"/>
 </template>
 
 
@@ -101,11 +99,14 @@
         text-decoration: none;
     }
     .review-container {
+        display: flex;
+        align-items: top;
+        flex-direction: row ;
         padding: 10px 0;
         width: 100%;
     }
     .avatar-container {
-        margin-right: 10px;
+        margin-right: 20px;
     }
     .content {
         display: -webkit-box;
@@ -128,7 +129,7 @@
     .info-container {
         display: flex;
         flex-direction: column;
-        width: 60.11vw; /* 确保占据整个可用空间 */
+        width: 100%; /* 确保占据整个可用空间 */
     }
     .top-row {
         display: flex;
