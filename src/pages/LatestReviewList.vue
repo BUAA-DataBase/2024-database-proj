@@ -9,6 +9,7 @@
       :showAuthor="true"
       :showAvatar="true"
       @update:array-size="handleArraySizeChange"
+      :author-id="-1"
     />
     <Pagination :totalNum="childArraySize"/>
   </div>

@@ -1,26 +1,33 @@
 <template>
     <div class="card">
-      <div class="latest-reviews-container">
-        <span class="latest-reviews-text">全站最新点评</span>
+      <div class="title-container">
+        <span class="author-name">{{authorName}}的点评</span>
+        <span clsaa="num">(共{{childArraySize}}条)</span>
       </div>
       <br>
       <br>
       <PostPreViewList
-        :showAuthor="true"
-        :showAvatar="true"
+        :showAuthor="false"
+        :showAvatar="false"
         @update:array-size="handleArraySizeChange"
+        :author-id="props.authorId"
       />
       <Pagination :totalNum="childArraySize"/>
     </div>
   </template>
   
   <script setup lang="ts">
-    import {ref, onMounted, computed} from 'vue';
+    import {ref, onMounted, computed, defineProps} from 'vue';
     import Pagination from '../utils/Pagination.vue';
     import PostPreViewList from '@/components/postPreView/PostPreViewList.vue';
+
+    const props = defineProps({
+      authorId: { type: Number, required: true },
+      authorName: { type: String, required: true },
+    });
   
     const childArraySize = ref(1);
-  
+    
     function handleArraySizeChange(newSize: number) {
       childArraySize.value = newSize;
     }
@@ -35,16 +42,24 @@
     box-shadow: 0 2px 4px var(--border-color);
     border-radius: 8px;
   }
-  .latest-reviews-text {
-    text-align: center;
-    font-weight: bold;
-    font-family: 'Microsoft YaHei', sans-serif;
-    font-size: x-large;
-  }
-  .latest-reviews-container {
-    text-align: center;
-    margin-top: 10px;
-    width: 100%;
-  }
+    .title-container {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 10px;
+        margin-top: 20px;
+        margin-bottom: 0px;
+    }
+    .author-name {
+        font-size: 24px;
+        font-weight: bold;
+        align-items: center;
+        color: var(--author-name);
+    }
+    .num {
+        margin-left: 20px;
+        font-size: 16px;
+        color: var(--date-color);
+    }
   </style>
   
