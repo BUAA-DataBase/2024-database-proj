@@ -20,6 +20,7 @@
     import { useRoute } from 'vue-router';
     import { usePostStore } from '@/store/modules/postStore';
     import type { PostState, CommentContent } from '@/store/types';
+    import { useUserStore } from '@/store/modules/userStore';
 
     const props = defineProps({
         showAvatar: { type: Boolean, default: true },
@@ -31,6 +32,7 @@
     const route = useRoute();
 
     const useStore = usePostStore();
+    const userStore = useUserStore();
 
     const posts = ref<PostState[]>([]);
     const currentPage = computed<number>(() => {

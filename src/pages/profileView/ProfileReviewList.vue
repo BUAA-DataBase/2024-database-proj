@@ -8,8 +8,8 @@
             :show-author="false"
             :show-avatar="false"
             :display-num="5"
-            :author-id="props.authorId"
-            :author-name="props.authorName"
+            :author-id="props.user.userId"
+            :author-name="props.user.userName"
         />
     </div>
 </template>
@@ -18,17 +18,20 @@
     import PostPreViewList from '@/components/postPreView/PostPreViewList.vue';
     import HeaderRow from '@/pages/profileView/HeaderRow.vue';
     import { usePostStore } from '@/store/modules/postStore';
-    import { computed } from 'vue';
+    import type { UserState } from '@/store/types';
+    import { computed, type PropType } from 'vue';
 
     const useStore = usePostStore()
 
     const props = defineProps({
-        authorId: { type: Number, required: true },
-        authorName: { type: String, required: true },
-    })
+        user: {
+            type: Object as PropType<UserState>,
+            required: true
+        }
+    });
 
     const num = computed(()=>{
-        return (useStore.getPostsByAuthor(props.authorName)).length;
+        return (useStore.getPostsByAuthor(props.user.userName)).length;
     })
 </script>
 

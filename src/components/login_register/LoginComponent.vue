@@ -57,6 +57,7 @@
         followers: [],
         following: [],
         blockedUsers: [],
+        posts:[],
         registrationDate: new Date(), // 或者其他默认值
       });
       const parsedData = ref<UserState>(rawUser.value);
@@ -138,25 +139,12 @@
                 parsedData.value = rawUser.value; // 清除解析后的数据
               }
               console.log(parsedData)
+              parsedData.value.verificationCode = token.value;
               userStore.login(parsedData.value);
             }
           } catch (error) {
             console.error('Error fetching user info:', error);
           }
-          /*try {
-            console.log(user.value)
-            const response = await axios.post(`/api/users/info?token=${token.value}`,{
-              name: username.value,
-              email: email.value,
-              profile: user.value
-            }); // 发送GET请求到后端API
-            console.log(response.data)
-            if (response.data.result == 'ok') {
-              username.value = response.data.name;
-            }
-          } catch (error) {
-            console.error('Error fetching user info:', error);
-          }*/
         }
       }
       return {

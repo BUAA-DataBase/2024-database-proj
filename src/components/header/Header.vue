@@ -66,6 +66,7 @@
     import { useRouter } from 'vue-router';
     import { useUserStore } from '@/store/modules/userStore';
     import type { HeadMenuProps } from 'tdesign-vue-next';
+import axios from 'axios';
 
     const value = ref('');
     const value2 = ref('');
@@ -98,7 +99,7 @@
         router.push({path: "/user/1"})
     }
 
-    function toLogin() {
+    async function toLogin() {
         useStore.logout();
         console.log(useStore.getNowUser());
         router.push({path: "/login"})

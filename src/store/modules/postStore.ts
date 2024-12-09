@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { PostState, ReviewState } from '../types'
 import type { SelectProps } from 'tdesign-vue-next'
+import axios from 'axios';
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -171,7 +172,7 @@ export const usePostStore = defineStore("post", {
       },
       { postId: 6,
         author: "方启迪",
-        authorId: 2,
+        authorId: 10,
         avatar: "https://example.com/avatar1.jpg",
         time: "2024-12-05 15:00",
         mtime: "2024-12-05 15:00",
@@ -206,8 +207,49 @@ export const usePostStore = defineStore("post", {
   }),
   actions: {
     // 新增评论
-    addPost(post: PostState) {
+    async addPost(post: PostState, verificationCode: string) {
       this.posts.push(post);
+      try {
+        console.log(post)
+        const response = await axios.post(`/api/users/info?token=${verificationCode}`,{
+          course_name: post.course,
+          recommendation: post.content.rate,
+          feedback: "",
+          data: post
+        }); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload!");
+        }
+      } catch (error) {
+      console.error('Error fetching user info:', error);
+      }
+    },
+
+    async addCommentToPost(comment: ReviewState, verificationCode: string) {
+        // 遍历 posts 数组，找到匹配 toPostId 的帖子
+      this.posts = this.posts.map(post => {
+        if (post.postId === comment.toPostId) {
+          // 将评论添加到该帖子的 reviews 数组中
+          return {
+            ...post,
+            reviews: [...post.reviews, comment],
+          };
+        }
+        return post;
+      });
+      try {
+        console.log(comment)
+        const response = await axios.post(`/api/comments/add-comment?token=${verificationCode}&id=${comment.reviewId}`,{
+          data: comment
+        }); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload!");
+        }
+      } catch (error) {
+      console.error('Error fetching user info:', error);
+      }
     },
 
     // 根据课程名获取评论
@@ -332,16 +374,6 @@ export const usePostStore = defineStore("post", {
       this.posts = updatedPosts;
     },
 
-    // 添加评论
-    addReview(review: ReviewState, postId: number) {
-      const post = this.posts.find(p => p.postId === postId);
-      if (post) {
-        post.reviews.push(review);
-      } else {
-        console.error(`No post found with postId: ${postId}`);
-      }
-    },
-
     // 获取指定 postId 的帖子中的 reviews 数组长度
     getReviewCount(postId: number): number {
       const post = this.posts.find(p => p.postId === postId);
@@ -379,14 +411,10 @@ export const usePostStore = defineStore("post", {
     },
 
     // 找到对应的帖子并返回所需属性
-    getPostById(postId: number): { postId: number; author: string; avatar: string } | null {
+    getPostById(postId: number): PostState | null {
       const post = this.posts.find(p => p.postId === postId);
       if (post) {
-        return {
-          postId: post.postId,
-          author: post.author,
-          avatar: post.avatar,
-        };
+        return post;
       } else {
         return null;
       }

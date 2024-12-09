@@ -1,7 +1,7 @@
 <template>
         <div class="profileCard">
             <t-space direction="vertical">
-                <span class="profileUsername">{{ username }}</span>
+                <span class="profileUsername">{{ props.user.userName }}</span>
                 <t-space style="margin-top: 10px;">
                     <t-button>
                         <template #icon>
@@ -29,22 +29,22 @@
                 <t-space direction="vertical">
                     <t-space>
                         <span class="countTitle">关注了</span>
-                        <span class="countContent">{{ FocusPersomNum }}</span>
+                        <span class="countContent">{{ props.user.following.length }}</span>
                         <span class="countTitle">人</span>
                     </t-space>
                     <t-space>
                         <span class="countTitle">被关注</span>
-                        <span class="countContent">{{ FocusedPersonNum }}</span>
+                        <span class="countContent">{{ props.user.followers.length }}</span>
                         <span class="countTitle">人</span>
                     </t-space>
                     <t-space>
                         <span class="countTitle">关注了</span>
-                        <span class="countContent">{{ FocusedCourseNum }} </span>
+                        <span class="countContent">{{ props.user.followedCourses.length }} </span>
                         <span class="countTitle">门课程</span>
                     </t-space>
                     <t-space>
                         <span class="countTitle">点评了</span>
-                        <span class="countContent">{{ ReviewCourseNum }} </span>
+                        <span class="countContent">{{ props.user.posts.length }} </span>
                         <span class="countTitle">门课程</span>
                     </t-space>
                 </t-space>
@@ -53,15 +53,19 @@
 </template>
 
 <script lang="ts" setup name="">
-    import {ref} from 'vue'
+    import {ref, type PropType} from 'vue'
     import avatarImage from '@/assets/img_avatar.jpg'
     import { HeartIcon, ChatBubbleIcon } from 'tdesign-icons-vue-next';
-    const username = ref('jo护车来喽')
-    const introduction = ref('2022计科人一枚~2022计科人一枚~')
-    const FocusPersomNum = ref(10)
-    const FocusedPersonNum = ref(20)
-    const FocusedCourseNum = ref(30)
-    const ReviewCourseNum = ref(40)
+    import type { UserState } from '@/store/types';
+
+    const props = defineProps({
+        user: {
+            type: Object as PropType<UserState>,
+            required: true
+        }
+    });
+
+    const introduction = ref('2022计科人一枚~')
 </script>
 
 <style scoped lang="scss">

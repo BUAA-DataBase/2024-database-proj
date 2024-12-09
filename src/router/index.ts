@@ -6,6 +6,7 @@ import Login from '@/components/login_register/LoginComponent.vue'
 import Register from '@/components/login_register/RegisterComponent.vue'
 import User from '@/layouts/ProfileLayout.vue'
 import Course from '@/layouts/CourseHomeLayout.vue'
+import Editor from '@/components/editor/PostEditor.vue'
 
 const routes = [
   {
@@ -18,6 +19,12 @@ const routes = [
     path: '/latestComments/:page',
     name: 'latestComments',
     component: LatestCommentsList,
+    props: true
+  },
+  {
+    path: '/editor/:userId',
+    name: 'editor',
+    component: Editor,
     props: true
   },
   {

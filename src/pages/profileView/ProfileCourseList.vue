@@ -22,18 +22,23 @@
 </template>
 
 <script lang="ts" setup name="">
-    import { ref, defineProps, computed } from 'vue'
+    import { ref, defineProps, computed, type PropType } from 'vue'
     import CourseType from '@/components/course/CourseType.vue'
     import CourseItem from '@/components/course/CourseItem.vue';
     import Pagination from '@/utils/Pagination.vue';
     import HeaderRow from './HeaderRow.vue';
     import { useRouter } from 'vue-router';
     import { useCourseStore } from '@/store/modules/courseStore';
+    import type { UserState } from '@/store/types';
 
-    defineProps({
-        displayNum: { type: Number, default: 5 }
+    const props = defineProps({
+        displayNum: { type: Number, default: 5 },
+        user: {
+            type: Object as PropType<UserState>,
+            required: true
+        }
     })
-
+    
     const screenWidth = window.innerWidth;
     console.log(`浏览器屏幕宽度: ${screenWidth}px`);
 
@@ -46,11 +51,11 @@
     const useStore = useCourseStore()
 
     const courses = computed(() => {
-        return useStore.getAllCourses();
+        return useStore.getCoursesByIds(props.user.followedCourses);
     })
 
     const num = computed(() => {
-        return useStore.getCoursesSize();
+        return useStore.getCoursesByIds(props.user.followedCourses).length;
     })
 
     function convertDifficulty(difficultyNumber: number) {

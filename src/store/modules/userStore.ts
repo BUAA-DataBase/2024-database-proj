@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia'
 import type { UserState } from '../types'
 import { Role } from '../types'
+import axios from 'axios'
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
@@ -20,6 +21,7 @@ export const useUserStore = defineStore('user', {
     followers: [],
     following: [],
     blockedUsers: [],
+    posts: [],
     registrationDate: new Date()
   }),
 
@@ -54,8 +56,22 @@ export const useUserStore = defineStore('user', {
     },
 
     /** 更新用户信息 */
-    updateProfile(profileData: Partial<UserState>) {
+    async updateProfile(profileData: Partial<UserState>) {
       Object.assign(this, profileData)
+      try {
+        console.log(this)
+        const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
+            name: this.userName,
+            email: this.email,
+            profile: this
+        }); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload!");
+        }
+      } catch (error) {
+      console.error('Error fetching user info:', error);
+      }
     },
 
     /** 关注帖子 */

@@ -433,6 +433,15 @@ export const useCourseStore = defineStore("course", {
       return sortedCourses;
     },
 
+    getCoursesByIds(courseIds: number[]): CourseState[] {
+      let filteredCourses = [...this.courses];
+      filteredCourses = filteredCourses.filter(course => courseIds.includes(course.courseId));
+      const sortedCourses = [...filteredCourses].sort((a, b) => {
+        return b.courseRate - a.courseRate; // 降序排序
+      });
+      return sortedCourses;
+    },
+
     // 按照评分获取刚好一页课程
     getSortedCoursesByRate(page: number, ascending: boolean): CourseState[] {
       const sortedCourses = [...this.courses].sort((a, b) => {

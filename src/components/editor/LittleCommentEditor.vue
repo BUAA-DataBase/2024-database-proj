@@ -2,8 +2,8 @@
     <div class="comment-editor">
       <!-- 这里的值会动态加上 "回复@{{ name }}" -->
       <textarea
-        v-model="comment"
-        :placeholder="'回复 @' + name"
+        v-model="content"
+        :placeholder="'回复 @' + props.toAuthor"
         class="comment-input"
         @input="onInput"
         rows="4" 
@@ -12,38 +12,87 @@
     </div>
   </template>
   
-  <script setup name="LittleCommentEditor">
+  <script lang="ts" setup name="">
+  import { usePostStore } from '@/store/modules/postStore';
+  import { useUserStore } from '@/store/modules/userStore';
+  import type {ReviewState} from '@/store/types'
   import { ref } from 'vue';
   
   // 接收传入的 name 参数
   const props = defineProps({
-    name: {
+    toAuthor: {
+      type: String,
+      required: true,
+    },
+    toAvatar: {
+      type: String,
+      required: true,
+    },
+    course: {
+      type: String,
+      required: true,
+    },
+    teacher: {
       type: String,
       required: true,
     }
   });
   
+
+  const userStore = useUserStore();
+  const postStore = usePostStore();
+
+  const content = ref("")
+
   // 用来存储评论的文本
-  const comment = ref("");
   
   // 输入框内容发生变化时的回调
   const onInput = () => {
     // 这里可以加入一些额外的处理逻辑，比如字符限制等
-    console.log(comment.value);
+    console.log(content.value);
   };
+
+  const emit = defineEmits();
   
   // 提交评论
   const submitComment = () => {
-    if (comment.value.trim() === "") {
+    if (!content.value) {
       alert("评论内容不能为空");
       return;
     }
+    
+    const comment = ref<ReviewState>({
+      reviewId: Date.now(),
+      toPostId: postStore.getPostId(props.toAuthor,props.course,props.teacher),
+      toAuthor: props.toAuthor,
+      toAvatar: props.toAvatar,
+      author: userStore.getNowUser().userName,
+      avatar: userStore.getNowUser().avatar,
+      time: new Date().toISOString(),
+      mtime: new Date().toISOString(),
+      content: content.value,
+      likeNum: 0
+    });
     // 提交评论的逻辑
+    postStore.addCommentToPost(comment.value, userStore.getNowUser().verificationCode)
+    .then(() => {
+      console.log("评论已提交:", comment.value);
+      
+      // 触发自定义事件 'comment-submitted'
+      // 你可以传递额外的数据作为事件的第二个参数（这里是评论内容，但也可以是其他数据）
+      emit('comment-submitted', comment.value.toPostId);
+      // 清空评论框（可选）
+      content.value = "";
+    })
+    .catch((error) => {
+      console.error("提交评论时出错:", error);
+      // 处理错误（例如显示错误消息）
+    });
     console.log("评论已提交:", comment.value);
   };
   </script>
   
-  <style scoped>
+  <style scoped lang="scss">
   .comment-editor {
     display: flex;
     flex-direction: column;

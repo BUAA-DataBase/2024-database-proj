@@ -35,6 +35,7 @@ export interface UserState {
     followers: string[]
     following: number[]
     blockedUsers: number[]
+    posts: PostState[]
     registrationDate: Date
 }
 

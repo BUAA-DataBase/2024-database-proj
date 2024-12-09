@@ -31,7 +31,7 @@
             </t-space>
 
             <div v-if="reply_count != 0" class="review-container">
-                <div v-for="(reply, index) in props.replies" :key="index">
+                <div v-for="(reply, index) in replies" :key="index">
                     <Review
                         :review="reply"
                         :belongAuthor="props.author"
@@ -40,7 +40,11 @@
             </div>
 
             <LittleCommentEditor
-                :name="props.author"
+                :toAuthor="author"
+                :toAvatar="avatar"
+                :course="course"
+                :teacher="teacher"
+                @comment-submitted="handleCommentSubmitted"
             />
         </t-space>
     </div>
@@ -53,7 +57,7 @@
     import {ref, defineProps, watch, onMounted, computed} from 'vue'
     import { marked } from 'marked'
     import { ChatIcon, ThumbUpIcon } from 'tdesign-icons-vue-next';
-    import LittleCommentEditor from '@/components/editor/LittleCommentEditor.vue';
+    import LittleCommentEditor from '../../components/editor/LittleCommentEditor.vue';
     import Review from '@/components/reviews/Review.vue';
     import { useRoute } from 'vue-router';
     import { usePostStore } from '@/store/modules/postStore';
@@ -70,8 +74,22 @@
         content: CommentContent,
         likes: number,
         reply_count: number,
-        replies: ReviewState[],
     }>()
+
+    const replies = ref<ReviewState[]>();
+
+    function handleCommentSubmitted(toPostId : number) {
+        console.log("handle review added")
+        if (useStore.getPostById(toPostId) != null) {
+            console.log("enter?")
+            replies.value = useStore.getPostById(toPostId)?.reviews;
+            console.log(replies.value)
+        }
+    }
+
+    onMounted(() => {
+        replies.value = useStore.getPostById(useStore.getPostId(props.author,props.course,props.teacher))?.reviews;
+    });
 
     const difficulty = convertDifficulty(props.content.difficulty)
     const workload = convertWorkload(props.content.workload)

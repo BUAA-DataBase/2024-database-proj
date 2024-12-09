@@ -2,7 +2,7 @@
     <div class="reviewList-container">
         <div class="review-editor-container">
             <span class="title">点评</span>
-            <t-button>
+            <t-button @click="toEditor">
                     <template #icon>
                         <PenBrushIcon />
                     </template>
@@ -31,25 +31,34 @@
                 :content="comment.content"
                 :likes="0"
                 :reply_count="comment.reviews.length"
-                :replies="comment.reviews"
             />
         </div>
     </div>
 </template>
 
 <script lang="ts" setup name="CourseHomeReViewList">
-    import {ref, defineProps} from 'vue'
+    import {ref, defineProps, watch} from 'vue'
     import { PenBrushIcon } from 'tdesign-icons-vue-next';
     import ReViewSelector from './ReViewSelector.vue';
     import CourseHomeReViewEx from './CourseHomePostEx.vue';
     import type { PostState } from '@/store/types';
     import { usePostStore } from '@/store/modules/postStore';
+    import { useUserStore } from '@/store/modules/userStore';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter()
+    const useStore2 = useUserStore()
 
     const props = defineProps({
         courseYear: { type: Array, required: true },
         courseName: { type: String, required: true},
         courseTeacher: { type: String, required: true }
     })
+
+    function toEditor() {
+        const id = useStore2.getNowUser().userId;
+        router.push({name: "editor", params: {userId : id}});
+    }
 
     const useStore = usePostStore()
 
@@ -60,6 +69,7 @@
     };
 
     const comments = ref<PostState[]> ([]);
+
 </script>
 
 <style scoped lang="scss">

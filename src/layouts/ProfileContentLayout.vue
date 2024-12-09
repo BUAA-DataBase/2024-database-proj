@@ -4,14 +4,14 @@
             <div class="avatar-wrapper" @click="triggerFileInput">
                 <!-- 头像展示 -->
                 <t-avatar 
-                    v-if="avatarImage"
+                    v-if="props.user.avatar"
                     size="100px" 
-                    :image="avatarImage" 
+                    :image="props.user.avatar" 
                     alt="用户头像" 
                     shape="circle"
                 />
                 <t-avatar 
-                    v-if="!avatarImage" 
+                    v-if="!props.user.avatar" 
                     size="100px" 
                     shape="circle" 
                     style="background-color: #f0f0f0; color: #4983c9; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer;">
@@ -27,7 +27,7 @@
             </div>
             <div>
                 <!-- 显示用户名，点击时变为输入框 -->
-                <span v-if="!isEditing" class="UserName" @click="editUsername">{{ userName }}</span>
+                <span v-if="!isEditing" class="UserName" @click="editUsername">{{ props.user.userName }}</span>
                 
                 <!-- 编辑状态下显示输入框 -->
                 <input v-if="isEditing" v-model="editedUsername" @blur="saveUsername" @keyup.enter="saveUsername" />
@@ -46,28 +46,39 @@
         <t-divider style="margin-top: 0; margin-bottom: 0"/>
         <div style="width:100%">
             <ProfileReviewList v-if="menuValue === 'item1'"
-                :authorId="author_id"
-                :authorName="userName"
+                :user="props.user"
             />
-            <ProfileCourseList v-if="menuValue === 'item3'"/>
-            <ProfileFollowUserList v-if="menuValue === 'item2'"/>
+            <ProfileCourseList v-if="menuValue === 'item3'" :user="props.user"/>
+            <ProfileFollowUserList v-if="menuValue === 'item2'" :user="props.user"/>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup name="">
-    import {ref} from 'vue'
+    import {ref,computed,watch,onMounted, type PropType} from 'vue';
     import ProfileReviewList from '@/pages/profileView/ProfileReviewList.vue';
     import ProfileFollowUserList from '@/pages/profileView/ProfileFollowUserList.vue';
     import ProfileCourseList from '@/pages/profileView/ProfileCourseList.vue';
     import { UploadIcon, PlusIcon } from 'tdesign-icons-vue-next';
+    import { useUserStore } from '@/store/modules/userStore';
+    import { useRoute,useRouter } from 'vue-router';
+    import axios from 'axios';
+    import { ErrorCode } from '@/constants/error-codes'
+    import type { UserState } from '@/store/types';
+    import { Role } from '@/store/types';
 
-    const userName = ref('周子皓')
-    const author_id = ref(1)
-    const menuValue = ref('item1')
-    const avatarImage = ref('')
+    const props = defineProps({
+        user: {
+            type: Object as PropType<UserState>,
+            required: true
+        }
+    });
+
+    const useStore = useUserStore()
+    const menuValue = ref('')
+    const changeUser = ref<UserState>()
     const fileInput = ref<HTMLInputElement | null>(null);
-    const editedUsername = ref(userName.value);  // 存储正在编辑的用户名
+    const editedUsername = ref(props.user.userName);  // 存储正在编辑的用户名
     const isEditing = ref(false);  // 是否正在编辑
 
     // 触发文件选择框
@@ -85,7 +96,9 @@
             const reader = new FileReader();
             
             reader.onload = () => {
-            avatarImage.value = reader.result as string;  // 更新头像
+                changeUser.value = props.user;
+                changeUser.value.avatar = reader.result as string;  // 更新头像
+                useStore.updateProfile(changeUser.value)
             };
 
             reader.readAsDataURL(file);  // 将文件读取为 Data URL
@@ -94,12 +107,15 @@
 
     // 点击用户名时进入编辑状态
     function editUsername() {
+        editedUsername.value = props.user.userName
         isEditing.value = true;
     }
 
     // 保存用户名并退出编辑状态
     function saveUsername() {
-        userName.value = editedUsername.value;
+        changeUser.value = props.user;
+        changeUser.value.userName = editedUsername.value;
+        useStore.updateProfile(changeUser.value)
         isEditing.value = false;
     }
 
