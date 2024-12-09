@@ -21,10 +21,11 @@
     import { usePostStore } from '@/store/modules/postStore';
     import type { PostState, CommentContent } from '@/store/types';
 
-    defineProps({
+    const props = defineProps({
         showAvatar: { type: Boolean, default: true },
         showAuthor: { type: Boolean, default: true },
-        displayNum: { type: Number, default: 10 }
+        displayNum: { type: Number, default: 10 },
+        authorId: { type: Number, required: true },
     })
 
     const route = useRoute();
@@ -42,7 +43,11 @@
 
     function fetchPosts(page: number): PostState[] {
         // 从 postStore 中获取排序后的评论数组
-        return useStore.getSortedPostsByMTime(page);
+        if (props.authorId < 0) {
+          return useStore.getSortedPostsByMTime(page);
+        } else {
+          return useStore.getMTimeSortedPostsByAuthorId(props.authorId, page);
+        }
     }
 
     onMounted(() => {

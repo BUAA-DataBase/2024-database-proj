@@ -7,7 +7,7 @@
                 <t-space direction="vertical">
                     <div class="top-row">
                         <t-space>
-                            <span  class="author" @click="toAuthor">
+                            <span v-if="showAuthor" class="author" @click="toAuthor">
                                 {{ author }}
                             </span>
                             <span v-if="showAuthor" class="tip">点评了</span>
@@ -37,7 +37,6 @@
     import { useRouter } from 'vue-router';
     import { useCourseStore } from '@/store/modules/courseStore';
     import { usePostStore} from '@/store/modules/postStore';
-    import type { PostState } from '@/store/types';
 
     import { onMounted } from 'vue';
 
