@@ -17,7 +17,7 @@
                     style="background-color: #f0f0f0; color: #4983c9; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer;">
                 </t-avatar>
                 <!-- 隐藏的文件选择框 -->
-                <input 
+                <input v-if="isMyProfile"
                     ref="fileInput" 
                     type="file" 
                     accept="image/*" 
@@ -25,7 +25,7 @@
                     @change="handleFileChange"
                 />
             </div>
-            <div>
+            <div v-if="isMyProfile">
                 <!-- 显示用户名，点击时变为输入框 -->
                 <span v-if="!isEditing" class="UserName" @click="editUsername">{{ userName }}</span>
                 
@@ -33,6 +33,7 @@
                 <input v-if="isEditing" v-model="editedUsername" @blur="saveUsername" @keyup.enter="saveUsername" />
 
             </div>
+            <span v-if="!isMyProfile" class="UserName" @click="editUsername">{{ userName }}</span>
         </div>
         <div>
             <t-head-menu v-model="menuValue">
@@ -61,6 +62,16 @@
     import ProfileFollowUserList from '@/pages/profileView/ProfileFollowUserList.vue';
     import ProfileCourseList from '@/pages/profileView/ProfileCourseList.vue';
     import { UploadIcon, PlusIcon } from 'tdesign-icons-vue-next';
+    import { useRoute } from 'vue-router';
+    import { useUserStore } from '@/store/modules/userStore'; 
+
+    const useroute = useRoute();
+    const userStore = useUserStore();
+
+    const myId = userStore.getNowUser().userId;
+    const thisId = parseInt(useroute.params.id as string);
+
+    const isMyProfile = ref(myId === thisId);
 
     const userName = ref('周子皓')
     const author_id = ref(1)
