@@ -13,7 +13,7 @@
             <t-space>
                 <div class="like-button" @click="handleLikeClick">
                     <ThumbUpIcon size="14px"/>
-                    <span class="like-num">{{ review.likeUsers.length }}</span>
+                    <span class="like-num">{{ likeNum }}</span>
                 </div>
                 <div class="reply-button" @click="handleReplyClick">
                     <span class="like-num">回复</span>
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import {defineProps} from 'vue'
+    import {defineProps, ref} from 'vue'
     import type { ReviewState } from '@/store/types'
     import { ThumbUpIcon } from 'tdesign-icons-vue-next'
     import { usePostStore } from '@/store/modules/postStore';
@@ -38,8 +38,11 @@
     const postStore = usePostStore()
     const userStore = useUserStore()
 
+    const likeNum = ref(props.review.likeUsers.length);
+
     const handleLikeClick = () => {
         postStore.updateCommentLikeNum(props.review.toPostId, props.review.reviewId, userStore.getNowUser().userId);
+        likeNum.value = postStore.getReviewById(props.review.toPostId, props.review.reviewId)?.likeUsers.length as number;
         console.log('点赞')
     }
 

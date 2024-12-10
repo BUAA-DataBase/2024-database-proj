@@ -73,7 +73,7 @@
     const value = ref('');
     const value2 = ref('');
     const options = ref<AutoCompleteProps<string>['options']>(['第一个默认联想词', '第二个默认联想词', '第三个默认联想词']);
-    const timer = ref(null);
+    const timer = ref(0);
     const menuValue = ref('item1');
     const router = useRouter()
     const useStore = useUserStore() 

@@ -76,6 +76,7 @@
             </t-space>
         </div>
         <CourseHomePostList
+            :courseId="props.courseId"
             :courseYear="props.courseYear"
             :courseName="props.courseName"
             :courseTeacher="props.courseTeacher"
@@ -106,8 +107,8 @@ import type { RefSymbol } from '@vue/reactivity';
   courseCredit: { type: Number, required: true },
   courseHours: { type: Number, required: true },
   courseFollower: { type: Number, required: true },
-  courseRecommend: { type: Number, required: true },
-  courseNotRecommend: { type: Number, required: true },
+  courseRecommendUsers: { type: Array, required: true },
+  courseNotRecommendUsers: { type: Array, required: true },
   courseRateNum: { type: Number, required: true },
 });
 

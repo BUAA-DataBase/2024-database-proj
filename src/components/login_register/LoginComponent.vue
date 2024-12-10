@@ -141,6 +141,7 @@
               console.log(parsedData)
               parsedData.value.verificationCode = token.value;
               userStore.login(parsedData.value);
+              console.log(userStore.getNowUser().verificationCode)
             }
           } catch (error) {
             console.error('Error fetching user info:', error);

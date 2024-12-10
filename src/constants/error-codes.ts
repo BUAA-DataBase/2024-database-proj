@@ -10,5 +10,6 @@ export enum ErrorCode {
     INVALID_ACCESS_ERROR = 8,
     TEACHER_NOT_EXIST_ERROR = 9,
     COMMENT_NOT_EXIST_ERROR = 10,
+    JSON_ERROR,
   }
   

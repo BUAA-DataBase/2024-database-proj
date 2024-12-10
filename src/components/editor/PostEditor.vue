@@ -78,10 +78,15 @@
     import { usePostStore } from '@/store/modules/postStore';
     import { useUserStore } from '@/store/modules/userStore';
     import type { PostState } from '@/store/types';
+    import { useRouter, useRoute } from 'vue-router';
+import Review from '../reviews/Review.vue';
 
     const courseStore = useCourseStore();
     const postStore = usePostStore();
     const userStore = useUserStore();
+
+    const router = useRouter()
+    const route = useRoute()
 
     const courseName = ref('');
     const teacherName = ref('');
@@ -179,6 +184,8 @@
 
     alert('提交成功，新的帖子已添加');
     console.log('提交成功，新的帖子已添加');
+    const courseId = courseStore.getCourseByNameAndTeacher(newPost.value.course,newPost.value.teacher) as number;
+    router.push({name:"course", params:{id: courseId, reviewId : newPost.value.postId}})
 }
 
 
