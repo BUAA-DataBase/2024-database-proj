@@ -386,9 +386,10 @@ export const usePostStore = defineStore("post", {
         if (review) {
           if (!review.likeUsers.includes(userId)) {
             // 如果不存在，则添加
-            post.likeUsers.push(userId);
+            review.likeUsers.push(userId);
+            console.log("Successfully add likeUser to review")
           } else {
-            console.warn(`No post found with id ${postId}`);
+            console.warn(`Has added with id ${postId}`);
           }
         } else {
           console.warn(`No post found with id ${postId}`);
@@ -440,6 +441,19 @@ export const usePostStore = defineStore("post", {
       const post = this.posts.find(p => p.postId === postId);
       if (post) {
         return post;
+      } else {
+        return null;
+      }
+    },
+
+    getReviewById(postId: number, reviewId: number): ReviewState | null {
+      const post = this.posts.find(p => p.postId === postId);
+      if (post) {
+        const review = post.reviews.find(r => r.reviewId === reviewId);
+        if (review) {
+          return review;
+        }
+        return null;
       } else {
         return null;
       }
