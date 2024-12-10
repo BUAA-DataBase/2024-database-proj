@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import { ref, watch } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import { useCourseStore } from '@/store/modules/courseStore';
     import type { AutoCompleteProps } from 'tdesign-vue-next';
     import { convertDifficulty, convertGain, convertGrading, convertWorkload } from '@/constants/map';
@@ -79,7 +79,6 @@
     import { useUserStore } from '@/store/modules/userStore';
     import type { PostState } from '@/store/types';
     import { useRouter, useRoute } from 'vue-router';
-import Review from '../reviews/Review.vue';
 
     const courseStore = useCourseStore();
     const postStore = usePostStore();
@@ -88,8 +87,11 @@ import Review from '../reviews/Review.vue';
     const router = useRouter()
     const route = useRoute()
 
-    const courseName = ref('');
-    const teacherName = ref('');
+    const courseId = parseInt(route.params.id as string );
+
+    const courseName = ref((courseId != null) ? courseStore.getCourseById(courseId).courseName : '');
+    const teacherName = ref(courseId != null ? courseStore.getCourseById(courseId).courseTeacher : '');
+    const oldPost = ref(postStore.getPostByCourseTeacherAndAuthorId(courseName.value, teacherName.value ,userStore.getNowUser().userId));
     const year = ref('');
     const rate = ref(4);
     const difficulty = ref(4);
@@ -100,7 +102,11 @@ import Review from '../reviews/Review.vue';
     const grading_text = ref(convertGrading(4));
     const gain = ref(4);
     const gain_text = ref(convertGain(4));
-    const comment = ref('');
+    const comment = ref(oldPost.value ? oldPost.value.content.comment : '');
+
+    watch([courseName, teacherName], ([newCourseName, newTeacherName]) => {
+        oldPost.value = postStore.getPostByCourseTeacherAndAuthorId(newCourseName, newTeacherName, userStore.getNowUser().userId);
+    });
 
     watch(difficulty, (newVal) => {
         difficulty_text.value = convertDifficulty(newVal);
@@ -141,35 +147,39 @@ import Review from '../reviews/Review.vue';
     function handIn() {
     // 创建 PostState 对象
     console.log(userStore.getNowUser())
-    const newPost = ref<PostState>({
-        postId: Date.now(), // 使用时间戳作为唯一ID，或从后端获取
-        author: userStore.getNowUser().userName, // 这里可以根据用户的登录信息动态获取
-        authorId: userStore.getNowUser().userId,
-        avatar: userStore.getNowUser().avatar, // 同样可以动态获取
-        time: new Date().toISOString(),
-        mtime: new Date().toISOString(),
-        course: courseName.value,
-        courseYear: year.value,
-        teacher: teacherName.value,
-        content: {
-            comment: comment.value,
-            rate: rate.value,
-            difficulty: difficulty.value,
-            workload: workload.value,
-            grading: grading.value,
-            gain: gain.value,
-        },
-        likeUsers: [],
-        reviews: [], // 没有评论，初始化为空
-        showAuthor: true, // 根据需求设置
-        showAvatar: true, // 根据需求设置
-    });
-    console.log(newPost.value)
-    // 调用 postStore 的 addPost 方法将新帖子添加到状态中
-    const user = userStore.getNowUser();
-    postStore.addPost(newPost.value,user.verificationCode);
-    user.posts.push(newPost.value);
-    userStore.updateProfile(user);
+    if (oldPost.value) {
+        oldPost.value.content.comment = comment.value;
+    } else {
+        const newPost = ref<PostState>({
+            postId: Date.now(), // 使用时间戳作为唯一ID，或从后端获取
+            author: userStore.getNowUser().userName, // 这里可以根据用户的登录信息动态获取
+            authorId: userStore.getNowUser().userId,
+            avatar: userStore.getNowUser().avatar, // 同样可以动态获取
+            time: new Date().toISOString(),
+            mtime: new Date().toISOString(),
+            course: courseName.value,
+            courseYear: year.value,
+            teacher: teacherName.value,
+            content: {
+                comment: comment.value,
+                rate: rate.value,
+                difficulty: difficulty.value,
+                workload: workload.value,
+                grading: grading.value,
+                gain: gain.value,
+            },
+            likeUsers: [],
+            reviews: [], // 没有评论，初始化为空
+            showAuthor: true, // 根据需求设置
+            showAvatar: true, // 根据需求设置
+        });
+        console.log(newPost.value)
+        // 调用 postStore 的 addPost 方法将新帖子添加到状态中
+        const user = userStore.getNowUser();
+        postStore.addPost(newPost.value,user.verificationCode);
+        user.posts.push(newPost.value);
+        userStore.updateProfile(user);
+    }
 
     // 提交成功后，你可以清空输入框或进行一些反馈操作
     courseName.value = '';

@@ -81,6 +81,11 @@ export const usePostStore = defineStore("post", {
       return this.posts.filter((post) => post.course === courseName);
     },
 
+    // 根据课程名教师名和作者名获取唯一评论
+    getPostByCourseTeacherAndAuthorId(course: string, teacher: string, authorId: number): PostState | null {
+      return this.posts.find(post => post.course === course && post.teacher === teacher && post.authorId === authorId) || null;
+    },
+
     // 根据作者名获取评论
     getPostsByAuthor(author: string): PostState[] {
       return this.posts.filter(post => post.author === author);

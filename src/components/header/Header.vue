@@ -25,7 +25,7 @@
                   <t-button shape="square" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);"><SearchIcon /></t-button>
               </template>
           </t-auto-complete>
-          <t-button theme="default" style="margin-right: 25px;">
+          <t-button theme="default" style="margin-right: 25px;" @click="toEditor">
                 <template #icon>
                     <t-icon name="pen-ball" size="20" />
                 </template>
@@ -91,6 +91,11 @@
 
     function toLatestComments() {
         router.push({ path: `/latestComments/${1}`})
+    }
+
+    function toEditor() {
+        const id = useStore.getNowUser().userId;
+        router.push({name: "editor"});
     }
 
     function toCourses() {

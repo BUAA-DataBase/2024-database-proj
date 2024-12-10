@@ -87,6 +87,10 @@
         }
     });
 
+    onMounted(()=>{
+        console.log(props.user)
+    })
+
     const menuValue = ref('item1');
     const changeUser = ref<UserState>()
     const fileInput = ref<HTMLInputElement | null>(null);

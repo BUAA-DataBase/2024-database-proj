@@ -64,7 +64,7 @@
 
     function toEditor() {
         const id = useStore2.getNowUser().userId;
-        router.push({name: "editor", params: {courseId: props.courseId, userId : id}});
+        router.push({name: "editor", params: {courseId: props.courseId}});
     }
 
     const useStore = usePostStore()
