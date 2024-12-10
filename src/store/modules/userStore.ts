@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { UserState } from '../types'
 import { Role } from '../types'
 import axios from 'axios'
+import { ErrorCode } from '@/constants/error-codes'
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
@@ -28,6 +29,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     /** 登录操作 */
     login(userData: Partial<UserState>) {
+      console.log(userData.verificationCode)
       if (userData.userName && userData.email && userData.verificationCode) {
         // 模拟登录逻辑
         this.userId = userData.userId || 0
@@ -46,6 +48,7 @@ export const useUserStore = defineStore('user', {
         this.blockedUsers = userData.blockedUsers || []
         this.posts = userData.posts || []
         this.registrationDate = userData.registrationDate || new Date()
+        console.log("successfully log in!")
       } else {
         throw new Error('Invalid login credentials')
       }
@@ -83,30 +86,30 @@ export const useUserStore = defineStore('user', {
     async followCourse(courseId : number) {
       if (!this.followedCourses.includes(courseId)) {
         this.followedCourses.push(courseId)
-      }
-      try {
-        console.log(this)
-        const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
-            name: this.userName,
-            email: this.email,
-            profile: this
-        }); // 发送GET请求到后端API
-        console.log(response.data)
-        if (response.data.result == 'ok') {
-            console.log("Successfully upload!");
+        try {
+          console.log(this)
+          const response = await axios.post(`/api/users/info?token=${this.$state.verificationCode}`,{
+              name: this.userName,
+              email: this.email,
+              profile: this
+          }); // 发送GET请求到后端API
+          console.log(response.data)
+          if (response.data.result == 'ok') {
+              console.log("Successfully upload!");
+          }
+        } catch (error) {
+        console.error('Error fetching user info:', error);
         }
-      } catch (error) {
-      console.error('Error fetching user info:', error);
-      }
-      try {
-        console.log(this)
-        const response = await axios.post(`/api/users/follow-course?token=${this.verificationCode}&follow_id=${courseId}`); // 发送GET请求到后端API
-        console.log(response.data)
-        if (response.data.result == 'ok') {
-            console.log("Successfully upload!");
+        try {
+          console.log(this)
+          const response = await axios.post(`/api/users/follow-course?token=${this.verificationCode}&follow_id=${courseId}`); // 发送GET请求到后端API
+          console.log(response.data)
+          if (response.data.result == 'ok') {
+              console.log("Successfully upload!");
+          }
+        } catch (error) {
+        console.error('Error fetching user info:', error);
         }
-      } catch (error) {
-      console.error('Error fetching user info:', error);
       }
     },
 
@@ -119,30 +122,30 @@ export const useUserStore = defineStore('user', {
     async followUser(userId: number) {
       if (!this.following.includes(userId)) {
         this.following.push(userId)
-      }
-      try {
-        console.log(this)
-        const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
-            name: this.userName,
-            email: this.email,
-            profile: this
-        }); // 发送GET请求到后端API
-        console.log(response.data)
-        if (response.data.result == 'ok') {
-            console.log("Successfully upload!");
+        try {
+          console.log(this)
+          const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
+              name: this.userName,
+              email: this.email,
+              profile: this
+          }); // 发送GET请求到后端API
+          console.log(response.data)
+          if (response.data.result == 'ok') {
+              console.log("Successfully upload!");
+          }
+        } catch (error) {
+        console.error('Error fetching user info:', error);
         }
-      } catch (error) {
-      console.error('Error fetching user info:', error);
-      }
-      try {
-        console.log(this)
-        const response = await axios.post(`/api/users/follow-user?token=${this.verificationCode}&follow_id=${userId}`); // 发送GET请求到后端API
-        console.log(response.data)
-        if (response.data.result == 'ok') {
-            console.log("Successfully upload!");
+        try {
+          console.log(this)
+          const response = await axios.post(`/api/users/follow-user?token=${this.verificationCode}&follow_id=${userId}`); // 发送GET请求到后端API
+          console.log(response.data)
+          if (response.data.result == 'ok') {
+              console.log("Successfully upload!");
+          }
+        } catch (error) {
+        console.error('Error fetching user info:', error);
         }
-      } catch (error) {
-      console.error('Error fetching user info:', error);
       }
     },
 

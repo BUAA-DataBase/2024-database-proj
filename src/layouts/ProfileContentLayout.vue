@@ -107,6 +107,7 @@
             reader.onload = () => {
                 changeUser.value = props.user;
                 changeUser.value.avatar = reader.result as string;  // 更新头像
+                
                 useStore.updateProfile(changeUser.value)
             };
 

@@ -18,7 +18,7 @@
     import { useRoute } from 'vue-router';
     import type { UserState } from '@/store/types';
     import { Role } from '@/store/types';
-import axios from 'axios';
+    import axios from 'axios';
 
     const useStore = useUserStore()
     const route = useRoute()

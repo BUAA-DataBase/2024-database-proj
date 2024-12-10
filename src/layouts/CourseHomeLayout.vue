@@ -18,8 +18,8 @@
                 :courseCredit="course.courseCredit"
                 :courseHours="course.courseHours"
                 :courseFollower="course.courseFollower"
-                :courseRecommend="course.courseRecommend"
-                :courseNotRecommend="course.courseNotRecommend"
+                :courseRecommendUsers="course.courseRecommendUsers"
+                :courseNotRecommendUsers="course.courseNotRecommendUsers"
                 :courseRateNum="course.courseRateNum"
                 />
             </div>
@@ -64,8 +64,8 @@
           courseCredit: 0,
           courseHours: 0,
           courseFollower: 0,
-          courseRecommend: 0,
-          courseNotRecommend: 0,
+          courseRecommendUsers: [],
+          courseNotRecommendUsers: [],
           courseRateNum: 0,
     })
 

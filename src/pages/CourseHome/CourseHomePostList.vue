@@ -49,6 +49,7 @@
     const useStore2 = useUserStore()
 
     const props = defineProps({
+        courseId: {type: Number, required: true},
         courseYear: { type: Array, required: true },
         courseName: { type: String, required: true},
         courseTeacher: { type: String, required: true }
@@ -56,7 +57,7 @@
 
     function toEditor() {
         const id = useStore2.getNowUser().userId;
-        router.push({name: "editor", params: {userId : id}});
+        router.push({name: "editor", params: {courseId: props.courseId, userId : id}});
     }
 
     const useStore = usePostStore()

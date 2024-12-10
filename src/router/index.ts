@@ -22,7 +22,7 @@ const routes = [
     props: true
   },
   {
-    path: '/editor/:userId',
+    path: '/editor/:courseId/:userId',
     name: 'editor',
     component: Editor,
     props: true
@@ -42,14 +42,16 @@ const routes = [
   {
     path: '/login',
     component: Login,
+    meta: {default: true},
   },
   {
     path: '/register',
     component: Register,
   },
   {
-    path: '/',
-    redirect: '/login',
+    path: '/:pathMatch(.*)*',
+    name: 'RedirectToLogin',
+    redirect: '/login'
   },
 ]
 
