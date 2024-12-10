@@ -40,6 +40,11 @@ export const useUserStore = defineStore('user', {
         this.avatar = userData.avatar || ''
         this.college = userData.college || ''
         this.gender = userData.gender || ''
+        this.followedCourses= userData.followedCourses || []
+        this.followers = userData.followers || []
+        this.following = userData.following || []
+        this.blockedUsers = userData.blockedUsers || []
+        this.posts = userData.posts || []
         this.registrationDate = userData.registrationDate || new Date()
       } else {
         throw new Error('Invalid login credentials')
@@ -75,21 +80,69 @@ export const useUserStore = defineStore('user', {
     },
 
     /** 关注帖子 */
-    followPost(postId: number) {
-      if (!this.followedCourses.includes(postId)) {
-        this.followedCourses.push(postId)
+    async followCourse(courseId : number) {
+      if (!this.followedCourses.includes(courseId)) {
+        this.followedCourses.push(courseId)
+      }
+      try {
+        console.log(this)
+        const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
+            name: this.userName,
+            email: this.email,
+            profile: this
+        }); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload!");
+        }
+      } catch (error) {
+      console.error('Error fetching user info:', error);
+      }
+      try {
+        console.log(this)
+        const response = await axios.post(`/api/users/follow-course?token=${this.verificationCode}&follow_id=${courseId}`); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload!");
+        }
+      } catch (error) {
+      console.error('Error fetching user info:', error);
       }
     },
 
     /** 取消关注帖子 */
-    unfollowPost(postId: number) {
+    unfollowCourse(postId: number) {
       this.followedCourses = this.followedCourses.filter(id => id !== postId)
     },
 
     /** 关注用户 */
-    followUser(userId: number) {
+    async followUser(userId: number) {
       if (!this.following.includes(userId)) {
         this.following.push(userId)
+      }
+      try {
+        console.log(this)
+        const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
+            name: this.userName,
+            email: this.email,
+            profile: this
+        }); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload!");
+        }
+      } catch (error) {
+      console.error('Error fetching user info:', error);
+      }
+      try {
+        console.log(this)
+        const response = await axios.post(`/api/users/follow-user?token=${this.verificationCode}&follow_id=${userId}`); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload!");
+        }
+      } catch (error) {
+      console.error('Error fetching user info:', error);
       }
     },
 

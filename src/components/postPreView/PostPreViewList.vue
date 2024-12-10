@@ -1,6 +1,8 @@
 <template>
     <div v-for="(post, index) in posts.slice(0, displayNum)" :key="index">
       <PostPreView
+        :postId="post.postId"
+        :authorId="post.authorId"
         :author="post.author"
         :avatar="post.avatar"
         :time="post.time"

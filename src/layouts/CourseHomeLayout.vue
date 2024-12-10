@@ -3,6 +3,7 @@
         <div class="course-home-layout">
             <div class="content-container">
                 <CourseHomeContent
+                :courseId="currentId"
                 :courseName="course.courseName"
                 :courseTeacher="course.courseTeacher"
                 :courseYear="course.courseYear"

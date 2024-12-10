@@ -52,7 +52,7 @@
         </div>
         <div class="buttons">
             <t-space>
-                <t-button>
+                <t-button @click="followCourse">
                     <template #icon>
                         <HeartIcon />
                     </template>
@@ -84,8 +84,10 @@
     import {defineProps, ref} from 'vue'
     import { HeartIcon, ThumbUpIcon, ThumbDownIcon} from 'tdesign-icons-vue-next';
     import CourseHomePostList from './CourseHomePostList.vue';
+    import { useUserStore } from '@/store/modules/userStore';
 
     const props = defineProps({
+  courseId: { type: Number, required: true},      
   courseName: { type: String, required: true },
   courseTeacher: { type: String, required: true },
   courseYear: { type: Array, required: true },
@@ -106,6 +108,12 @@
 });
 
 const newRate = ref(Math.round(props.courseRate * 2 - 0.1)/2)
+
+const userStore = useUserStore();
+
+function followCourse() {
+    userStore.followCourse(props.courseId);
+}
 
 </script>
 

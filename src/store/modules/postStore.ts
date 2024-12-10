@@ -240,7 +240,7 @@ export const usePostStore = defineStore("post", {
       });
       try {
         console.log(comment)
-        const response = await axios.post(`/api/comments/add-comment?token=${verificationCode}&id=${comment.reviewId}`,{
+        const response = await axios.post(`/api/posts/add-comment?token=${verificationCode}&id=${comment.toPostId}`,{
           data: comment
         }); // 发送GET请求到后端API
         console.log(response.data)

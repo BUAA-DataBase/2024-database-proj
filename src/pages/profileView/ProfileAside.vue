@@ -3,7 +3,7 @@
             <t-space direction="vertical">
                 <span class="profileUsername">{{ props.user.userName }}</span>
                 <t-space style="margin-top: 10px;">
-                    <t-button>
+                    <t-button @click="followUser">
                         <template #icon>
                             <HeartIcon />
                         </template>
@@ -43,9 +43,9 @@
                         <span class="countTitle">门课程</span>
                     </t-space>
                     <t-space>
-                        <span class="countTitle">点评了</span>
+                        <span class="countTitle">发表了</span>
                         <span class="countContent">{{ props.user.posts.length }} </span>
-                        <span class="countTitle">门课程</span>
+                        <span class="countTitle">篇点评</span>
                     </t-space>
                 </t-space>
             </t-space>
@@ -57,6 +57,7 @@
     import avatarImage from '@/assets/img_avatar.jpg'
     import { HeartIcon, ChatBubbleIcon } from 'tdesign-icons-vue-next';
     import type { UserState } from '@/store/types';
+    import { useUserStore } from '@/store/modules/userStore';
 
     const props = defineProps({
         user: {
@@ -66,6 +67,14 @@
     });
 
     const introduction = ref('2022计科人一枚~')
+
+    const userStore = useUserStore();
+
+    function followUser() {
+        if (props.user.userId != userStore.getNowUser().userId) {
+            userStore.followUser(props.user.userId);
+        }
+    }
 </script>
 
 <style scoped lang="scss">

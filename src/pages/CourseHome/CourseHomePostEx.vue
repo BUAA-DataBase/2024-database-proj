@@ -30,7 +30,7 @@
                 </t-space>
             </t-space>
 
-            <div v-if="reply_count != 0" class="review-container">
+            <div v-if=" reply_count != 0" class="review-container">
                 <div v-for="(reply, index) in replies" :key="index">
                     <Review
                         :review="reply"
@@ -40,6 +40,7 @@
             </div>
 
             <LittleCommentEditor
+                :toPostId="props.toPostId"
                 :toAuthor="author"
                 :toAvatar="avatar"
                 :course="course"
@@ -64,6 +65,7 @@
     
     const props = defineProps<{
         author: string,
+        toPostId: number,
         course: string,
         teacher: string,
         date_published: string,
@@ -73,22 +75,24 @@
         rate: number,
         content: CommentContent,
         likes: number,
-        reply_count: number,
     }>()
 
     const replies = ref<ReviewState[]>();
+    const reply_count = ref(0)
 
     function handleCommentSubmitted(toPostId : number) {
         console.log("handle review added")
-        if (useStore.getPostById(toPostId) != null) {
+        if (useStore.getPostById(props.toPostId) != null) {
             console.log("enter?")
-            replies.value = useStore.getPostById(toPostId)?.reviews;
+            replies.value = useStore.getPostById(props.toPostId)?.reviews;
+            reply_count.value = useStore.getPostById(props.toPostId)?.reviews.length as number;
             console.log(replies.value)
         }
     }
 
     onMounted(() => {
-        replies.value = useStore.getPostById(useStore.getPostId(props.author,props.course,props.teacher))?.reviews;
+        replies.value = useStore.getPostById(props.toPostId)?.reviews;
+        reply_count.value = useStore.getPostById(props.toPostId)?.reviews.length as number;
     });
 
     const difficulty = convertDifficulty(props.content.difficulty)
@@ -119,7 +123,7 @@
  
     onMounted(() => {
         console.log(reviewId.value);
-        const thisId = useStore.getPostId(props.author,props.course,props.teacher);
+        const thisId = props.toPostId;
         console.log(thisId);
         if (reviewId.value === thisId && reviewSection.value) {
             reviewSection.value.scrollIntoView({ behavior: 'auto' });

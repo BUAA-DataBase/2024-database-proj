@@ -1,14 +1,14 @@
 <template>
     <div class="review-container">
             <div v-if="showAvatar" class="avatar-container">
-                <t-avatar  size="50px" :image="avatar" alt="用户头像" shape="circle" />
+                <t-avatar  size="50px" :image="thisPostAvatar" alt="用户头像" shape="circle" />
             </div>
             <div class="info-container">
                 <t-space direction="vertical">
                     <div class="top-row">
                         <t-space>
                             <span v-if="showAuthor" class="author" @click="toAuthor">
-                                {{ author }}
+                                {{ thisPostAuthor }}
                             </span>
                             <span v-if="showAuthor" class="tip">点评了</span>
                             <span class="course-teacher"
@@ -39,6 +39,8 @@
     import { usePostStore} from '@/store/modules/postStore';
 
     import { onMounted } from 'vue';
+import { Role, type UserState } from '@/store/types';
+import axios from 'axios';
 
     onMounted(() => {
         const reviewElement = document.querySelector('.info-container') as HTMLElement;
@@ -55,6 +57,8 @@
 
 
     const props = defineProps({
+        postId: { type: Number, required: true },
+        authorId: { type: Number, required: true },
         author: { type: String, required: true },
         avatar: { type: String, required: true },
         time: { type: String, required: true },
@@ -70,6 +74,59 @@
     const useStore = useCourseStore();
     const useStore2 = usePostStore();
 
+    const thisPostAuthor = ref(props.author);
+    const thisPostAvatar = ref(props.avatar);
+
+    const rawUser = ref<UserState>({
+        userId: 0,
+        verificationCode: '',
+        userName: '',
+        password: '',
+        email: '',
+        role: Role.Student,
+        major: '',
+        grade: '',
+        avatar: '',
+        college: '',
+        gender: '',
+        followedCourses: [],
+        followers: [],
+        following: [],
+        blockedUsers: [],
+        posts:[],
+        registrationDate: new Date(), // 或者其他默认值
+      });
+      const parsedData = ref<UserState>(rawUser.value);
+      const error = ref<string | null>(null);
+
+    onMounted (async () => {
+        try {
+            const responseGetInfo = await axios.get(`/api/users/info?id=${props.authorId}`); // 发送GET请求到后端API
+            if (responseGetInfo.data.result == 'ok') {
+              console.log(responseGetInfo.data)
+              try {
+                // 尝试解析JSON字符串
+                parsedData.value = JSON.parse(responseGetInfo.data.profile) as UserState;
+                error.value = null; // 清除任何先前的错误
+              } catch (e) {
+                // 捕获解析错误
+                error.value = 'Invalid JSON format!';
+                parsedData.value = rawUser.value; // 清除解析后的数据
+              }
+              console.log(parsedData)
+              if (thisPostAuthor.value !== parsedData.value.userName){
+                thisPostAuthor.value = parsedData.value.userName;
+              }
+              if (thisPostAvatar.value !== parsedData.value.avatar) {
+                thisPostAvatar.value = parsedData.value.avatar;
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching user info:', error);
+          }
+    })
+    
+
     const isTruncated = computed(() => cleanedText.value.length > maxLength);
     const truncatedContent = computed(() =>
         isTruncated.value ? cleanedText.value.slice(0, maxLength) + '...' : cleanedText.value
@@ -78,7 +135,7 @@
     const cleanedText = ref<string>(props.content.replace(/[#*]/g, ''));
 
     function toAuthor() {
-        const authorId = useStore2.getPostAuthorId(props.author,props.course,props.teacher);
+        const authorId = props.authorId;
         console.log(authorId);
         router.push({name: "user", params:{id : authorId}});
     }
@@ -90,7 +147,7 @@
 
     function toPost() {
         const courseId =  useStore.getCourseIdByNameAndTeacher(props.course,props.teacher);
-        const reviewId = useStore2.getPostId(props.author,props.course,props.teacher);
+        const reviewId = props.postId;
         router.push({name: "course", params:{id : courseId, reviewId: reviewId}});
     }
 </script>

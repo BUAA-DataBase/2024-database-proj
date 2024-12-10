@@ -21,6 +21,7 @@
                 v-for="(comment, index) in comments"
                 :key="index"
                 :author="comment.author"
+                :toPostId="comment.postId"
                 :course="props.courseName"
                 :teacher="props.courseTeacher"
                 :date_published="comment.time"
@@ -30,7 +31,6 @@
                 :rate="comment.content.rate"
                 :content="comment.content"
                 :likes="0"
-                :reply_count="comment.reviews.length"
             />
         </div>
     </div>

@@ -17,7 +17,7 @@
                     style="background-color: #f0f0f0; color: #4983c9; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer;">
                 </t-avatar>
                 <!-- 隐藏的文件选择框 -->
-                <input 
+                <input v-if="isMyProfile"
                     ref="fileInput" 
                     type="file" 
                     accept="image/*" 
@@ -25,7 +25,7 @@
                     @change="handleFileChange"
                 />
             </div>
-            <div>
+            <div v-if="isMyProfile">
                 <!-- 显示用户名，点击时变为输入框 -->
                 <span v-if="!isEditing" class="UserName" @click="editUsername">{{ props.user.userName }}</span>
                 
@@ -33,6 +33,7 @@
                 <input v-if="isEditing" v-model="editedUsername" @blur="saveUsername" @keyup.enter="saveUsername" />
 
             </div>
+            <span v-if="!isMyProfile" class="UserName" @click="editUsername">{{ props.user.userName }}</span>
         </div>
         <div>
             <t-head-menu v-model="menuValue">
@@ -67,6 +68,15 @@
     import type { UserState } from '@/store/types';
     import { Role } from '@/store/types';
 
+
+    const useroute = useRoute();
+    const useStore = useUserStore();
+
+    const myId = useStore.getNowUser().userId;
+    const thisId = parseInt(useroute.params.id as string);
+
+    const isMyProfile = ref(myId === thisId);
+
     const props = defineProps({
         user: {
             type: Object as PropType<UserState>,
@@ -74,7 +84,6 @@
         }
     });
 
-    const useStore = useUserStore()
     const menuValue = ref('')
     const changeUser = ref<UserState>()
     const fileInput = ref<HTMLInputElement | null>(null);

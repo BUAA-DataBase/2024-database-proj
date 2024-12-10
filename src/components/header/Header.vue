@@ -44,7 +44,7 @@
 
               <t-button class="header-user-btn" theme="default" variant="text">
                   <template #icon>
-                      <t-avatar size="50" :image="avatarImage" alt="用户头像" shape="circle"/>
+                      <t-avatar size="50" :image="useStore.getNowUser().avatar" alt="用户头像" shape="circle"/>
                   </template>
                   <template #suffix><chevron-down-icon /></template>
               </t-button>
@@ -66,7 +66,7 @@
     import { useRouter } from 'vue-router';
     import { useUserStore } from '@/store/modules/userStore';
     import type { HeadMenuProps } from 'tdesign-vue-next';
-import axios from 'axios';
+    import axios from 'axios';
 
     const value = ref('');
     const value2 = ref('');
@@ -96,7 +96,7 @@ import axios from 'axios';
     }
 
     function toPerson() {
-        router.push({path: "/user/1"})
+        router.push({path: `/user/${useStore.getNowUser().userId}`})
     }
 
     async function toLogin() {

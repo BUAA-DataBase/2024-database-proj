@@ -20,6 +20,10 @@
   
   // 接收传入的 name 参数
   const props = defineProps({
+    toPostId: {
+      type: Number,
+      required: true,
+    },
     toAuthor: {
       type: String,
       required: true,
@@ -63,7 +67,7 @@
     
     const comment = ref<ReviewState>({
       reviewId: Date.now(),
-      toPostId: postStore.getPostId(props.toAuthor,props.course,props.teacher),
+      toPostId: props.toPostId,
       toAuthor: props.toAuthor,
       toAvatar: props.toAvatar,
       author: userStore.getNowUser().userName,
