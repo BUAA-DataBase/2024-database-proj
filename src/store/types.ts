@@ -56,8 +56,8 @@ export interface CourseState {
   courseCredit: number
   courseHours: number
   courseFollower: number
-  courseRecommend: number
-  courseNotRecommend: number
+  courseRecommendUsers: number[]
+  courseNotRecommendUsers: number[]
   courseRateNum: number
 }
 
@@ -72,7 +72,7 @@ export interface PostState {
   courseYear: string
   teacher: string
   content: CommentContent
-  likeNum: number
+  likeUsers: number[]
   reviews: ReviewState[]
   showAuthor: boolean
   showAvatar: boolean
@@ -88,7 +88,7 @@ export interface ReviewState {
   time: string
   mtime: string
   content: string
-  likeNum: number
+  likeUsers: number[]
 }
 
 export interface CommentContent {

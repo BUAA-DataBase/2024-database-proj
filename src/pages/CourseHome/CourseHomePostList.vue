@@ -30,7 +30,6 @@
                 :year="comment.courseYear"
                 :rate="comment.content.rate"
                 :content="comment.content"
-                :likes="0"
             />
         </div>
     </div>

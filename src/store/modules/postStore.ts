@@ -35,7 +35,7 @@ export const usePostStore = defineStore("post", {
     总体来说，是一门值得推荐的课程！
     `
         },
-        likeNum: 0,
+        likeUsers: [],
         reviews: [],
         showAuthor: true,
         showAvatar: true
@@ -69,7 +69,7 @@ export const usePostStore = defineStore("post", {
     如果你对数据库设计感兴趣，强烈推荐这门课程！
     `
         },
-        likeNum: 0,
+        likeUsers: [],
         reviews: [],
         showAuthor: false,
         showAvatar: true
@@ -103,7 +103,7 @@ export const usePostStore = defineStore("post", {
     总体来说，适合想了解操作系统基本知识的同学，但如果希望深入了解操作系统，可能需要额外的学习。
     `
         },
-        likeNum: 0,
+        likeUsers: [],
         reviews: [],
         showAuthor: true,
         showAvatar: false
@@ -139,7 +139,7 @@ export const usePostStore = defineStore("post", {
     这门课对于想深入学习人工智能的同学非常合适，但如果对数学不够有信心，可能会感到有点吃力。
     `
         },
-        likeNum: 0,
+        likeUsers: [],
         reviews: [],
         showAuthor: true,
         showAvatar: true
@@ -165,7 +165,7 @@ export const usePostStore = defineStore("post", {
   
     `
         },
-        likeNum: 0,
+        likeUsers: [],
         reviews: [],
         showAuthor: true,
         showAvatar: true
@@ -198,7 +198,7 @@ export const usePostStore = defineStore("post", {
     总体来说，是一门值得推荐的课程！
     `
         },
-        likeNum: 0,
+        likeUsers: [],
         reviews: [],
         showAuthor: true,
         showAvatar: true
@@ -326,7 +326,7 @@ export const usePostStore = defineStore("post", {
         if (value1 === 'new') {
           return new Date(b.mtime).getTime() - new Date(a.mtime).getTime(); // 最新（mtime 从新到旧）
         } else if (value1 === 'hot') {
-          return b.likeNum - a.likeNum; // 最热（likeNum 从高到低）
+          return b.likeUsers.length - a.likeUsers.length; // 最热（likeNum 从高到低）
         } else if (value1 === 'good') {
           return b.content.rate - a.content.rate; // 评分高-低（rate 从高到低）
         } else if (value1 === 'bad') {
@@ -365,14 +365,39 @@ export const usePostStore = defineStore("post", {
     },
 
     // 点赞！！！
-    updateLikeNum(postId: number) {
-      const updatedPosts = this.posts.map(post =>
-        post.postId === postId
-          ? { ...post, likeNum: post.likeNum + 1 }
-          : post
-      );
-      this.posts = updatedPosts;
+    updateLikeNum(postId: number, userId: number) {
+      const post = this.posts.find(p => p.postId === postId);
+      if (post) {
+        // 检查 userId 是否已经存在于 likeUsers 中
+        if (!post.likeUsers.includes(userId)) {
+          // 如果不存在，则添加
+          post.likeUsers.push(userId);
+        }
+      } else {
+        console.warn(`No post found with id ${postId}`);
+      }
     },
+
+    updateCommentLikeNum(postId: number,reviewId : number, userId: number) {
+      const post = this.posts.find(p => p.postId === postId);
+      if (post) {
+        // 检查 userId 是否已经存在于 likeUsers 中
+        const review = post.reviews.find(r => r.reviewId === reviewId);
+        if (review) {
+          if (!review.likeUsers.includes(userId)) {
+            // 如果不存在，则添加
+            post.likeUsers.push(userId);
+          } else {
+            console.warn(`No post found with id ${postId}`);
+          }
+        } else {
+          console.warn(`No post found with id ${postId}`);
+        }
+      } else {
+        console.warn(`No post found with id ${postId}`);
+      }
+    },
+
 
     // 获取指定 postId 的帖子中的 reviews 数组长度
     getReviewCount(postId: number): number {

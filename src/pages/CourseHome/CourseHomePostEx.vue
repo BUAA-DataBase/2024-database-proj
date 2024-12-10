@@ -62,6 +62,7 @@
     import Review from '@/components/reviews/Review.vue';
     import { useRoute } from 'vue-router';
     import { usePostStore } from '@/store/modules/postStore';
+    import { useUserStore } from '@/store/modules/userStore';
     
     const props = defineProps<{
         author: string,
@@ -74,7 +75,6 @@
         year: string,
         rate: number,
         content: CommentContent,
-        likes: number,
     }>()
 
     const replies = ref<ReviewState[]>();
@@ -99,8 +99,10 @@
     const workload = convertWorkload(props.content.workload)
     const grading = convertGrading(props.content.grading)
     const gain = convertGain(props.content.gain)
+    
+    const useStore = usePostStore();
 
-    const likes = ref(props.likes)
+    const likes = ref(useStore.getPostById(props.toPostId)?.likeUsers.length )
 
     const newRate = ref(Math.round(props.rate * 2 - 0.1)/2)
 
@@ -111,7 +113,6 @@
     // 定义一个ref来引用需要滚动到的DOM元素
     const reviewSection = ref<HTMLElement>();
     const route = useRoute();
-    const useStore = usePostStore();
 
     const reviewId = computed<number>(() => {
         const reviewId = route.params.reviewId;
@@ -130,9 +131,12 @@
         }
     })
 
+    const userStore = useUserStore()
+
     // 点赞按钮的点击处理函数
     const handleLikeClick = () => {
-        likes.value += 1;  // 点击时点赞数加1
+        useStore.updateLikeNum(props.toPostId, userStore.getNowUser().userId);
+        likes.value = useStore.getPostById(props.toPostId)?.likeUsers.length as number;  // 点击时点赞数加1
         console.log('点赞按钮被点击了');
     };
 

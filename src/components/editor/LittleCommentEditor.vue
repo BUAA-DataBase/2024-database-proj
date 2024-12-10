@@ -75,7 +75,7 @@
       time: new Date().toISOString(),
       mtime: new Date().toISOString(),
       content: content.value,
-      likeNum: 0
+      likeUsers: []
     });
     // 提交评论的逻辑
     postStore.addCommentToPost(comment.value, userStore.getNowUser().verificationCode)

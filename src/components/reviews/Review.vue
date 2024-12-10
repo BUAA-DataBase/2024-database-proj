@@ -13,7 +13,7 @@
             <t-space>
                 <div class="like-button" @click="handleLikeClick">
                     <ThumbUpIcon size="14px"/>
-                    <span class="like-num">{{ review.likeNum }}</span>
+                    <span class="like-num">{{ review.likeUsers.length }}</span>
                 </div>
                 <div class="reply-button" @click="handleReplyClick">
                     <span class="like-num">回复</span>
@@ -27,14 +27,19 @@
     import {defineProps} from 'vue'
     import type { ReviewState } from '@/store/types'
     import { ThumbUpIcon } from 'tdesign-icons-vue-next'
+    import { usePostStore } from '@/store/modules/postStore';
+    import { useUserStore } from '@/store/modules/userStore';
     
     const props = defineProps<{
         review: ReviewState
         belongAuthor: string // 评论帖子的作者，如果和toAuthor字段相同的话，不用显示@
     }>()
 
+    const postStore = usePostStore()
+    const userStore = useUserStore()
+
     const handleLikeClick = () => {
-        props.review.likeNum += 1
+        postStore.updateCommentLikeNum(props.review.toPostId, props.review.reviewId, userStore.getNowUser().userId);
         console.log('点赞')
     }
 
