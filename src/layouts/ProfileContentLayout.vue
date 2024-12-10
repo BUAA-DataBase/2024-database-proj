@@ -35,7 +35,7 @@
             </div>
             <span v-if="!isMyProfile" class="UserName" @click="editUsername">{{ props.user.userName }}</span>
         </div>
-        <div>
+        <div style="margin-bottom: -10px;">
             <t-head-menu v-model="menuValue">
                 <t-menu-item value="item1">我的点评</t-menu-item>
                 <t-divider layout="vertical"/>
@@ -48,9 +48,16 @@
         <div style="width:100%">
             <ProfileReviewList v-if="menuValue === 'item1'"
                 :user="props.user"
+                :isMyProfile="isMyProfile"
             />
-            <ProfileCourseList v-if="menuValue === 'item3'" :user="props.user"/>
-            <ProfileFollowUserList v-if="menuValue === 'item2'" :user="props.user"/>
+            <ProfileCourseList v-if="menuValue === 'item3'" 
+                :user="props.user"
+                :isMyProfile="isMyProfile"
+            />
+            <ProfileFollowUserList v-if="menuValue === 'item2'" 
+                :user="props.user"
+                :isMyProfile="isMyProfile"
+            />
         </div>
     </div>
 </template>
@@ -69,22 +76,18 @@
     import { Role } from '@/store/types';
 
 
-    const useroute = useRoute();
-    const useStore = useUserStore();
-
-    const myId = useStore.getNowUser().userId;
-    const thisId = parseInt(useroute.params.id as string);
-
-    const isMyProfile = ref(myId === thisId);
-
     const props = defineProps({
         user: {
             type: Object as PropType<UserState>,
             required: true
+        },
+        isMyProfile: {
+            type: Boolean,
+            required: true
         }
     });
 
-    const menuValue = ref('')
+    const menuValue = ref('item1');
     const changeUser = ref<UserState>()
     const fileInput = ref<HTMLInputElement | null>(null);
     const editedUsername = ref(props.user.userName);  // 存储正在编辑的用户名

@@ -2,8 +2,14 @@
     <t-layout style="background-color: white;">
         <t-content class="ProfileContent">
             <div class="content-container">
-                <ProfileContentLayout :user="parsedData" />
-                <ProfileAside class="profile-aside" :user="parsedData"/>
+                <ProfileContentLayout 
+                    :user="parsedData" 
+                    :isMyProfile="isMyProfile"
+                />
+                <ProfileAside class="profile-aside" 
+                    :user="parsedData"
+                    :isMyProfile="isMyProfile"
+                />
             </div>
         </t-content>
     </t-layout>
@@ -13,15 +19,27 @@
     import ProfileAside from '@/pages/profileView/ProfileAside.vue';
     import Header from '@/components/header/Header.vue';
     import ProfileContentLayout from '@/layouts/ProfileContentLayout.vue';
-    import {ref, watch ,computed} from 'vue'
+    import {ref, watch ,computed, onMounted} from 'vue'
     import { useUserStore } from '@/store/modules/userStore';
-    import { useRoute } from 'vue-router';
     import type { UserState } from '@/store/types';
     import { Role } from '@/store/types';
-import axios from 'axios';
+    import axios from 'axios';
+    import { useRoute } from 'vue-router';
 
     const useStore = useUserStore()
     const route = useRoute()
+    const useroute = useRoute()
+
+    const myId = useStore.getNowUser().userId;
+    const thisId = parseInt(useroute.params.id as string);
+
+    const isMyProfile = ref(myId === thisId);
+
+    onMounted(() => {
+        console.log("myId: "+ myId)
+        console.log("thisId: "+ thisId)
+        console.log("isMyProfile: "+ isMyProfile.value)
+    });
 
     const rawUser = ref<UserState>({
         userId: 0,

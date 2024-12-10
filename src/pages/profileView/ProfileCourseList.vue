@@ -3,7 +3,7 @@
         :num="num"
         word="门"
     />
-    <div class="CourseListContain">
+    <div v-if="courses.length > 0" class="CourseListContain">
         <div v-for="course in courses.slice(0, displayNum)" :key="course.courseId" @click="goToCourse(course.courseId)" class="pointer">
             <CourseItem
             :id="course.courseId"
@@ -17,6 +17,11 @@
             :grading="convertGrading(course.courseGrading)"
             :gain="convertGain(course.courseGain)"
         />
+        </div>
+    </div>
+    <div v-else>
+        <div class="no-course">
+            <span>{{no_course_text}}</span>
         </div>
     </div>
 </template>
@@ -36,6 +41,10 @@
         user: {
             type: Object as PropType<UserState>,
             required: true
+        },
+        isMyProfile: {
+            type: Boolean,
+            required: true
         }
     })
     
@@ -43,6 +52,10 @@
     console.log(`浏览器屏幕宽度: ${screenWidth}px`);
 
     const router = useRouter()
+
+    const no_course_text = computed(() => {
+        return (props.isMyProfile == true) ? '您还没有关注任何课程哦' : '暂无关注课程'
+    })
 
     const goToCourse = (courseId: number) => {
         router.push({name: 'course' , params:{id : courseId}})
@@ -142,6 +155,14 @@
         width: 100%;
         margin-top: 20px;
         margin-bottom: 50px;
+    }
+    .no-course {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        font-size: 20px;
+        color: #666;
     }
 
     .pointer {

@@ -8,7 +8,6 @@
         <t-divider layout="vertical" />
         <t-menu-item value="item2" @click="toCourses">课程</t-menu-item>
         <t-divider layout="vertical" />
-        <t-menu-item value="item3"> 导师 </t-menu-item>
         <template #operations>
           <t-auto-complete
           v-model="value2"
@@ -26,9 +25,12 @@
                   <t-button shape="square" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);"><SearchIcon /></t-button>
               </template>
           </t-auto-complete>
-          <t-badge :count="2" style="margin-right: 25px;" class="header-oprations" size="small">
-                  <t-icon size="20" name="notification" />
-          </t-badge>
+          <t-button theme="default" style="margin-right: 25px;">
+                <template #icon>
+                    <t-icon name="pen-ball" size="20" />
+                </template>
+                创建
+          </t-button>
 
           <t-dropdown :min-column-width="120" trigger="click">
               <template #dropdown>

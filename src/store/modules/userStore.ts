@@ -79,7 +79,7 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    /** 关注帖子 */
+    /** 关注课程 */
     async followCourse(courseId : number) {
       if (!this.followedCourses.includes(courseId)) {
         this.followedCourses.push(courseId)
@@ -110,7 +110,12 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    /** 取消关注帖子 */
+    /** 是否已关注课程 **/
+    isFollowingCourse(courseId: number): boolean {
+      return this.followedCourses.includes(courseId)
+    },
+
+    /** 取消关注课程 */
     unfollowCourse(postId: number) {
       this.followedCourses = this.followedCourses.filter(id => id !== postId)
     },

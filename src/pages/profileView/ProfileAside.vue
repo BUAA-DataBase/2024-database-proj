@@ -2,7 +2,7 @@
         <div class="profileCard">
             <t-space direction="vertical">
                 <span class="profileUsername">{{ props.user.userName }}</span>
-                <t-space style="margin-top: 10px;">
+                <t-space v-if="!isMyProfile" style="margin-top: 10px;">
                     <t-button @click="followUser">
                         <template #icon>
                             <HeartIcon />
@@ -63,6 +63,10 @@
         user: {
             type: Object as PropType<UserState>,
             required: true
+        },
+        isMyProfile: {
+            type: Boolean,
+            require: true
         }
     });
 

@@ -10,27 +10,34 @@
             </t-button>
         </div>
         <t-divider style="margin-top: 10px"/>
-        <div class="all-review-container">
-            <ReViewSelector
-                :courseYear="props.courseYear"
-                @updateValues="handleUpdateValues"
-            />
+        <div v-if="exist">
+            <div class="all-review-container">
+                <ReViewSelector
+                    :courseYear="props.courseYear"
+                    @updateValues="handleUpdateValues"
+                />
+            </div>
+            <div class="all-review">
+                <CourseHomeReViewEx
+                    v-for="(comment, index) in comments"
+                    :key="index"
+                    :author="comment.author"
+                    :toPostId="comment.postId"
+                    :course="props.courseName"
+                    :teacher="props.courseTeacher"
+                    :date_published="comment.time"
+                    :date_updated="comment.time"
+                    :avatar="comment.avatar"
+                    :year="comment.courseYear"
+                    :rate="comment.content.rate"
+                    :content="comment.content"
+                />
+            </div>
         </div>
-        <div class="all-review">
-            <CourseHomeReViewEx
-                v-for="(comment, index) in comments"
-                :key="index"
-                :author="comment.author"
-                :toPostId="comment.postId"
-                :course="props.courseName"
-                :teacher="props.courseTeacher"
-                :date_published="comment.time"
-                :date_updated="comment.time"
-                :avatar="comment.avatar"
-                :year="comment.courseYear"
-                :rate="comment.content.rate"
-                :content="comment.content"
-            />
+        <div v-else>
+            <div class="no-review">
+                <span>暂无点评,快来争做第一人吧！</span>
+            </div>
         </div>
     </div>
 </template>
@@ -67,6 +74,8 @@
       console.log(comments.value);
     };
 
+    const exist = useStore.getPostsByCourse(props.courseName).length > 0;
+
     const comments = ref<PostState[]> ([]);
 
 </script>
@@ -96,5 +105,13 @@
     }
     .all-review {
         margin-top: 40px;
+    }
+    .no-review {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 150px;
+        font-size: 20px;
+        color: #999;
     }
 </style>

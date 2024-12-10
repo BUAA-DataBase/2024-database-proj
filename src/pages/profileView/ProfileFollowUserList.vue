@@ -1,5 +1,8 @@
 <template>
-    <UserItemList style="width: 100%;" :user="props.user"/>
+    <UserItemList style="width: 100%;" 
+        :user="props.user" 
+        :isMyProfile="props.isMyProfile"
+    />
 </template>
 
 <script lang="ts" setup name="">
@@ -9,6 +12,10 @@
     const props = defineProps({
         user: {
             type: Object as PropType<UserState>,
+            required: true
+        },
+        isMyProfile: {
+            type: Boolean,
             required: true
         }
     });

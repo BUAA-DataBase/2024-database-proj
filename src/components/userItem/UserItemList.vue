@@ -1,5 +1,5 @@
 <template>
-    <div class="userItemList">
+    <div v-if="users.length > 0" class="userItemList">
         <UserItem
             v-for="(user, index) in users"
             :key="index"
@@ -8,10 +8,13 @@
             :numberOfNewReviews="0"
         />
     </div>
+    <div v-else class="no-user">
+        <span>{{no_user_text}}</span>
+    </div>
 </template>
 
 <script lang="ts" setup>
-import { ref,watch, type PropType } from 'vue';
+import { computed, ref,watch, type PropType } from 'vue';
 import UserItem from './UserItem.vue';
 import type { UserState } from '@/store/types';
 import axios from 'axios';
@@ -20,10 +23,18 @@ const props = defineProps({
     user: {
         type: Object as PropType<UserState>,
         required: true
+    },
+    isMyProfile: {
+        type: Boolean,
+        required: true
     }
 });
 
 const users = ref<UserState[]>([]);
+
+const no_user_text = computed(() => {
+    return (props.isMyProfile == true) ? '您还没有关注任何用户哦' : '暂无关注用户'
+})
 
 watch(() => props.user, async (newUser, oldUser) => {
     if (props.user && props.user.following && props.user.following.length > 0) {
@@ -56,5 +67,13 @@ watch(() => props.user, async (newUser, oldUser) => {
     flex-direction: column;
     width: 100%;
     gap: 10px; /* 每个 UserItem 之间的间距 */
+}
+.no-user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 20px;
+    color: #999;
 }
 </style>

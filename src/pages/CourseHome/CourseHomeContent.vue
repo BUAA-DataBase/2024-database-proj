@@ -52,11 +52,14 @@
         </div>
         <div class="buttons">
             <t-space>
-                <t-button @click="followCourse">
+                <t-button v-if="!follow" @click="followCourse">
                     <template #icon>
                         <HeartIcon />
                     </template>
                     关注
+                </t-button>
+                <t-button theme="default" v-if="follow" @click="unfollowCourse" style="padding: 0 20px;">
+                    已关注
                 </t-button>
                 <t-button theme="default">
                     <template #icon>
@@ -85,6 +88,7 @@
     import { HeartIcon, ThumbUpIcon, ThumbDownIcon} from 'tdesign-icons-vue-next';
     import CourseHomePostList from './CourseHomePostList.vue';
     import { useUserStore } from '@/store/modules/userStore';
+import type { RefSymbol } from '@vue/reactivity';
 
     const props = defineProps({
   courseId: { type: Number, required: true},      
@@ -111,9 +115,21 @@ const newRate = ref(Math.round(props.courseRate * 2 - 0.1)/2)
 
 const userStore = useUserStore();
 
+const follow = ref(userStore.isFollowingCourse(props.courseId));
+
 function followCourse() {
     userStore.followCourse(props.courseId);
+    follow.value = true;
+    console.log("i will follow" + follow.value);
 }
+
+function unfollowCourse() {
+    userStore.unfollowCourse(props.courseId);
+    follow.value = false;
+    console.log("i will unfollow" + follow.value);
+}
+
+
 
 </script>
 
