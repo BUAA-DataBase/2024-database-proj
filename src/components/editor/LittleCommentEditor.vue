@@ -66,14 +66,14 @@
     }
     
     const comment = ref<ReviewState>({
-      reviewId: Date.now(),
+      reviewId: 0,
       toPostId: props.toPostId,
       toAuthor: props.toAuthor,
       toAvatar: props.toAvatar,
       author: userStore.getNowUser().userName,
       avatar: userStore.getNowUser().avatar,
-      time: new Date().toISOString(),
-      mtime: new Date().toISOString(),
+      time: formatDateToCustomString(new Date()),
+      mtime: formatDateToCustomString(new Date()),
       content: content.value,
       likeUsers: []
     });
@@ -94,6 +94,30 @@
     });
     console.log("评论已提交:", comment.value);
   };
+
+  function formatDateToCustomString(date : Date) {
+    // 提取年份，getFullYear() 方法返回完整的年份（四位数）
+    let year = date.getFullYear();
+ 
+    // 提取月份，getMonth() 方法返回的月份是从 0（一月）到 11（十二月）的整数
+    // 因此需要加 1，并使用 padStart() 方法确保月份始终是两位数
+    let month = ('0' + (date.getMonth() + 1)).slice(-2);
+ 
+    // 提取日期，getDate() 方法返回一个月中的某一天（1 到 31）
+    // 使用 padStart() 方法确保日期始终是两位数
+    let day = ('0' + date.getDate()).slice(-2);
+ 
+    // 提取小时，getHours() 方法返回小时数（0 到 23）
+    // 使用 padStart() 方法确保小时始终是两位数
+    let hours = ('0' + date.getHours()).slice(-2);
+ 
+    // 提取分钟，getMinutes() 方法返回分钟数（0 到 59）
+    // 使用 padStart() 方法确保分钟始终是两位数
+    let minutes = ('0' + date.getMinutes()).slice(-2);
+ 
+    // 根据所需的格式拼接字符串
+    return `${year}-${month}-${day}-${hours}:${minutes}`;
+  }
   </script>
   
   <style scoped lang="scss">

@@ -40,6 +40,10 @@ export interface UserState {
 }
 
 export interface CourseState {
+  courseType: string
+  courseCredit: number
+  courseDepartment: string
+  courseHours: number
   courseId: number
   courseName: string
   courseTeacher: string
@@ -51,10 +55,6 @@ export interface CourseState {
   courseGrading: number
   courseGain: number
   teacherImage: string
-  courseType: string
-  courseDepartment: string
-  courseCredit: number
-  courseHours: number
   courseFollower: number
   courseRecommendUsers: number[]
   courseNotRecommendUsers: number[]

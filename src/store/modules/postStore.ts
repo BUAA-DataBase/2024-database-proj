@@ -6,24 +6,67 @@ import { ErrorCode } from '@/constants/error-codes'
 
 export const usePostStore = defineStore("post", {
   state: () => ({
-    posts: [] as PostState[], // 定义 posts 类型为 post 数组
+    posts: [] as PostState[],
   }),
   actions: {
+    async fetchData() {
+      try {
+        const response = await axios.get('/api/posts/get-all');
+        const postIds = response.data.posts;
+        const allPosts: PostState[] = [];
+        if (postIds) {
+          for (const id of postIds) {
+            try {
+              const postResponse = await axios.get(`/api/posts/query?id=${id}`);
+              console.log(postResponse.data)
+              let parsedData = JSON.parse(postResponse.data.feedback) as PostState;
+              console.log(parsedData)
+              parsedData.postId = parseInt(id);
+              if (parsedData.postId && parsedData.postId != 0) {
+                console.log(id)
+                console.log(parsedData)
+                allPosts.push(parsedData); 
+              }
+              try {
+                  const commentResponse = await axios.get(`/api/posts/get-comments?id=${id}`)
+                  console.log(commentResponse.data)
+                  let parsedComment = JSON.parse(commentResponse.data.profile) as ReviewState;
+                  console.log(parsedComment)
+              } catch (e) {
+                console.error(`Failed to fetch comment with ID ${id}:`, e);
+              }
+            } catch (error) {
+              console.error(`Failed to fetch post with ID ${id}:`, error);
+            }
+          }
+        }
+ 
+        this.posts = allPosts;
+        console.log("fetch posts successfully")
+      }catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    },
 
-    // 新增评论
     async addPost(post: PostState, verificationCode: string) {
       this.posts.push(post);
+      let course_name = `${post.course}-${post.teacher}`;
+      console.log(course_name)
+      console.log(verificationCode)
+      const jsonString = JSON.stringify(post)
+      console.log(jsonString)
       try {
         console.log(post)
         const response = await axios.post(`/api/posts/new?token=${verificationCode}`,{
-          course_name: post.course,
+          course_name: course_name,
           recommendation: post.content.rate,
-          feedback: "",
-          data: post
+          feedback: post,
+          data: post.content.comment
         }); // 发送GET请求到后端API
         console.log(response.data)
         if (response.data.result == 'ok') {
-            console.log("Successfully upload!");
+            console.log("Successfully upload post!");
+            post.postId = response.data.id;
         }
       } catch (error : any) {
         let errorMessage = "";
@@ -70,6 +113,7 @@ export const usePostStore = defineStore("post", {
         console.log(response.data)
         if (response.data.result == 'ok') {
             console.log("Successfully upload!");
+            comment.reviewId = response.data.id;
         }
       } catch (error) {
       console.error('Error fetching user info:', error);

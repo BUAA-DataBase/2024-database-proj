@@ -19,10 +19,11 @@ const routes = [
     path: '/latestComments/:page',
     name: 'latestComments',
     component: LatestCommentsList,
-    props: true
+    props: true,
+    meta: {default: true},
   },
   {
-    path: '/editor/:courseId/:userId',
+    path: '/editor/:courseId?/:userId?',
     name: 'editor',
     component: Editor,
     props: true
@@ -42,7 +43,6 @@ const routes = [
   {
     path: '/login',
     component: Login,
-    meta: {default: true},
   },
   {
     path: '/register',
@@ -50,8 +50,8 @@ const routes = [
   },
   {
     path: '/:pathMatch(.*)*',
-    name: 'RedirectToLogin',
-    redirect: '/login'
+    name: 'RedirectToLatest',
+    redirect: '/latestComments/1'
   },
 ]
 

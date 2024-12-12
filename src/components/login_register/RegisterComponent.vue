@@ -7,7 +7,7 @@
           text="欢迎来到我们的网站
 注册一个属于自己的账号并加入我们吧"
         />
-        <t-input v-model="username" placeholder="请输入您的账号" autofocus showClearIconOnEmpty />
+        <t-input v-model="username" placeholder="请输入您的用户名" autofocus showClearIconOnEmpty />
         <t-input v-model="email" placeholder="请输入您的邮箱" autofocus showClearIconOnEmpty />
         <t-input
           type="password"

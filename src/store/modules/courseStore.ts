@@ -7,6 +7,50 @@ export const useCourseStore = defineStore("course", {
     courses: [] as CourseState[], // 定义 courses 类型为 Course 数组
   }),
   actions: {
+    async fetchData() {
+      try {
+        const response = await axios.get('/api/courses/get-all');
+        const courseIds = response.data.courses; // 假设这是一个包含所有课程ID的数组
+ 
+        // 如果API支持批量查询，你可以在这里构造一个批量查询的请求
+        // 但由于假设API不支持，我们将逐个查询每个课程的详细信息
+        const allCourses: CourseState[] = [];
+        if (courseIds) {
+          for (const id of courseIds) {
+            try {
+              const courseResponse = await axios.get(`/api/courses/query?id=${id}`);
+              console.log(courseResponse.data)
+              let jsonString = courseResponse.data.profile;
+              jsonString = jsonString.replace(/\\\"/g,'"');
+              jsonString = jsonString.replace(/\"\"/g,'');
+              console.log(jsonString);
+              let parsedData : CourseState = JSON.parse(jsonString) as CourseState;
+              console.log(parsedData)
+              parsedData.courseId = parseInt(id);
+              parsedData.courseName = courseResponse.data.name.split('-')[0];
+              parsedData.courseTeacher = courseResponse.data.name.split('-').length > 1 ? 
+              courseResponse.data.name.split('-').slice(1).join('-') : '';
+              parsedData.courseYear.push("2024秋");
+              if (parsedData.courseId) {
+                console.log(id)
+                console.log(parsedData)
+                allCourses.push(parsedData); // 假设后端返回的是单个课程的详细信息，且格式与CourseState兼容
+              }
+            } catch (error) {
+              console.error(`Failed to fetch course with ID ${id}:`, error);
+              // 可以选择在这里处理错误，比如记录日志、跳过当前ID等
+            }
+          }
+        }
+ 
+        // 更新store中的courses状态
+        this.courses = allCourses;
+        console.log("fetch courses successfully")
+      }catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    },
+    
     // 新增课程
     addCourse(course: CourseState) {
       course.roundRate = Math.round(course.courseRate * 2 - 0.1)/2

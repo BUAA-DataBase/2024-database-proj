@@ -20,11 +20,11 @@
             />
         </div>
         <div class="item">
-            <span class="title">课程名称</span>
+            <span class="title">开课学期</span>
             <t-auto-complete
                 v-model="year"
                 :options="yearOptions"
-                placeholder="请输入课程名称"
+                placeholder="请输入开课学期"
                 clearable
             />
         </div>
@@ -142,12 +142,12 @@ import Review from '../reviews/Review.vue';
     // 创建 PostState 对象
     console.log(userStore.getNowUser())
     const newPost = ref<PostState>({
-        postId: Date.now(), // 使用时间戳作为唯一ID，或从后端获取
+        postId: 0, // 使用时间戳作为唯一ID，或从后端获取
         author: userStore.getNowUser().userName, // 这里可以根据用户的登录信息动态获取
         authorId: userStore.getNowUser().userId,
         avatar: userStore.getNowUser().avatar, // 同样可以动态获取
-        time: new Date().toISOString(),
-        mtime: new Date().toISOString(),
+        time: formatDateToCustomString(new Date()),
+        mtime: formatDateToCustomString(new Date()),
         course: courseName.value,
         courseYear: year.value,
         teacher: teacherName.value,
@@ -168,7 +168,9 @@ import Review from '../reviews/Review.vue';
     // 调用 postStore 的 addPost 方法将新帖子添加到状态中
     const user = userStore.getNowUser();
     postStore.addPost(newPost.value,user.verificationCode);
-    user.posts.push(newPost.value);
+    const postId = postStore.getPostId(newPost.value.author, newPost.value.course, newPost.value.teacher);
+    newPost.value.postId = postId;
+    userStore.getNowUser().posts.push(newPost.value);
     userStore.updateProfile(user);
 
     // 提交成功后，你可以清空输入框或进行一些反馈操作
@@ -183,12 +185,34 @@ import Review from '../reviews/Review.vue';
     comment.value = '';
 
     alert('提交成功，新的帖子已添加');
-    console.log('提交成功，新的帖子已添加');
     const courseId = courseStore.getCourseByNameAndTeacher(newPost.value.course,newPost.value.teacher) as number;
     router.push({name:"course", params:{id: courseId, reviewId : newPost.value.postId}})
+    console.log('提交成功，新的帖子已添加');
 }
 
-
+function formatDateToCustomString(date : Date) {
+    // 提取年份，getFullYear() 方法返回完整的年份（四位数）
+    let year = date.getFullYear();
+ 
+    // 提取月份，getMonth() 方法返回的月份是从 0（一月）到 11（十二月）的整数
+    // 因此需要加 1，并使用 padStart() 方法确保月份始终是两位数
+    let month = ('0' + (date.getMonth() + 1)).slice(-2);
+ 
+    // 提取日期，getDate() 方法返回一个月中的某一天（1 到 31）
+    // 使用 padStart() 方法确保日期始终是两位数
+    let day = ('0' + date.getDate()).slice(-2);
+ 
+    // 提取小时，getHours() 方法返回小时数（0 到 23）
+    // 使用 padStart() 方法确保小时始终是两位数
+    let hours = ('0' + date.getHours()).slice(-2);
+ 
+    // 提取分钟，getMinutes() 方法返回分钟数（0 到 59）
+    // 使用 padStart() 方法确保分钟始终是两位数
+    let minutes = ('0' + date.getMinutes()).slice(-2);
+ 
+    // 根据所需的格式拼接字符串
+    return `${year}-${month}-${day}-${hours}:${minutes}`;
+  }
 </script>
 
 <style scoped lang="scss">
