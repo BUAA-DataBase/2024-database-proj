@@ -53,13 +53,20 @@
         console.log('点赞')
     }
 
+    const emit = defineEmits(['toggle-reply']);
+
     const handleReplyClick = () => {
-        console.log('回复')
+        emit('toggle-reply');
     }
 
 </script>
 
 <style scoped lang="scss">
+    .review-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
     .author {
         font-size: 14px;
         color: var(--author-name);
