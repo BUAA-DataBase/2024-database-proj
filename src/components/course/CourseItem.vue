@@ -1,5 +1,5 @@
 <template>
-    <div class="courseItemBackground">
+    <div v-if="dataLoadedstore.dataLoadedCourse" class="courseItemBackground">
       <t-space direction="vertical">
         <!-- 课程标题和年份 -->
         <div>
@@ -32,6 +32,9 @@
         </div>
       </t-space>
     </div>
+    <div v-else class="courseItemBackground-sk">
+        <t-skeleton :row-col="rowCol" animation="gradient"/>
+    </div>
     <t-divider class="dividerStyle"></t-divider>
   </template>
 
@@ -39,7 +42,15 @@
 <script lang="ts" setup name="CourseItem">
     import { ref, defineProps, computed } from 'vue'
     import { useRoute } from 'vue-router'
+    import { dataLoadedStore } from '@/store/modules/dataLoadStore';
 
+    const rowCol = ref([
+    [
+        { type: 'rect', width: '1200px', height: '150px'}, // 第一行：一个方形
+    ],
+    ]);
+
+    const dataLoadedstore = dataLoadedStore();
     // 定义传递给组件的属性
     const props = defineProps({
     id: {
@@ -92,6 +103,14 @@
 </script>
 
 <style scoped lang="scss">
+    .courseItemBackground-sk {
+        padding: 0;
+        border-radius: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
     .courseItemBackground {
         background-color: #f0f5fd;
         padding: 20px 20px 30px 20px;

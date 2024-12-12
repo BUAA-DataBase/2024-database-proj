@@ -30,7 +30,9 @@
     import { useRouter, useRoute } from 'vue-router';
     import {useCourseStore} from '../store/modules/courseStore'
     import type { CourseState } from '../store/types'
+    import { dataLoadedStore } from '@/store/modules/dataLoadStore';
 
+    const courseStore = useCourseStore();
     const router = useRouter();
     const route = useRoute();
 
@@ -40,6 +42,8 @@
         router.push({name: 'course' , params:{id : courseId}})
     }
 
+    const dataLoadedstore = dataLoadedStore();
+
     const courses = ref<CourseState[]>([]);
     const currentPage = computed<number>(() => {
         const pageParam = route.params.page;
@@ -48,6 +52,12 @@
         ? parseInt(pageParam, 10)
         : 1;
     });
+
+    onMounted(async () => {
+      await courseStore.fetchData();
+      courseStore.initialParams();
+      dataLoadedstore.setDataLoadedCourse(true);
+    })
 
     function fetchCourses(page: number): CourseState[] {
         // 从 commentStore 中获取排序后的评论数组

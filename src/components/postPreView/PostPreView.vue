@@ -1,12 +1,12 @@
 <template>
     <div class="review-container">
             <div v-if="showAvatar" class="avatar-container">
-                <t-avatar v-if="dataLoaded" size="50px" :image="thisPostAvatar" alt="用户头像" shape="circle" />
+                <t-avatar v-if="dataLoadedstore.dataLoadedPost" size="50px" :image="thisPostAvatar" alt="用户头像" shape="circle" />
                 <t-skeleton style="line-height:50px" animation="gradient" theme="avatar" v-else />
             </div>
             <div class="info-container">
                 <t-space direction="vertical">
-                    <div class="top-row" v-if="dataLoaded">
+                    <div class="top-row" v-if="dataLoadedstore.dataLoadedPost">
                         <t-space>
                             <span v-if="showAuthor" class="author" @click="toAuthor">
                                 {{ thisPostAuthor }}
@@ -24,7 +24,7 @@
                         <t-skeleton style="width:80px" animation="gradient" theme="text" />
                     </div>
                     <div class="content-container">
-                        <span class="content" v-if="dataLoaded">
+                        <span class="content" v-if="dataLoadedstore.dataLoadedPost">
                             {{ truncatedContent }}
                             <span class="read-more" @click="toPost">>>更多</span>
                         </span>
@@ -48,11 +48,7 @@
     import { onMounted } from 'vue';
     import { Role, type UserState } from '@/store/types';
     import axios from 'axios';
-
-    const courseStore = useCourseStore()
-    const postStore = usePostStore()
-
-    const dataLoaded = ref(false);
+    import { dataLoadedStore } from '@/store/modules/dataLoadStore';
 
     const props = defineProps({
         postId: { type: Number, required: true },
@@ -71,6 +67,8 @@
     const router = useRouter();
     const useStore = useCourseStore();
     const useStore2 = usePostStore();
+
+    const dataLoadedstore = dataLoadedStore();
 
     const thisPostAuthor = ref(props.author);
     const thisPostAvatar = ref(props.avatar);
@@ -96,12 +94,6 @@
       });
       const parsedData = ref<UserState>(rawUser.value);
       const error = ref<string | null>(null);
-
-    onMounted (async () => {
-        await courseStore.fetchData();
-        await postStore.fetchData();
-        dataLoaded.value = true; // 数据加载完成后设置标志
-    })
 
     watch(
         () => props,

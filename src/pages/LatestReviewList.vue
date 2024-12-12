@@ -16,15 +16,26 @@
 </template>
 
 <script setup lang="ts">
-  import {ref} from 'vue';
+  import {ref, onMounted} from 'vue';
   import Pagination from '../utils/Pagination.vue';
   import PostPreViewList from '@/components/postPreView/PostPreViewList.vue';
+  import { usePostStore } from '@/store/modules/postStore';
+  import { dataLoadedStore } from '@/store/modules/dataLoadStore';
+
+  const postStore = usePostStore();
+  const dataLoadedstore = dataLoadedStore();
 
   const childArraySize = ref(1);
 
   function handleArraySizeChange(newSize: number) {
     childArraySize.value = newSize;
   }
+
+  onMounted(async () => {
+    await postStore.fetchData();
+    console.log(postStore.getPostsSize());
+    dataLoadedstore.setDataLoadedPost(true);
+  })
 </script>
 
 <style lang="css" scoped>

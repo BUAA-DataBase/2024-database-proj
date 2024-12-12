@@ -11,6 +11,7 @@
         :content="post.content.comment"
         :showAuthor="showAuthor"
         :showAvatar="showAvatar"
+        :dataLoaded="dataLoaded"
       />
     </div>
 </template>
@@ -23,6 +24,7 @@
     import { usePostStore } from '@/store/modules/postStore';
     import type { PostState, CommentContent } from '@/store/types';
     import { useUserStore } from '@/store/modules/userStore';
+    import { useCourseStore } from '@/store/modules/courseStore';
 
     const props = defineProps({
         showAvatar: { type: Boolean, default: true },
@@ -34,7 +36,8 @@
     const route = useRoute();
 
     const useStore = usePostStore();
-    const userStore = useUserStore();
+
+    const dataLoaded = ref(false);
 
     const posts = ref<PostState[]>([]);
     const currentPage = computed<number>(() => {

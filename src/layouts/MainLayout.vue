@@ -24,12 +24,6 @@
     function notLogin() :boolean{
       return ((route.path != '/login') && (route.path != '/register'))
     }
-
-    onMounted(async () => {
-      await courseStore.fetchData();
-      await postStore.fetchData();
-      dataLoaded.value = true; // 数据加载完成后设置标志
-    })
 </script>
 
 <style scoped lang="scss">
