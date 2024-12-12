@@ -1,6 +1,6 @@
 // stores/userStore.ts
 import { defineStore } from 'pinia'
-import type { UserState } from '../types'
+import type { PostState, UserState } from '../types'
 import { Role } from '../types'
 import axios from 'axios'
 import { ErrorCode } from '@/constants/error-codes'
@@ -98,6 +98,13 @@ export const useUserStore = defineStore('user', {
       } catch (error :any) {
         console.log(error.response.data)
       console.error('Error fetching user info:', error);
+      }
+    },
+
+    async pushPost(post : PostState) {
+      if (post.postId != 0) {
+        this.$state.posts.push(post);
+        this.updateProfile(this.$state);
       }
     },
 

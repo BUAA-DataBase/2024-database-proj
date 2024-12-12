@@ -187,8 +187,6 @@
         // 调用 postStore 的 addPost 方法将新帖子添加到状态中
         const user = userStore.getNowUser();
         postStore.addPost(newPost, user.verificationCode);
-        user.posts.push(newPost);
-        userStore.updateProfile(user);
     }
 
     // 提交成功后，你可以清空输入框或进行一些反馈操作

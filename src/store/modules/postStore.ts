@@ -3,6 +3,7 @@ import type { PostState, ReviewState } from '../types'
 import type { SelectProps } from 'tdesign-vue-next'
 import axios from 'axios';
 import { ErrorCode } from '@/constants/error-codes'
+import { useUserStore } from './userStore';
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -67,6 +68,9 @@ export const usePostStore = defineStore("post", {
         if (response.data.result == 'ok') {
             console.log("Successfully upload post!");
             post.postId = response.data.id;
+            console.log(post);
+            const useStore = useUserStore();
+            useStore.pushPost(post);
         }
       } catch (error : any) {
         let errorMessage = "";
