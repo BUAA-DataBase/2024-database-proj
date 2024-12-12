@@ -57,15 +57,9 @@ export const useCourseStore = defineStore("course", {
       this.courses.push(course);
     },
 
-    getCourseById(courseId: number): CourseState {
+    getCourseById(courseId: number): CourseState | null {
       const course = this.courses.find((course) => course.courseId === courseId);
-      
-      if (!course) {
-        console.error(`Course with ID ${courseId} not found!`);
-        throw new Error(`Course with ID ${courseId} not found.`);
-      }
-      
-      return course;
+      return course || null;
     },
 
     getCourseIdByNameAndTeacher(courseName: string, courseTeacher: string): number {

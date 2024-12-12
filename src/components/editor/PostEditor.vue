@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import { computed, ref, watch } from 'vue'
+    import { computed, onMounted, ref, watch } from 'vue'
     import { useCourseStore } from '@/store/modules/courseStore';
     import type { AutoCompleteProps } from 'tdesign-vue-next';
     import { convertDifficulty, convertGain, convertGrading, convertWorkload } from '@/constants/map';
@@ -87,10 +87,12 @@
     const router = useRouter()
     const route = useRoute()
 
-    const courseId = parseInt(route.params.id as string );
+    const courseId = parseInt(route.params.courseId as string );
 
-    const courseName = ref((courseId != null) ? courseStore.getCourseById(courseId).courseName : '');
-    const teacherName = ref(courseId != null ? courseStore.getCourseById(courseId).courseTeacher : '');
+    const course = courseStore.getCourseById(courseId);
+
+    const courseName = ref((courseId == null || course == null) ? '': course.courseName);
+    const teacherName = ref((courseId == null || course == null) ? '': course.courseTeacher);
     const oldPost = ref(postStore.getPostByCourseTeacherAndAuthorId(courseName.value, teacherName.value ,userStore.getNowUser().userId));
     const year = ref('');
     const rate = ref(4);
@@ -103,6 +105,12 @@
     const gain = ref(4);
     const gain_text = ref(convertGain(4));
     const comment = ref(oldPost.value ? oldPost.value.content.comment : '');
+
+    onMounted(()=> {
+        console.log(courseId);
+        console.log(courseName);
+        console.log(teacherName);
+    })
 
     watch([courseName, teacherName], ([newCourseName, newTeacherName]) => {
         oldPost.value = postStore.getPostByCourseTeacherAndAuthorId(newCourseName, newTeacherName, userStore.getNowUser().userId);
@@ -141,16 +149,18 @@
 
     // 监听 `courseName` 和 `teacherName` 的变化，更新 `yearOptions`
     watch([courseName, teacherName], () => {
-    yearOptions.value = courseStore.getCourseYears(courseName.value, teacherName.value);
-    });
+        yearOptions.value = courseStore.getCourseYears(courseName.value, teacherName.value);
+    }, { immediate: true });
 
     function handIn() {
     // 创建 PostState 对象
     console.log(userStore.getNowUser())
+    let newPost: PostState;
     if (oldPost.value) {
-        oldPost.value.content.comment = comment.value;
+        newPost = oldPost.value;
+        newPost.content.comment = comment.value;
     } else {
-        const newPost = ref<PostState>({
+        newPost = {
             postId: Date.now(), // 使用时间戳作为唯一ID，或从后端获取
             author: userStore.getNowUser().userName, // 这里可以根据用户的登录信息动态获取
             authorId: userStore.getNowUser().userId,
@@ -172,12 +182,12 @@
             reviews: [], // 没有评论，初始化为空
             showAuthor: true, // 根据需求设置
             showAvatar: true, // 根据需求设置
-        });
-        console.log(newPost.value)
+        };
+        console.log(newPost);
         // 调用 postStore 的 addPost 方法将新帖子添加到状态中
         const user = userStore.getNowUser();
-        postStore.addPost(newPost.value,user.verificationCode);
-        user.posts.push(newPost.value);
+        postStore.addPost(newPost, user.verificationCode);
+        user.posts.push(newPost);
         userStore.updateProfile(user);
     }
 
@@ -193,8 +203,8 @@
     comment.value = '';
 
     alert('提交成功，新的帖子已添加');
-    const courseId = courseStore.getCourseByNameAndTeacher(newPost.value.course,newPost.value.teacher) as number;
-    router.push({name:"course", params:{id: courseId, reviewId : newPost.value.postId}})
+    const courseId = courseStore.getCourseByNameAndTeacher(newPost.course,newPost.teacher) as number;
+    router.push({name:"course", params:{id: courseId, reviewId : newPost.postId}})
     console.log('提交成功，新的帖子已添加');
 }
 

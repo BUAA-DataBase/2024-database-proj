@@ -31,32 +31,31 @@ export const useUserStore = defineStore('user', {
     login(userData: Partial<UserState>) {
       console.log(userData.verificationCode)
       if (userData.userName && userData.email && userData.verificationCode) {
-        // 模拟登录逻辑
-        this.userId = userData.userId || 0
-        this.verificationCode = userData.verificationCode || ''
-        this.userName = userData.userName || ''
-        this.email = userData.email || ''
-        this.role = userData.role || Role.Student
-        this.major = userData.major || ''
-        this.grade = userData.grade || ''
-        this.avatar = userData.avatar || ''
-        this.college = userData.college || ''
-        this.gender = userData.gender || ''
-        this.followedCourses= userData.followedCourses || []
-        this.followers = userData.followers || []
-        this.following = userData.following || []
-        this.blockedUsers = userData.blockedUsers || []
-        this.posts = userData.posts || []
-        this.registrationDate = userData.registrationDate || new Date()
+        this.$patch(userData);
+        this.saveUserToStorage();
         console.log("successfully log in!")
       } else {
         throw new Error('Invalid login credentials')
       }
     },
 
+    saveUserToStorage() {
+      localStorage.setItem('user', JSON.stringify(this.$state));
+    },
+    loadUserFromStorage() {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        this.$patch(JSON.parse(userData));
+      }
+    },
+    clearUserFromStorage() {
+      localStorage.removeItem('user');
+      this.$reset();
+    },
+
     /** 登出操作 */
     logout() {
-      this.$reset() // 使用 Pinia 提供的 $reset 方法恢复初始状态
+      this.clearUserFromStorage(); // 使用 Pinia 提供的 $reset 方法恢复初始状态
     },
 
     getNowUser() :UserState{
