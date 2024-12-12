@@ -35,7 +35,6 @@
                     <Review
                         :review="reply"
                         :belongAuthor="props.author"
-                        @toggle-reply="toggleReply"
                     />
                 </div>
             </div>
@@ -98,6 +97,7 @@
         }
     }
 
+    
 
     onMounted(() => {
         replies.value = useStore.getPostById(props.toPostId)?.reviews;

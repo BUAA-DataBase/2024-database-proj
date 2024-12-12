@@ -94,7 +94,7 @@
     const courseName = ref((courseId == null || course == null) ? '': course.courseName);
     const teacherName = ref((courseId == null || course == null) ? '': course.courseTeacher);
     const oldPost = ref(postStore.getPostByCourseTeacherAndAuthorId(courseName.value, teacherName.value ,userStore.getNowUser().userId));
-    const year = ref((oldPost.value == null) ? '': oldPost.value.courseYear);
+    const year = ref('');
     const rate = ref(4);
     const difficulty = ref(4);
     const difficulty_text = ref(convertDifficulty(4));
