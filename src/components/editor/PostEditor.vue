@@ -165,8 +165,8 @@
             author: userStore.getNowUser().userName, // 这里可以根据用户的登录信息动态获取
             authorId: userStore.getNowUser().userId,
             avatar: userStore.getNowUser().avatar, // 同样可以动态获取
-            time: new Date().toISOString(),
-            mtime: new Date().toISOString(),
+            time: formatDateToCustomString(new Date()),
+            mtime: formatDateToCustomString(new Date()),
             course: courseName.value,
             courseYear: year.value,
             teacher: teacherName.value,
