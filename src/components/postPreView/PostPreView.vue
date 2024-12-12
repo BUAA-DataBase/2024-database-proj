@@ -2,7 +2,7 @@
     <div class="review-container">
             <div v-if="showAvatar" class="avatar-container">
                 <t-avatar v-if="dataLoaded" size="50px" :image="thisPostAvatar" alt="用户头像" shape="circle" />
-                <t-skeleton style="line-height:50px" theme="avatar" v-else />
+                <t-skeleton style="line-height:50px" animation="gradient" theme="avatar" v-else />
             </div>
             <div class="info-container">
                 <t-space direction="vertical">
@@ -20,14 +20,16 @@
                         </t-space>
                         <span class="time">{{ time }}</span>
                     </div>
-                    
+                    <div v-else>
+                        <t-skeleton style="width:80px" animation="gradient" theme="text" />
+                    </div>
                     <div class="content-container">
                         <span class="content" v-if="dataLoaded">
                             {{ truncatedContent }}
                             <span class="read-more" @click="toPost">>>更多</span>
                         </span>
                         <div class="paragrah-container" v-else>
-                            <t-skeleton style="line-height:20px" theme="paragraph" />
+                            <t-skeleton style="line-height:15px" animation="gradient" theme="paragraph" />
                         </div>
                     </div>
                 </t-space>
