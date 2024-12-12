@@ -4,6 +4,7 @@ import type { SelectProps } from 'tdesign-vue-next'
 import axios from 'axios';
 import { ErrorCode } from '@/constants/error-codes'
 import { useUserStore } from './userStore';
+import { useCourseStore } from './courseStore';
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -20,30 +21,31 @@ export const usePostStore = defineStore("post", {
             try {
               const postResponse = await axios.get(`/api/posts/query?id=${id}`);
               console.log(postResponse.data)
-              let parsedData = JSON.parse(postResponse.data.feedback) as PostState;
-              console.log(parsedData)
-              parsedData.postId = parseInt(id);
-              if (parsedData.postId && parsedData.postId != 0) {
-                console.log(id)
+              if (postResponse.data.feedback) {
+                let parsedData = JSON.parse(postResponse.data.feedback) as PostState;
                 console.log(parsedData)
-                allPosts.push(parsedData); 
+                parsedData.postId = parseInt(id);
+                if (parsedData.postId && parsedData.postId != 0) {
+                  console.log(id)
+                  console.log(parsedData)
+                  allPosts.push(parsedData); 
+                }
               }
-              try {
+              /*try {
                   const commentResponse = await axios.get(`/api/posts/get-comments?id=${id}`)
                   console.log(commentResponse.data)
                   let parsedComment = JSON.parse(commentResponse.data.profile) as ReviewState;
                   console.log(parsedComment)
               } catch (e) {
                 console.error(`Failed to fetch comment with ID ${id}:`, e);
-              }
+              }*/
             } catch (error) {
               console.error(`Failed to fetch post with ID ${id}:`, error);
             }
           }
+          this.posts = allPosts;
+          console.log("fetch posts successfully")
         }
- 
-        this.posts = allPosts;
-        console.log("fetch posts successfully")
       }catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -69,8 +71,13 @@ export const usePostStore = defineStore("post", {
             console.log("Successfully upload post!");
             post.postId = response.data.id;
             console.log(post);
-            const useStore = useUserStore();
-            useStore.pushPost(post);
+            const userStore = useUserStore();
+            userStore.pushPost(post);
+            const courseStore = useCourseStore();
+            courseStore.upDateParams(
+              post.course,
+              post.teacher
+            );
         }
       } catch (error : any) {
         let errorMessage = "";
@@ -143,6 +150,10 @@ export const usePostStore = defineStore("post", {
     getPostsByTeacher(teacher: string): PostState[] {
       return this.posts.filter(post => post.teacher === teacher);
     },
+
+    getPostsByCourseAndTeacher(course:string,teacher:string) : PostState[] {
+      return this.posts.filter(post => post.course === course && post.teacher === teacher);
+    }, 
 
     // 获取所有评论
     getAllPosts(): PostState[] {

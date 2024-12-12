@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import type { CourseState } from '../types'
+import type { CourseState, PostState } from '../types'
 import axios from 'axios';
+import { usePostStore } from './postStore';
 
 export const useCourseStore = defineStore("course", {
   state: () => ({
@@ -41,11 +42,10 @@ export const useCourseStore = defineStore("course", {
               // 可以选择在这里处理错误，比如记录日志、跳过当前ID等
             }
           }
+          // 更新store中的courses状态
+          this.courses = allCourses;
+          console.log("fetch courses successfully")
         }
- 
-        // 更新store中的courses状态
-        this.courses = allCourses;
-        console.log("fetch courses successfully")
       }catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -165,5 +165,123 @@ export const useCourseStore = defineStore("course", {
       return []; // 如果未找到匹配的课程，返回空数组
     },
 
+    upDateParams(courseName: string, teacherName: string) {
+      const postStore = usePostStore(); // 确保 usePostStore 是正确导入的
+      const posts = postStore.getPostsByCourseAndTeacher(courseName, teacherName);
+   
+      // 查找对应的 course
+      const course = this.courses.find(course => course.courseName === courseName && course.courseTeacher === teacherName);
+   
+      if (course && posts.length > 0) {
+        // 初始化总和和计数
+        let totalRate = 0;
+        let totalDifficulty = 0;
+        let totalWorkload = 0;
+        let totalGrading = 0;
+        let totalGain = 0;
+        let count = posts.length;
+   
+        // 遍历 posts 计算总和
+        posts.forEach(post => {
+          totalRate += post.content.rate;
+          totalDifficulty += post.content.difficulty;
+          totalWorkload += post.content.workload;
+          totalGrading += post.content.grading;
+          totalGain += post.content.gain;
+        });
+   
+        // 计算平均值
+        const avgRate = (totalRate / count).toFixed(1); // 保留一位小数，返回字符串
+        const avgDifficulty = Math.round(totalDifficulty / count); // 四舍五入到整数
+        const avgWorkload = Math.round(totalWorkload / count);
+        const avgGrading = Math.round(totalGrading / count);
+        const avgGain = Math.round(totalGain / count);
+   
+        const avgRateNum = parseFloat(avgRate);
+        const calRoundRate = Math.round(avgRateNum * 2 - 0.1)/2
+        course.courseRate = avgRateNum;
+        course.courseDifficulty = avgDifficulty;
+        course.courseWorkload = avgWorkload;
+        course.courseGrading = avgGrading;
+        course.courseGain = avgGain;
+   
+        // 替换 this.courses 中的 course
+        const index = this.courses.findIndex(c => c.courseName === courseName && c.courseTeacher === teacherName);
+        if (index !== -1) {
+          this.courses[index] = {
+            ...this.courses[index],
+            courseRate: avgRateNum,
+            roundRate: calRoundRate,
+            courseDifficulty: avgDifficulty,
+            courseWorkload: avgWorkload,
+            courseGrading: avgGrading,
+            courseGain: avgGain,
+            courseRateNum: posts.length
+          };
+        }
+      }
+    },
+
+    initialParams() {
+      const postStore = usePostStore();
+   
+      // 使用 map 方法创建一个新的 courses 数组
+      if (this.courses) {
+        const updatedCourses = this.courses.map(course => {
+          // 获取相关的 posts
+          const posts = postStore.getPostsByCourseAndTeacher(course.courseName, course.courseTeacher);
+        
+          // 如果没有 posts，则直接返回原始的 course 对象（或者可以根据需要处理）
+          if (posts.length === 0) {
+            return course;
+          }
+        
+          // 初始化总和和计数
+          let totalRate = 0;
+          let totalDifficulty = 0;
+          let totalWorkload = 0;
+          let totalGrading = 0;
+          let totalGain = 0;
+          const count = posts.length;
+        
+          // 遍历 posts 计算总和
+          posts.forEach(post => {
+            totalRate += post.content.rate;
+            totalDifficulty += post.content.difficulty;
+            totalWorkload += post.content.workload;
+            totalGrading += post.content.grading;
+            totalGain += post.content.gain;
+          });
+        
+          // 计算平均值
+          const avgRate = (totalRate / count).toFixed(1); // 注意：toFixed 返回字符串，如果需要浮点数，可以使用 parseFloat 但要注意精度问题
+          const avgDifficulty = Math.round(totalDifficulty / count);
+          const avgWorkload = Math.round(totalWorkload / count);
+          const avgGrading = Math.round(totalGrading / count);
+          const avgGain = Math.round(totalGain / count);
+        
+          // 由于 avgRate 是字符串，我们可以选择将其转换回数字（但可能不精确表示原始字符串）
+          // 或者在需要显示时再进行转换
+          const avgRateNum = parseFloat(avgRate);
+          const calRoundRate = Math.round(avgRateNum * 2 - 0.1)/2
+        
+          // 返回更新后的 course 对象
+          return {
+            ...course,
+            courseRate: avgRateNum, // 或者直接使用 avgRate 字符串，取决于您的需求
+            roundRate: calRoundRate,
+            courseDifficulty: avgDifficulty,
+            courseWorkload: avgWorkload,
+            courseGrading: avgGrading,
+            courseGain: avgGain,
+            courseRateNum: posts.length
+          };
+        });
+   
+      // 用新的 courses 数组替换原本的 courses
+        this.courses = updatedCourses;
+      }
+    },
   },
+  
 });

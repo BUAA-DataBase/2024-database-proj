@@ -152,7 +152,7 @@
         yearOptions.value = courseStore.getCourseYears(courseName.value, teacherName.value);
     }, { immediate: true });
 
-    function handIn() {
+    async function handIn() {
     // 创建 PostState 对象
     console.log(userStore.getNowUser())
     let newPost: PostState;
@@ -186,7 +186,12 @@
         console.log(newPost);
         // 调用 postStore 的 addPost 方法将新帖子添加到状态中
         const user = userStore.getNowUser();
-        postStore.addPost(newPost, user.verificationCode);
+        try {
+            await postStore.addPost(newPost, user.verificationCode);
+        }
+        catch (error) {
+            console.error('Error adding post:', error);
+        }
     }
 
     // 提交成功后，你可以清空输入框或进行一些反馈操作
@@ -202,7 +207,9 @@
 
     alert('提交成功，新的帖子已添加');
     const courseId = courseStore.getCourseByNameAndTeacher(newPost.course,newPost.teacher) as number;
-    router.push({name:"course", params:{id: courseId, reviewId : newPost.postId}})
+    const reviewId = postStore.getPostId(newPost.author, newPost.course, newPost.teacher); 
+    console.log(reviewId)
+    router.push({name:"course", params:{id: courseId, reviewId : reviewId}})
     console.log('提交成功，新的帖子已添加');
 }
 

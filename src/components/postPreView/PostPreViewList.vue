@@ -48,8 +48,10 @@
     function fetchPosts(page: number): PostState[] {
         // 从 postStore 中获取排序后的评论数组
         if (props.authorId < 0) {
+          console.log(page)
           return useStore.getSortedPostsByMTime(page);
         } else {
+          console.log(page)
           return useStore.getMTimeSortedPostsByAuthorId(props.authorId, page);
         }
     }
@@ -60,13 +62,15 @@
  
     // 监听currentPage的变化，并在变化时重新获取数据
     watch(currentPage, (newPage) => {
+        console.log(newPage);
         posts.value = fetchPosts(newPage);
+        console.log(posts.value)
     });
 
     const emit = defineEmits(['update:arraySize']);
 
     function notifyPostsSizeChange() {
-      emit('update:arraySize', posts.value.length);
+      emit('update:arraySize', useStore.getPostsSize());
     }
 
     watch(posts, () => {

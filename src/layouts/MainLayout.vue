@@ -29,6 +29,7 @@
     onMounted(async () => {
       await courseStore.fetchData();
       await postStore.fetchData();
+      await courseStore.initialParams();
       dataLoaded.value = true; // 数据加载完成后设置标志
     })
 </script>

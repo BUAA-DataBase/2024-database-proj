@@ -113,28 +113,15 @@ export const useUserStore = defineStore('user', {
       if (!this.followedCourses.includes(courseId)) {
         this.followedCourses.push(courseId)
         try {
-          console.log(this)
-          const response = await axios.post(`/api/users/info?token=${this.$state.verificationCode}`,{
-              name: this.userName,
-              email: this.email,
-              profile: this
-          }); // 发送GET请求到后端API
-          console.log(response.data)
-          if (response.data.result == 'ok') {
-              console.log("Successfully upload!");
-          }
-        } catch (error) {
-        console.error('Error fetching user info:', error);
-        }
-        try {
-          console.log(this)
+          console.log(this.verificationCode)
           const response = await axios.post(`/api/users/follow-course?token=${this.verificationCode}&follow_id=${courseId}`); // 发送GET请求到后端API
           console.log(response.data)
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
           }
-        } catch (error) {
-        console.error('Error fetching user info:', error);
+        } catch (error : any) {
+          console.log(error.response.data)
+          console.error('Error fetching user info:', error);
         }
       }
     },
@@ -145,8 +132,20 @@ export const useUserStore = defineStore('user', {
     },
 
     /** 取消关注课程 */
-    unfollowCourse(postId: number) {
-      this.followedCourses = this.followedCourses.filter(id => id !== postId)
+    async unfollowCourse(courseId: number) {
+      if (this.followedCourses.includes(courseId)) {
+        this.followedCourses = this.followedCourses.filter(id => id != courseId)
+        try {
+          console.log(this)
+          const response = await axios.post(`/api/users/unfollow-course?token=${this.verificationCode}&follow_id=${courseId}`); // 发送GET请求到后端API
+          console.log(response.data)
+          if (response.data.result == 'ok') {
+              console.log("Successfully upload!");
+          }
+        } catch (error) {
+          console.error('Error fetching user info:', error);
+        }
+      }
     },
 
     /** 关注用户 */

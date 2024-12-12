@@ -33,14 +33,14 @@
 
 
 <script lang="ts" setup>
-    import { defineProps, ref, computed } from 'vue';
+    import { defineProps, ref, computed, watch } from 'vue';
     import { useRouter } from 'vue-router';
     import { useCourseStore } from '@/store/modules/courseStore';
     import { usePostStore} from '@/store/modules/postStore';
 
     import { onMounted } from 'vue';
-import { Role, type UserState } from '@/store/types';
-import axios from 'axios';
+    import { Role, type UserState } from '@/store/types';
+    import axios from 'axios';
 
     onMounted(() => {
         const reviewElement = document.querySelector('.info-container') as HTMLElement;
@@ -99,7 +99,12 @@ import axios from 'axios';
       const parsedData = ref<UserState>(rawUser.value);
       const error = ref<string | null>(null);
 
-    onMounted (async () => {
+    watch(
+        () => props,
+        async (newProps, oldProps) => {
+        console.log(props.author)
+        console.log(props.authorId)
+        console.log(props.avatar)
         try {
             const responseGetInfo = await axios.get(`/api/users/info?id=${props.authorId}`); // 发送GET请求到后端API
             if (responseGetInfo.data.result == 'ok') {
@@ -124,7 +129,7 @@ import axios from 'axios';
           } catch (error) {
             console.error('Error fetching user info:', error);
           }
-    })
+    }, {immediate : true, deep : true})
     
 
     const isTruncated = computed(() => cleanedText.value.length > maxLength);

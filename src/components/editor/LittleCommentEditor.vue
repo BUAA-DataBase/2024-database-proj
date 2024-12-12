@@ -17,6 +17,7 @@
   import { useUserStore } from '@/store/modules/userStore';
   import type {ReviewState} from '@/store/types'
   import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
   
   // 接收传入的 name 参数
   const props = defineProps({
@@ -58,10 +59,18 @@
 
   const emit = defineEmits();
   
+  const router = useRouter()
+
   // 提交评论
   const submitComment = () => {
     if (!content.value) {
       alert("评论内容不能为空");
+      return;
+    }
+
+    if (userStore.getNowUser().userId == 0) {
+      alert("请先登录！")
+      router.push({path:"/login"})
       return;
     }
     

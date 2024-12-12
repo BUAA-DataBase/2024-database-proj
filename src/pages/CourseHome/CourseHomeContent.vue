@@ -89,7 +89,8 @@
     import { HeartIcon, ThumbUpIcon, ThumbDownIcon} from 'tdesign-icons-vue-next';
     import CourseHomePostList from './CourseHomePostList.vue';
     import { useUserStore } from '@/store/modules/userStore';
-import type { RefSymbol } from '@vue/reactivity';
+    import { useRouter } from 'vue-router';
+    import type { RefSymbol } from '@vue/reactivity';
 
     const props = defineProps({
   courseId: { type: Number, required: true},      
@@ -115,17 +116,24 @@ import type { RefSymbol } from '@vue/reactivity';
 const newRate = ref(Math.round(props.courseRate * 2 - 0.1)/2)
 
 const userStore = useUserStore();
+const router = useRouter()
 
 const follow = ref(userStore.isFollowingCourse(props.courseId));
 
-function followCourse() {
-    userStore.followCourse(props.courseId);
-    follow.value = true;
-    console.log("i will follow" + follow.value);
+async function followCourse() {
+    if (userStore.getNowUser().userId != 0) {
+        await userStore.followCourse(props.courseId);
+        follow.value = true;
+        console.log("i will follow" + follow.value);
+    }
+    else {
+        alert("请先登录！")
+        router.push({path:"/login"})
+    }
 }
 
-function unfollowCourse() {
-    userStore.unfollowCourse(props.courseId);
+async function unfollowCourse() {
+    await userStore.unfollowCourse(props.courseId);
     follow.value = false;
     console.log("i will unfollow" + follow.value);
 }

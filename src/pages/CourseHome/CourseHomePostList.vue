@@ -66,8 +66,14 @@
     })
 
     function toEditor() {
-        router.push({name: "editor", params: {courseId: props.courseId}});
-        console.log(props.courseId);
+        if (useStore2.getNowUser().userId != 0) {
+            router.push({name: "editor", params: {courseId: props.courseId}});
+            console.log(props.courseId);
+        }
+        else {
+            alert("请先登录！")
+            router.push({path:"/login"})
+        }
     }
 
     const useStore = usePostStore()
