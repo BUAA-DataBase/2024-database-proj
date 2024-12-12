@@ -103,11 +103,23 @@
     }
 
     function toPerson() {
-        router.push({path: `/user/${useStore.getNowUser().userId}`})
+        if (useStore.getNowUser().userId != 0) {
+            router.push({path: `/user/${useStore.getNowUser().userId}`})
+        }
+        else {
+            alert("请先登录！")
+            router.push({path:"/login"})
+        }
     }
 
     function goToEditor() {
-        router.push({ path:"/editor" })
+        if (useStore.getNowUser().userId != 0) {
+            router.push({ path:"/editor" })
+        }
+        else {
+            alert("请先登录！")
+            router.push({path:"/login"})
+        }
     }
 
     async function toLogin() {

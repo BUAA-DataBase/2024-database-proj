@@ -65,6 +65,7 @@
     import { useRoute } from 'vue-router';
     import { usePostStore } from '@/store/modules/postStore';
     import { useUserStore } from '@/store/modules/userStore';
+    import { useRouter } from 'vue-router';
 
     const props = defineProps<{
         author: string,
@@ -109,6 +110,7 @@
     const gain = convertGain(props.content.gain)
     
     const useStore = usePostStore();
+    const router = useRouter()
 
     const likes = ref(useStore.getPostById(props.toPostId)?.likeUsers.length )
 
@@ -143,6 +145,11 @@
 
     // 点赞按钮的点击处理函数
     const handleLikeClick = () => {
+        if (userStore.getNowUser().userId == 0) {
+            alert("请先登录！");
+            router.push({path:"/login"})
+            return;
+        }
         useStore.updateLikeNum(props.toPostId, userStore.getNowUser().userId);
         likes.value = useStore.getPostById(props.toPostId)?.likeUsers.length as number;  // 点击时点赞数加1
         console.log('点赞按钮被点击了');

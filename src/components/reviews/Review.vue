@@ -29,6 +29,7 @@
     import { ThumbUpIcon } from 'tdesign-icons-vue-next'
     import { usePostStore } from '@/store/modules/postStore';
     import { useUserStore } from '@/store/modules/userStore';
+    import { useRouter } from 'vue-router';
     
     const props = defineProps<{
         review: ReviewState
@@ -37,10 +38,16 @@
 
     const postStore = usePostStore()
     const userStore = useUserStore()
+    const router = useRouter()
 
     const likeNum = ref(props.review.likeUsers.length);
 
     const handleLikeClick = () => {
+        if (userStore.getNowUser().userId == 0) {
+            alert("请先登录！")
+            router.push({path:"/login"})
+            return;
+        }
         postStore.updateCommentLikeNum(props.review.toPostId, props.review.reviewId, userStore.getNowUser().userId);
         likeNum.value = postStore.getReviewById(props.review.toPostId, props.review.reviewId)?.likeUsers.length as number;
         console.log('点赞')

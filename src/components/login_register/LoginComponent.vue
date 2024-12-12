@@ -79,7 +79,6 @@
               password: hashedPassword,
           });
           // 检查response.data是否存在
-          console.log(response);
           if (response.data && response.data.result == 'ok') {
             router.push({
                 path: '/latestComments/1',
@@ -93,6 +92,7 @@
             
             if (response.data.token && response.data.id) {
                 token.value = response.data.token;
+                console.log(response.data.token)
                 userId.value = response.data.id;
             }
             else {
@@ -126,28 +126,23 @@
         if (token.value && userId.value) {
           try {
             const responseGetInfo = await axios.get(`/api/users/info?id=${userId.value}`); // 发送GET请求到后端API
-            console.log(responseGetInfo.data);
             if (responseGetInfo.data.result == 'ok') {
-              console.log(responseGetInfo.data)
               username.value = responseGetInfo.data.name;
               try {
                 // 尝试解析JSON字符串
-                console.log(responseGetInfo.data.profile as string)
                 parsedData.value = JSON.parse(responseGetInfo.data.profile) as UserState;
                 error.value = null; // 清除任何先前的错误
               } catch (e) {
                 // 捕获解析错误
                 error.value = 'Invalid JSON format!';
-                console.log(userId.value);
                 parsedData.value = rawUser.value; // 清除解析后的数据
               }
-              console.log(parsedData)
               parsedData.value.userName = username.value;
               parsedData.value.verificationCode = token.value;
               parsedData.value.email = email.value;
               parsedData.value.userId = parseInt(userId.value);
-              console.log(parsedData.value)
               userStore.login(parsedData.value);
+              console.log(userStore.getNowUser())
             }
           } catch (error) {
             console.error('Error fetching user info:', error);

@@ -20,17 +20,13 @@
                         </t-space>
                         <span class="time">{{ time }}</span>
                     </div>
-                    <div class="top-row" v-else>
-                        <t-skeleton style="line-height:20px" theme="paragraph" />
-                    </div>
+                    
                     <div class="content-container">
                         <span class="content" v-if="dataLoaded">
                             {{ truncatedContent }}
                             <span class="read-more" @click="toPost">>>更多</span>
                         </span>
-                        <div v-else>
-                            <t-skeleton style="line-height:20px" theme="paragraph" />
-                            <t-skeleton style="line-height:20px" theme="paragraph" />
+                        <div class="paragrah-container" v-else>
                             <t-skeleton style="line-height:20px" theme="paragraph" />
                         </div>
                     </div>
@@ -42,7 +38,7 @@
 
 
 <script lang="ts" setup>
-    import { defineProps, ref, computed } from 'vue';
+    import { defineProps, ref, computed, watch } from 'vue';
     import { useRouter } from 'vue-router';
     import { useCourseStore } from '@/store/modules/courseStore';
     import { usePostStore} from '@/store/modules/postStore';
@@ -103,6 +99,14 @@
         await courseStore.fetchData();
         await postStore.fetchData();
         dataLoaded.value = true; // 数据加载完成后设置标志
+    })
+
+    watch(
+        () => props,
+        async (newProps, oldProps) => {
+        console.log(props.author)
+        console.log(props.authorId)
+        console.log(props.avatar)
         try {
             const responseGetInfo = await axios.get(`/api/users/info?id=${props.authorId}`); // 发送GET请求到后端API
             if (responseGetInfo.data.result == 'ok') {
@@ -127,7 +131,7 @@
           } catch (error) {
             console.error('Error fetching user info:', error);
           }
-    })
+    }, {immediate : true, deep : true})
     
 
     const isTruncated = computed(() => cleanedText.value.length > maxLength);
@@ -159,6 +163,12 @@
 <style scoped lang="scss">
     a {
         text-decoration: none;
+    }
+    .paragrah-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 4px;
     }
     .review-container {
         display: flex;

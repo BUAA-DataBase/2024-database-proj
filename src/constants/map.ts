@@ -1,5 +1,6 @@
 export function convertDifficulty(difficultyNumber: number) {
     const difficultyMap = {
+        0: '暂无评分',
         1: '简单',
         2: '较易',
         3: '适中',
@@ -8,6 +9,7 @@ export function convertDifficulty(difficultyNumber: number) {
     };
     // 检查输入是否在有效范围内
     switch (difficultyNumber) {
+        case 0: return difficultyMap[0];
         case 1: return difficultyMap[1];
         case 2: return difficultyMap[2];
         case 3: return difficultyMap[3];
@@ -19,6 +21,7 @@ export function convertDifficulty(difficultyNumber: number) {
 
 export function convertWorkload(workloadNumber: number) {
     const workloadMap = {
+        0: '暂无评分',
         1: '很少',
         2: '较少',
         3: '适中',
@@ -27,6 +30,7 @@ export function convertWorkload(workloadNumber: number) {
     };
     // 检查输入是否在有效范围内
     switch (workloadNumber) {
+        case 0: return workloadMap[0];
         case 1: return workloadMap[1];
         case 2: return workloadMap[2];
         case 3: return workloadMap[3];
@@ -38,6 +42,7 @@ export function convertWorkload(workloadNumber: number) {
 
 export function convertGrading(gradingNumber: number) {
     const gradingMap = {
+        0: '暂无评分',
         1: '很差',
         2: '较差',
         3: '中等',
@@ -46,6 +51,7 @@ export function convertGrading(gradingNumber: number) {
     };
     // 检查输入是否在有效范围内
     switch (gradingNumber) {
+        case 0: return gradingMap[0];
         case 1: return gradingMap[1];
         case 2: return gradingMap[2];
         case 3: return gradingMap[3];
@@ -57,6 +63,7 @@ export function convertGrading(gradingNumber: number) {
 
 export function convertGain(gainNumber: number) {
     const gainMap = {
+        0: '暂无评分',
         1: '很小',
         2: '较小',
         3: '中等',
@@ -65,6 +72,7 @@ export function convertGain(gainNumber: number) {
     };
     // 检查输入是否在有效范围内
     switch (gainNumber) {
+        case 0: return gainMap[0];
         case 1: return gainMap[1];
         case 2: return gainMap[2];
         case 3: return gainMap[3];

@@ -58,6 +58,7 @@
     import { HeartIcon, ChatBubbleIcon } from 'tdesign-icons-vue-next';
     import type { UserState } from '@/store/types';
     import { useUserStore } from '@/store/modules/userStore';
+    import { useRouter } from 'vue-router';
 
     const props = defineProps({
         user: {
@@ -73,10 +74,15 @@
     const introduction = ref('2022计科人一枚~')
 
     const userStore = useUserStore();
+    const router = useRouter()
 
     function followUser() {
-        if (props.user.userId != userStore.getNowUser().userId) {
+        if (userStore.getNowUser().userId != 0 && props.user.userId != userStore.getNowUser().userId) {
             userStore.followUser(props.user.userId);
+        }
+        else if (userStore.getNowUser().userId == 0) {
+            alert("请先登录！")
+            router.push({path:"/login"})
         }
     }
 </script>

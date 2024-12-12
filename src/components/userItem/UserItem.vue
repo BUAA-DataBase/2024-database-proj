@@ -15,7 +15,9 @@
 </template>
 
 <script lang="ts" setup name="">
+    import { useUserStore } from '@/store/modules/userStore';
     import {defineProps, ref} from 'vue'
+    import { useRouter } from 'vue-router';
 
     const follow = ref(true)
     
@@ -29,8 +31,17 @@
         follow.value = false
     }
 
+    const userStore = useUserStore();
+    const router = useRouter();
+
     function goonFollow() {
-        follow.value = true
+        if (userStore.getNowUser().userId != 0) {
+            follow.value = true
+        }
+        else {
+            alert("请先登录！")
+            router.push({path:"/login"})
+        }
     }
 </script>
 
