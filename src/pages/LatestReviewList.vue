@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  import {ref, onMounted, computed} from 'vue';
+  import {ref} from 'vue';
   import Pagination from '../utils/Pagination.vue';
   import PostPreViewList from '@/components/postPreView/PostPreViewList.vue';
 

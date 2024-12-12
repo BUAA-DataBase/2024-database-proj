@@ -1,11 +1,12 @@
 <template>
     <div class="review-container">
             <div v-if="showAvatar" class="avatar-container">
-                <t-avatar  size="50px" :image="thisPostAvatar" alt="用户头像" shape="circle" />
+                <t-avatar v-if="dataLoaded" size="50px" :image="thisPostAvatar" alt="用户头像" shape="circle" />
+                <t-skeleton style="line-height:50px" theme="avatar" v-else />
             </div>
             <div class="info-container">
                 <t-space direction="vertical">
-                    <div class="top-row">
+                    <div class="top-row" v-if="dataLoaded">
                         <t-space>
                             <span v-if="showAuthor" class="author" @click="toAuthor">
                                 {{ thisPostAuthor }}
@@ -19,11 +20,19 @@
                         </t-space>
                         <span class="time">{{ time }}</span>
                     </div>
+                    <div class="top-row" v-else>
+                        <t-skeleton style="line-height:20px" theme="paragraph" />
+                    </div>
                     <div class="content-container">
-                        <span class="content">
+                        <span class="content" v-if="dataLoaded">
                             {{ truncatedContent }}
                             <span class="read-more" @click="toPost">>>更多</span>
                         </span>
+                        <div v-else>
+                            <t-skeleton style="line-height:20px" theme="paragraph" />
+                            <t-skeleton style="line-height:20px" theme="paragraph" />
+                            <t-skeleton style="line-height:20px" theme="paragraph" />
+                        </div>
                     </div>
                 </t-space>
             </div>
@@ -39,22 +48,13 @@
     import { usePostStore} from '@/store/modules/postStore';
 
     import { onMounted } from 'vue';
-import { Role, type UserState } from '@/store/types';
-import axios from 'axios';
+    import { Role, type UserState } from '@/store/types';
+    import axios from 'axios';
 
-    onMounted(() => {
-        const reviewElement = document.querySelector('.info-container') as HTMLElement;
-        
-        if (reviewElement) {
-            const elementWidthPx = reviewElement.offsetWidth; // 元素宽度 (px)
-            const viewportWidth = window.innerWidth;  // 视口宽度 (px)
-            
-            const elementWidthInVw = (elementWidthPx / viewportWidth) * 100;
-            
-            console.log(`Review 组件宽度: ${elementWidthInVw.toFixed(2)}vw`);
-        }
-    });
+    const courseStore = useCourseStore()
+    const postStore = usePostStore()
 
+    const dataLoaded = ref(false);
 
     const props = defineProps({
         postId: { type: Number, required: true },
@@ -100,6 +100,9 @@ import axios from 'axios';
       const error = ref<string | null>(null);
 
     onMounted (async () => {
+        await courseStore.fetchData();
+        await postStore.fetchData();
+        dataLoaded.value = true; // 数据加载完成后设置标志
         try {
             const responseGetInfo = await axios.get(`/api/users/info?id=${props.authorId}`); // 发送GET请求到后端API
             if (responseGetInfo.data.result == 'ok') {

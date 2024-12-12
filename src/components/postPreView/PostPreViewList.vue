@@ -55,6 +55,8 @@
     }
 
     onMounted(() => {
+        console.log('PostPreViewList mounted');
+        console.log(posts.value.length);
         posts.value = fetchPosts(currentPage.value);
     });
  
