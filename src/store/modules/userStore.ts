@@ -77,7 +77,27 @@ export const useUserStore = defineStore('user', {
         if (response.data.result == 'ok') {
             console.log("Successfully upload!");
         }
-      } catch (error) {
+      } catch (error :any) {
+        console.log(error.response.data)
+      console.error('Error fetching user info:', error);
+      }
+    },
+
+    async updateAvatar(avatar : string) {
+      this.avatar = `http://182.92.164.178:1024/${avatar}`;
+      try {
+        console.log(this.$state)
+        const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
+            name: this.userName,
+            email: this.email,
+            profile: this
+        }); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload!");
+        }
+      } catch (error :any) {
+        console.log(error.response.data)
       console.error('Error fetching user info:', error);
       }
     },

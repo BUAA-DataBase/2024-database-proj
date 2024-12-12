@@ -25,7 +25,7 @@
                   <t-button shape="square" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);"><SearchIcon /></t-button>
               </template>
           </t-auto-complete>
-          <t-button theme="default" style="margin-right: 25px;" @click="toEditor">
+          <t-button theme="default" style="margin-right: 25px;" @click="goToEditor">
                 <template #icon>
                     <t-icon name="pen-ball" size="20" />
                 </template>
@@ -39,7 +39,12 @@
                           <user-circle-icon size="20" style="margin-right: 10px;"/>个人中心
                       </t-dropdown-item>
                       <t-dropdown-item @click="toLogin">
-                          <poweroff-icon size="20" style="margin-right: 10px;"/>退出登录
+                            <div v-if="useStore.getNowUser().userId == 0">
+                                <poweroff-icon size="20" style="margin-right: 10px;"/>登录
+                            </div>
+                            <div v-if="useStore.getNowUser().userId != 0">
+                                <poweroff-icon size="20" style="margin-right: 10px;"/>退出登录
+                            </div>
                       </t-dropdown-item>
                   </t-dropdown-menu>
               </template>
@@ -93,11 +98,6 @@
         router.push({ path: `/latestComments/${1}`})
     }
 
-    function toEditor() {
-        const id = useStore.getNowUser().userId;
-        router.push({name: "editor"});
-    }
-
     function toCourses() {
         router.push({ path: `/courses/${1}`})
     }
@@ -106,8 +106,14 @@
         router.push({path: `/user/${useStore.getNowUser().userId}`})
     }
 
+    function goToEditor() {
+        router.push({ path:"/editor" })
+    }
+
     async function toLogin() {
-        useStore.logout();
+        if (useStore.getNowUser().userId != 0) {
+            useStore.logout();
+        }
         console.log(useStore.getNowUser());
         router.push({path: "/login"})
     }
