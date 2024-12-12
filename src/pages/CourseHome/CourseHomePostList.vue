@@ -31,6 +31,9 @@
                     :year="comment.courseYear"
                     :rate="comment.content.rate"
                     :content="comment.content"
+                    @toggle-reply="handleToggleReply"
+                    @comment-submitted="handleCommentSubmitted"
+                    :showReplyEditor="activeReplyPostId === comment.postId"
                 />
             </div>
         </div>
@@ -73,6 +76,16 @@
       comments.value = useStore.filterAndSortPosts(props.courseName,props.courseTeacher,
       payload.value1,payload.value2,payload.value3);
       console.log(comments.value);
+    };
+
+    const activeReplyPostId = ref<number | null>(null);
+
+    const handleToggleReply = (postId: number) => {
+        activeReplyPostId.value = activeReplyPostId.value === postId ? null : postId;
+    };
+
+    const handleCommentSubmitted = () => {
+        activeReplyPostId.value = null;
     };
 
     const exist = useStore.getPostsByCourse(props.courseName).length > 0;

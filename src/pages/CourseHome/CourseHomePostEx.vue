@@ -23,7 +23,7 @@
                         <ThumbUpIcon size="14px"/>
                         <span class="like-num">{{ likes }}</span>
                     </div>
-                    <div class="reply-button" @click="handleReplyClick">
+                    <div class="reply-button" @click="toggleReply">
                         <span><ChatIcon size="14px"/></span>
                         <span class="like-num">{{ reply_count }}</span>
                     </div>
@@ -40,12 +40,13 @@
             </div>
 
             <LittleCommentEditor
+                v-if="showReplyEditor"
                 :toPostId="props.toPostId"
                 :toAuthor="author"
                 :toAvatar="avatar"
                 :course="course"
                 :teacher="teacher"
-                @comment-submitted="handleCommentSubmitted"
+                @comment-submitted="handleCommentSubmit"
             />
         </t-space>
     </div>
@@ -63,7 +64,7 @@
     import { useRoute } from 'vue-router';
     import { usePostStore } from '@/store/modules/postStore';
     import { useUserStore } from '@/store/modules/userStore';
-    
+
     const props = defineProps<{
         author: string,
         toPostId: number,
@@ -75,13 +76,18 @@
         year: string,
         rate: number,
         content: CommentContent,
+        showReplyEditor: boolean
     }>()
+
+    const emit = defineEmits(['toggle-reply', 'comment-submitted']);
 
     const replies = ref<ReviewState[]>();
     const reply_count = ref(0)
 
-    function handleCommentSubmitted(toPostId : number) {
+
+    function handleCommentSubmit(toPostId : number) {
         console.log("handle review added")
+        emit('comment-submitted');
         if (useStore.getPostById(props.toPostId) != null) {
             console.log("enter?")
             replies.value = useStore.getPostById(props.toPostId)?.reviews;
@@ -89,6 +95,8 @@
             console.log(replies.value)
         }
     }
+
+    
 
     onMounted(() => {
         replies.value = useStore.getPostById(props.toPostId)?.reviews;
@@ -140,10 +148,11 @@
         console.log('点赞按钮被点击了');
     };
 
-    // 回复按钮的点击处理函数
-    const handleReplyClick = () => {
-        console.log('回复按钮被点击了');
-        // 这里可以触发显示评论区等操作
+    // 回复的按钮是从list传过来，因为只有一个评论编辑器处于激活状态
+    // 上头需要管理一个唯一的激活id
+
+    const toggleReply = () => {
+        emit('toggle-reply', props.toPostId);
     };
 
     const comments = props.content.comment
