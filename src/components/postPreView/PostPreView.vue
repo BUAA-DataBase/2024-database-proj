@@ -129,6 +129,7 @@
           } catch (error) {
             console.error('Error fetching user info:', error);
           }
+          cleanedText.value = props.content.replace(/[#*]/g, '');
     }, {immediate : true, deep : true})
     
 

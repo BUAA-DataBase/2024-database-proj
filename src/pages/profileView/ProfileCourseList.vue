@@ -27,14 +27,15 @@
 </template>
 
 <script lang="ts" setup name="">
-    import { ref, defineProps, computed, type PropType } from 'vue'
+    import { ref, defineProps, computed, type PropType, watch } from 'vue'
     import CourseType from '@/components/course/CourseType.vue'
     import CourseItem from '@/components/course/CourseItem.vue';
     import Pagination from '@/utils/Pagination.vue';
     import HeaderRow from './HeaderRow.vue';
     import { useRouter } from 'vue-router';
     import { useCourseStore } from '@/store/modules/courseStore';
-    import type { UserState } from '@/store/types';
+    import { type CourseState, type UserState } from '@/store/types';
+    import { useUserStore } from '@/store/modules/userStore';
 
     const props = defineProps({
         displayNum: { type: Number, default: 5 },
@@ -62,14 +63,20 @@
     }
 
     const useStore = useCourseStore()
+    const userStore = useUserStore()
 
-    const courses = computed(() => {
-        return useStore.getCoursesByIds(props.user.followedCourses);
+    const promiseCourses = computed(async () => {
+        const courseIds = await userStore.getFollowCourses(props.user.userId);
+        return useStore.getCoursesByIds(courseIds);
     })
 
-    const num = computed(() => {
-        return useStore.getCoursesByIds(props.user.followedCourses).length;
-    })
+    const courses = ref<CourseState[]>([])
+    const num = ref(0)
+
+    watch(promiseCourses,async (newCourses) => {
+        courses.value = await newCourses;
+        num.value = courses.value.length;
+    }, {immediate: true, deep : true})
 
     function convertDifficulty(difficultyNumber: number) {
     const difficultyMap = {

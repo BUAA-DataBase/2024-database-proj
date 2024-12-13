@@ -84,6 +84,7 @@ export const useUserStore = defineStore('user', {
 
     async updateAvatar(avatar : string) {
       this.avatar = `http://182.92.164.178:1024/${avatar}`;
+      console.log(JSON.stringify(this.$state))
       try {
         console.log(this.$state)
         const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
@@ -137,7 +138,7 @@ export const useUserStore = defineStore('user', {
         this.followedCourses = this.followedCourses.filter(id => id != courseId)
         try {
           console.log(this)
-          const response = await axios.post(`/api/users/unfollow-course?token=${this.verificationCode}&follow_id=${courseId}`); // 发送GET请求到后端API
+          const response = await axios.post(`/api/users/unfollow-course?token=${this.verificationCode}&unfollow_id=${courseId}`); // 发送GET请求到后端API
           console.log(response.data)
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
@@ -150,22 +151,7 @@ export const useUserStore = defineStore('user', {
 
     /** 关注用户 */
     async followUser(userId: number) {
-      if (!this.following.includes(userId)) {
         this.following.push(userId)
-        try {
-          console.log(this)
-          const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
-              name: this.userName,
-              email: this.email,
-              profile: this
-          }); // 发送GET请求到后端API
-          console.log(response.data)
-          if (response.data.result == 'ok') {
-              console.log("Successfully upload!");
-          }
-        } catch (error) {
-        console.error('Error fetching user info:', error);
-        }
         try {
           console.log(this)
           const response = await axios.post(`/api/users/follow-user?token=${this.verificationCode}&follow_id=${userId}`); // 发送GET请求到后端API
@@ -176,12 +162,20 @@ export const useUserStore = defineStore('user', {
         } catch (error) {
         console.error('Error fetching user info:', error);
         }
-      }
     },
 
     /** 取消关注用户 */
-    unfollowUser(userId: number) {
-      this.following = this.following.filter(id => id !== userId)
+    async unfollowUser(userId: number) {
+        try {
+          console.log(this)
+          const response = await axios.post(`/api/users/unfollow-user?token=${this.verificationCode}&unfollow_id=${userId}`); // 发送GET请求到后端API
+          console.log(response.data)
+          if (response.data.result == 'ok') {
+              console.log("Successfully upload!");
+          }
+        } catch (error) {
+        console.error('Error fetching user info:', error);
+        }
     },
 
     /** 屏蔽用户 */
@@ -196,9 +190,86 @@ export const useUserStore = defineStore('user', {
       this.blockedUsers = this.blockedUsers.filter(id => id !== userId)
     },
 
-    /** 获取用户的角色 */
-    getUserRole(): Role {
-      return this.role
-    }
+    async getFollowings(userId:number) : Promise<number[]> {
+      try {
+        console.log(this)
+        const response = await axios.get(`/api/users/followings?id=${userId}`); // 发送GET请求到后端API
+        const followings = response.data.followings;
+          if (followings) {
+            console.log(response.data)
+            return followings;
+          }
+          else {
+            return [];
+          }
+        console.log("download data successfully")
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+      return [];
+    },
+
+    async getFollowers(userId:number) : Promise<number[]> {
+      try {
+        console.log(this)
+        const response = await axios.get(`/api/users/followers?id=${userId}`); // 发送GET请求到后端API
+        console.log(response.data)
+        const followers = response.data.followers;
+          if (followers) {
+            return followers;
+          }
+          else {
+            return [];
+          }
+        console.log("download data successfully")
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+      return [];
+    },
+
+    async getFollowCourses(userId:number) : Promise<number[]> {
+      try {
+        console.log(this)
+        const response = await axios.get(`/api/users/following-courses?id=${userId}`); // 发送GET请求到后端API
+        console.log(response.data)
+        const courses = response.data.following_courses;
+          if (courses) {
+            return courses;
+          }
+          else {
+            return [];
+          }
+        console.log("download data successfully")
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+      return [];
+    },
+
+    async getPosts(userId:number) : Promise<number[]> {
+      try {
+        console.log(this)
+        const response = await axios.get(`/api/posts/list?id=${userId}`); // 发送GET请求到后端API
+        console.log(response.data)
+        const posts = response.data.posts;
+        if (response.data.result == 'ok') {
+          if (posts) {
+            return posts;
+          }
+          else {
+            return [];
+          }
+        }
+        else {
+          return [];
+        }
+        console.log("download data successfully")
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+      return [];
+    },
+
   }
 })

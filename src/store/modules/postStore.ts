@@ -5,6 +5,7 @@ import axios from 'axios';
 import { ErrorCode } from '@/constants/error-codes'
 import { useUserStore } from './userStore';
 import { useCourseStore } from './courseStore';
+import type { post } from 'node_modules/axios/index.cjs';
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -51,7 +52,7 @@ export const usePostStore = defineStore("post", {
       }
     },
 
-    async addPost(post: PostState, verificationCode: string) {
+    async addPost(post: PostState, verificationCode: string) : Promise<number> {
       this.posts.push(post);
       let course_name = `${post.course}-${post.teacher}`;
       console.log(course_name)
@@ -69,7 +70,7 @@ export const usePostStore = defineStore("post", {
         console.log(response.data)
         if (response.data.result == 'ok') {
             console.log("Successfully upload post!");
-            post.postId = response.data.id;
+            post.postId = response.data.post_id;
             console.log(post);
             const userStore = useUserStore();
             userStore.pushPost(post);
@@ -78,7 +79,10 @@ export const usePostStore = defineStore("post", {
               post.course,
               post.teacher
             );
+            console.log(post.postId)
+            return post.postId;
         }
+        return 0;
       } catch (error : any) {
         let errorMessage = "";
         if (error.response && error.response.data && error.response.data.error) {
@@ -101,7 +105,9 @@ export const usePostStore = defineStore("post", {
           errorMessage = '请求失败，请检查您的网络连接';
           alert(errorMessage);
         }
+        return 0;
       }
+      return 0;
     },
 
     async addCommentToPost(comment: ReviewState, verificationCode: string) {
@@ -172,9 +178,11 @@ export const usePostStore = defineStore("post", {
       return sortedPosts.slice(startIndex, endIndex);
     },
 
-    getMTimeSortedPostsByAuthorId(authorId: number, page: number) : PostState[] {
+    async getMTimeSortedPostsByAuthorId(authorId: number, page: number) : Promise<PostState[]> {
+      const userStore = useUserStore();
+      const posts = await userStore.getPosts(authorId);
       let filteredPosts = [...this.posts];
-      filteredPosts = filteredPosts.filter(post => post.authorId === authorId);
+      filteredPosts = filteredPosts.filter(post => posts.includes(post.postId));
       const sortedPosts = [...filteredPosts].sort((a, b) => {
         const timeA = new Date(a.mtime).getTime();
         const timeB = new Date(b.mtime).getTime();
