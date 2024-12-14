@@ -26,7 +26,7 @@
                     :course="props.courseName"
                     :teacher="props.courseTeacher"
                     :date_published="comment.time"
-                    :date_updated="comment.time"
+                    :date_updated="comment.mtime"
                     :avatar="comment.avatar"
                     :year="comment.courseYear"
                     :rate="comment.content.rate"
@@ -81,7 +81,6 @@
     const handleUpdateValues = (payload: { value1: string; value2: string; value3: string }) => {
       comments.value = useStore.filterAndSortPosts(props.courseName,props.courseTeacher,
       payload.value1,payload.value2,payload.value3);
-      console.log(comments.value);
     };
 
     const activeReplyPostId = ref<number | null>(null);

@@ -17,7 +17,7 @@
                                 {{ course }}({{ teacher }})
                             </span>
                         </t-space>
-                        <span class="time">{{ time }}</span>
+                        <span class="time">{{ mtime }}</span>
                     </div>
                     <div class="content-container">
                         <span class="content">
@@ -61,7 +61,7 @@
         authorId: { type: Number, required: true },
         author: { type: String, required: true },
         avatar: { type: String, required: true },
-        time: { type: String, required: true },
+        mtime: { type: String, required: true },
         course: { type: String, required: true },
         teacher: { type: String, required: true },
         content: { type: String, required: true },

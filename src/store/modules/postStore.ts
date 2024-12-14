@@ -29,17 +29,36 @@ export const usePostStore = defineStore("post", {
                 if (parsedData.postId && parsedData.postId != 0) {
                   console.log(id)
                   console.log(parsedData)
+                  
+                  try {
+                    const commentResponse = await axios.get(`/api/posts/get-comments?id=${id}`)
+                    const commentIds = commentResponse.data.comments;
+                    console.log(commentIds)
+                    if (commentIds) {
+                      for (const commentId of commentIds) {
+                        try {
+                          const queryResponse = await axios.get(`/api/comments/query?id=${commentId}`)
+                          console.log(queryResponse.data)
+                          if (queryResponse.data.data) {
+                            let parsedComment = JSON.parse(queryResponse.data.data) as ReviewState;
+                            console.log(parsedComment)
+                            console.log(queryResponse.data.id)
+                            parsedComment.reviewId = queryResponse.data.id;
+                            parsedComment.likeUsers
+                            parsedData.reviews.push(parsedComment)
+                          }
+                        }
+                        catch (error) {
+                          console.error(`Failed to fetch comment with ID ${id}:`, error);
+                        }
+                      }
+                    }
+                  } catch (e) {
+                    console.error(`Failed to fetch comment with ID ${id}:`, e);
+                  }
                   allPosts.push(parsedData); 
                 }
               }
-              /*try {
-                  const commentResponse = await axios.get(`/api/posts/get-comments?id=${id}`)
-                  console.log(commentResponse.data)
-                  let parsedComment = JSON.parse(commentResponse.data.profile) as ReviewState;
-                  console.log(parsedComment)
-              } catch (e) {
-                console.error(`Failed to fetch comment with ID ${id}:`, e);
-              }*/
             } catch (error) {
               console.error(`Failed to fetch post with ID ${id}:`, error);
             }
@@ -110,30 +129,81 @@ export const usePostStore = defineStore("post", {
       return 0;
     },
 
+    async modifyPost(post: PostState, verificationCode: string) : Promise<number> {
+      let course_name = `${post.course}-${post.teacher}`;
+      console.log(course_name)
+      console.log(verificationCode)
+      const jsonString = JSON.stringify(post)
+      console.log(jsonString)
+      try {
+        console.log(post)
+        const response = await axios.post(`/api/posts/modify?token=${verificationCode}&post_id=${post.postId}`,{
+          course_name: course_name,
+          recommendation: post.content.rate,
+          feedback: post,
+          data: post.content.comment
+        }); // 发送GET请求到后端API
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+            console.log("Successfully upload post!");
+            return post.postId;
+        }
+        return 0;
+      } catch (error : any) {
+        let errorMessage = "";
+        if (error.response && error.response.data && error.response.data.error) {
+          console.log(error.response.data)
+          switch (error.response.data.error) {
+            case ErrorCode.TOKEN_VERIFY_ERROR:
+              errorMessage = 'TOKEN错误';
+              break;
+            case ErrorCode.JSON_ERROR :
+              errorMessage = 'json错误';
+              break;
+            case ErrorCode.UNKNOWN_ERROR:
+            default:
+              errorMessage = '未知错误';
+              break;
+          }
+          alert(errorMessage);
+        } else {
+          // 处理非服务器响应错误（如网络错误）
+          errorMessage = '请求失败，请检查您的网络连接';
+          alert(errorMessage);
+        }
+        return 0;
+      }
+      return 0;
+    },
+
     async addCommentToPost(comment: ReviewState, verificationCode: string) {
         // 遍历 posts 数组，找到匹配 toPostId 的帖子
-      this.posts = this.posts.map(post => {
-        if (post.postId === comment.toPostId) {
-          // 将评论添加到该帖子的 reviews 数组中
-          return {
-            ...post,
-            reviews: [...post.reviews, comment],
-          };
-        }
-        return post;
-      });
       try {
-        console.log(comment)
+        const datatString = JSON.stringify(comment)
+        console.log(datatString)
+        console.log(verificationCode)
+        console.log(comment.toPostId)
         const response = await axios.post(`/api/posts/add-comment?token=${verificationCode}&id=${comment.toPostId}`,{
-          data: comment
+          data: datatString
         }); // 发送GET请求到后端API
         console.log(response.data)
         if (response.data.result == 'ok') {
             console.log("Successfully upload!");
             comment.reviewId = response.data.id;
+            this.posts = this.posts.map(post => {
+              if (post.postId === comment.toPostId) {
+                // 将评论添加到该帖子的 reviews 数组中
+                return {
+                  ...post,
+                  reviews: [...post.reviews, comment],
+                };
+              }
+              return post;
+            });
         }
-      } catch (error) {
-      console.error('Error fetching user info:', error);
+      } catch (error : any) {
+        console.log(error.response.data)
+        console.error('Error fetching user info:', error);
       }
     },
 

@@ -3,13 +3,13 @@
             <t-space direction="vertical">
                 <span class="profileUsername">{{ props.user.userName }}</span>
                 <t-space v-if="userStore.getNowUser().userId != props.user.userId" style="margin-top: 10px;">
-                    <t-button v-if="!follow" @click="followUser">
+                    <t-button v-if="!isFollowing" @click="followUser">
                         <template #icon>
                             <HeartIcon />
                         </template>
                         关注
                     </t-button>
-                    <t-button v-if="follow" @click="unfollowUser" style="padding: 0 20px;">
+                    <t-button v-if="isFollowing" @click="unfollowUser" style="padding: 0 20px;">
                         已关注
                     </t-button>
 
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import {ref, watch, type PropType} from 'vue'
+    import {computed, ref, watch, type PropType} from 'vue'
     import avatarImage from '@/assets/img_avatar.jpg'
     import { HeartIcon, ChatBubbleIcon } from 'tdesign-icons-vue-next';
     import type { UserState } from '@/store/types';
@@ -70,17 +70,40 @@
         },
     });
 
-    const follow = ref(false)
+    const userStore = useUserStore();
+
+    const isFollowing = ref(false);
+    const isLoading = ref(true);
+
+    const updateFollowingStatus = async () => {
+        try {
+            const followers = await userStore.getFollowers(props.user.userId);
+            isFollowing.value = followers.includes(userStore.getNowUser().userId);
+            console.log(followers);
+            console.log(isFollowing.value)
+        } catch (error) {
+            console.error('Failed to fetch followers:', error);
+            // 可以根据需要处理错误
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    watch(props,async (newProps) => {
+        if (userStore.getNowUser().userId) {
+            isLoading.value = true;
+            await updateFollowingStatus();
+        }
+    }, {immediate: true, deep: true})
 
     const introduction = ref('2022计科人一枚~')
-
-    const userStore = useUserStore();
     const router = useRouter()
 
-    function followUser() {
+    async function followUser() {
         if (userStore.getNowUser().userId != 0 && props.user.userId != userStore.getNowUser().userId) {
-            follow.value = true
             userStore.followUser(props.user.userId);
+            isFollowing.value = true;
+            followersNumber.value = followersNumber.value + 1;
         }
         else if (userStore.getNowUser().userId == 0) {
             alert("请先登录！")
@@ -88,10 +111,11 @@
         }
     }
 
-    function unfollowUser() {
+    async function unfollowUser() {
         if (userStore.getNowUser().userId != 0 && props.user.userId != userStore.getNowUser().userId) {
-            follow.value = false
             userStore.unfollowUser(props.user.userId);
+            isFollowing.value = false;
+            followersNumber.value = followersNumber.value - 1;
         }
         else if (userStore.getNowUser().userId == 0) {
             alert("请先登录！")

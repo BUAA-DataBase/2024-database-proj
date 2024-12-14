@@ -5,7 +5,7 @@
         :authorId="post.authorId"
         :author="post.author"
         :avatar="post.avatar"
-        :time="post.time"
+        :mtime="post.mtime"
         :course="post.course"
         :teacher="post.teacher"
         :content="post.content.comment"

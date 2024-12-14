@@ -3,7 +3,7 @@
         <div class="block1">
             <t-avatar :image="avatarImage" size="50px" style="margin-right: 20px"/>
             <div>
-                <span class="username">{{ userName }}</span>
+                <span class="username" @click="toUser">{{ userName }}</span>
                 <div class="tip-wrapper">
                     <span class="tip">{{ numberOfNewReviews }}条新点评</span>
                 </div>
@@ -43,6 +43,10 @@
 
     const userStore = useUserStore();
     const router = useRouter();
+
+    function toUser() {
+        router.push({ path : `/user/${props.thisId}`});
+    }
 
     async function goToFollow() {
         if (userStore.getNowUser().userId != 0) {

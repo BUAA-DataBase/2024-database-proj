@@ -1,8 +1,8 @@
 <template>
     <div class="review-wrapper">
         <span class="author">{{ review.author }}</span>
-        <span v-if="review.toAuthor && review.toAuthor !== belongAuthor" class="tip"> 回复 </span>
-        <span v-if="review.toAuthor && review.toAuthor !== belongAuthor" class="to-author">@{{ review.toAuthor }}</span>
+        <span v-if="review.toAuthor && (review.toAuthor !== review.author)" class="tip"> 回复 </span>
+        <span v-if="review.toAuthor && (review.toAuthor !== review.author)" class="to-author">@{{ review.toAuthor }}</span>
         <div class="content-container">
             <span class="content">{{ review.content }}</span>
         </div>
