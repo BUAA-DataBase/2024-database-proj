@@ -1,8 +1,10 @@
 <template>
     <div class="review-wrapper">
-        <span class="author">{{ review.author }}</span>
-        <span v-if="review.toAuthor && (review.toAuthor !== review.author)" class="tip"> 回复 </span>
-        <span v-if="review.toAuthor && (review.toAuthor !== review.author)" class="to-author">@{{ review.toAuthor }}</span>
+        <div class="title-row">
+            <span class="author">{{ review.author }}</span>
+            <span v-if="review.toAuthor && (review.toAuthor !== review.author)" class="tip"> 回复 </span>
+            <span v-if="review.toAuthor && (review.toAuthor !== review.author)" class="to-author">@{{ review.toAuthor }}</span>
+        </div>
         <div class="content-container">
             <span class="content">{{ review.content }}</span>
         </div>
@@ -62,6 +64,11 @@
 </script>
 
 <style scoped lang="scss">
+    .title-row {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
     .review-wrapper {
         display: flex;
         flex-direction: column;
