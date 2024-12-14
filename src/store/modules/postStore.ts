@@ -29,7 +29,6 @@ export const usePostStore = defineStore("post", {
                 if (parsedData.postId && parsedData.postId != 0) {
                   console.log(id)
                   console.log(parsedData)
-                  
                   try {
                     const commentResponse = await axios.get(`/api/posts/get-comments?id=${id}`)
                     const commentIds = commentResponse.data.comments;
@@ -44,7 +43,7 @@ export const usePostStore = defineStore("post", {
                             console.log(parsedComment)
                             console.log(queryResponse.data.id)
                             parsedComment.reviewId = queryResponse.data.id;
-                            parsedComment.likeUsers
+                            parsedComment.likeUsers = queryResponse.data.likes
                             parsedData.reviews.push(parsedComment)
                           }
                         }
@@ -69,6 +68,24 @@ export const usePostStore = defineStore("post", {
       }catch (error) {
         console.error('Failed to fetch data:', error);
       }
+    },
+
+    async fetchReviewLikes(commentId : number) : Promise<number> {
+      try {
+        const queryResponse = await axios.get(`/api/comments/query?id=${commentId}`)
+        console.log(queryResponse.data)
+        if (queryResponse.data.data) {
+          let parsedComment = JSON.parse(queryResponse.data.data) as ReviewState;
+          console.log(parsedComment)
+          console.log(queryResponse.data.likes)
+          return queryResponse.data.likes;
+        }
+        return -1;
+      }
+      catch (error) {
+        console.error(`Failed to fetch comment with ID ${commentId}:`, error);
+      }
+      return -1;
     },
 
     async addPost(post: PostState, verificationCode: string) : Promise<number> {
@@ -343,28 +360,6 @@ export const usePostStore = defineStore("post", {
         console.warn(`No post found with id ${postId}`);
       }
     },
-
-    updateCommentLikeNum(postId: number,reviewId : number, userId: number) {
-      const post = this.posts.find(p => p.postId === postId);
-      if (post) {
-        // 检查 userId 是否已经存在于 likeUsers 中
-        const review = post.reviews.find(r => r.reviewId === reviewId);
-        if (review) {
-          if (!review.likeUsers.includes(userId)) {
-            // 如果不存在，则添加
-            review.likeUsers.push(userId);
-            console.log("Successfully add likeUser to review")
-          } else {
-            console.warn(`Has added with id ${postId}`);
-          }
-        } else {
-          console.warn(`No post found with id ${postId}`);
-        }
-      } else {
-        console.warn(`No post found with id ${postId}`);
-      }
-    },
-
 
     // 获取指定 postId 的帖子中的 reviews 数组长度
     getReviewCount(postId: number): number {

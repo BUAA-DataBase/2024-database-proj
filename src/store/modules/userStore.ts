@@ -178,16 +178,14 @@ export const useUserStore = defineStore('user', {
         }
     },
 
-    /** 屏蔽用户 */
-    blockUser(userId: number) {
-      if (!this.blockedUsers.includes(userId)) {
-        this.blockedUsers.push(userId)
+    async likeComment(commentId : number) {
+      try {
+        const response = await axios.post(`/api/users/like-comment?token=${this.verificationCode}&comment_id=${commentId}`)
+        console.log(response.data)
       }
-    },
-
-    /** 取消屏蔽用户 */
-    unblockUser(userId: number) {
-      this.blockedUsers = this.blockedUsers.filter(id => id !== userId)
+      catch (error : any) {
+        console.log(error.response.data);
+      }
     },
 
     async getFollowings(userId:number) : Promise<number[]> {

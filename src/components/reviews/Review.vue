@@ -42,16 +42,19 @@
     const userStore = useUserStore()
     const router = useRouter()
 
-    const likeNum = ref(props.review.likeUsers.length);
+    const likeNum = ref<number>(props.review.likeUsers);
 
-    const handleLikeClick = () => {
+    const handleLikeClick = async () => {
         if (userStore.getNowUser().userId == 0) {
             alert("请先登录！")
             router.push({path:"/login"})
             return;
         }
-        postStore.updateCommentLikeNum(props.review.toPostId, props.review.reviewId, userStore.getNowUser().userId);
-        likeNum.value = postStore.getReviewById(props.review.toPostId, props.review.reviewId)?.likeUsers.length as number;
+        userStore.likeComment(props.review.reviewId);
+        const fetchLikeNum = await postStore.fetchReviewLikes(props.review.reviewId);
+        if (fetchLikeNum != -1) {
+            likeNum.value = fetchLikeNum;
+        }
         console.log('点赞')
     }
 

@@ -88,7 +88,7 @@ export interface ReviewState {
   time: string
   mtime: string
   content: string
-  likeUsers: number[]
+  likeUsers: number
 }
 
 export interface CommentContent {
