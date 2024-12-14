@@ -13,11 +13,11 @@
                 <span class="date">{{ review.time }}</span>
             </div>
             <t-space>
-                <div class="like-button" @click="handleLikeClick">
+                <div class="like-button" @click="handleLikeClick()">
                     <ThumbUpIcon size="14px"/>
                     <span class="like-num">{{ likeNum }}</span>
                 </div>
-                <div class="reply-button" @click="handleReplyClick">
+                <div class="reply-button" @click="handleReplyClick()">
                     <span class="like-num">回复</span>
                 </div>
             </t-space>
@@ -58,7 +58,7 @@
     const emit = defineEmits(['toggle-reply']);
 
     const handleReplyClick = () => {
-        emit('toggle-reply');
+        emit('toggle-reply', props.review.author);
     }
 
 </script>

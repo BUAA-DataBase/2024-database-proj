@@ -23,7 +23,7 @@
                         <ThumbUpIcon size="14px"/>
                         <span class="like-num">{{ likes }}</span>
                     </div>
-                    <div class="reply-button" @click="toggleReply">
+                    <div class="reply-button" @click="toggleReply(author)">
                         <span><ChatIcon size="14px"/></span>
                         <span class="like-num">{{ reply_count }}</span>
                     </div>
@@ -43,7 +43,7 @@
             <LittleCommentEditor
                 v-if="showReplyEditor"
                 :toPostId="props.toPostId"
-                :toAuthor="author"
+                :toAuthor="props.replyToAuthor"
                 :toAvatar="avatar"
                 :course="course"
                 :teacher="teacher"
@@ -78,7 +78,8 @@
         year: string,
         rate: number,
         content: CommentContent,
-        showReplyEditor: boolean
+        showReplyEditor: boolean,
+        replyToAuthor: string
     }>()
 
     const emit = defineEmits(['toggle-reply', 'comment-submitted']);
@@ -157,9 +158,8 @@
 
     // 回复的按钮是从list传过来，因为只有一个评论编辑器处于激活状态
     // 上头需要管理一个唯一的激活id
-
-    const toggleReply = () => {
-        emit('toggle-reply', props.toPostId);
+    const toggleReply = (author: string) => {
+        emit('toggle-reply', props.toPostId, author);
     };
 
     const comments = props.content.comment

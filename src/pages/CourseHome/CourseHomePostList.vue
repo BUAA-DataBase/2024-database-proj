@@ -34,6 +34,7 @@
                     @toggle-reply="handleToggleReply"
                     @comment-submitted="handleCommentSubmitted"
                     :showReplyEditor="activeReplyPostId === comment.postId"
+                    :replyToAuthor="activeEditorAuthor"
                 />
             </div>
         </div>
@@ -84,9 +85,11 @@
     };
 
     const activeReplyPostId = ref<number | null>(null);
+    const activeEditorAuthor = ref<string>("");
 
-    const handleToggleReply = (postId: number) => {
+    const handleToggleReply = (postId: number, author: string) => {
         activeReplyPostId.value = activeReplyPostId.value === postId ? null : postId;
+        activeEditorAuthor.value = author
     };
 
     const handleCommentSubmitted = () => {
