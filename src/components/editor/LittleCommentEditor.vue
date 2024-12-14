@@ -84,7 +84,7 @@
       time: formatDateToCustomString(new Date()),
       mtime: formatDateToCustomString(new Date()),
       content: content.value,
-      likeUsers: []
+      likeUsers: 0
     });
     // 提交评论的逻辑
     postStore.addCommentToPost(comment.value, userStore.getNowUser().verificationCode)
