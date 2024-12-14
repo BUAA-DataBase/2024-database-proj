@@ -72,7 +72,7 @@ export interface PostState {
   courseYear: string
   teacher: string
   content: CommentContent
-  likeUsers: number[]
+  likeUsers: number
   reviews: ReviewState[]
   showAuthor: boolean
   showAvatar: boolean

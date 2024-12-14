@@ -22,7 +22,7 @@
                   <CloseCircleFilledIcon class="t-input__suffix-clear" @click="value2 = ''" />
               </template>
               <template #suffixIcon>
-                  <t-button shape="square" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);"><SearchIcon /></t-button>
+                  <t-button shape="square" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);" @click="searchKeyWord"><SearchIcon /></t-button>
               </template>
           </t-auto-complete>
           <t-button theme="default" style="margin-right: 25px;" @click="goToEditor">
@@ -70,28 +70,39 @@
     import type { AutoCompleteProps } from 'tdesign-vue-next';
     import { SearchIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next';
     import avatarImage from '@/assets/img_avatar.jpg';
-    import { useRouter } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
     import { useUserStore } from '@/store/modules/userStore';
     import type { HeadMenuProps } from 'tdesign-vue-next';
     import axios from 'axios';
+import { useCourseStore } from '@/store/modules/courseStore';
+import { usePostStore } from '@/store/modules/postStore';
 
     const value = ref('');
     const value2 = ref('');
-    const options = ref<AutoCompleteProps<string>['options']>(['第一个默认联想词', '第二个默认联想词', '第三个默认联想词']);
-    const timer = ref(0);
+    const options = ref<AutoCompleteProps<string>['options']>(['计算机组成', '操作系统', '数据库']);
     const menuValue = ref('item1');
     const router = useRouter()
+    const route = useRoute()
     const useStore = useUserStore() 
+    const courseStore = useCourseStore()
+    const postStore = usePostStore()
 
-    // 输入框内容发生变化时进行搜索，200ms 搜索一次
-    function onChange(value: string) {
-        clearTimeout(timer.value);
-        timer.value = setTimeout(() => {
-            const text = '搜索联想词';
-            const pureValue = value.replace(`第一个${text}`, '').replace(`第二个${text}`, '').replace(`第三个${text}`, '');
-            options.value = [`${pureValue}第一个${text}`, `${pureValue}第二个${text}`, `${pureValue}第三个${text}`];
-            clearTimeout(timer.value);
-        }, 200);
+    const emit = defineEmits(['send-courses']);
+
+    async function searchKeyWord() {
+        if (value2.value) {
+            const name = route.name;
+            if (name === "courses") {
+                const courses = await courseStore.search(value2.value);
+                const select = true;
+                emit('send-courses', {ids : courses, isSearch : select})
+            }
+        }
+        else {
+            const courses: never[] = [];
+            const select = false
+            emit('send-courses', {ids : courses, isSearch : select})
+        }
     }
 
     function toLatestComments() {

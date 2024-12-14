@@ -1,10 +1,10 @@
 <template>
     <t-layout>
       <div v-if="notLogin()">
-        <Header/>
+        <Header @send-courses="setCourses"/>
       </div>
       <t-content style="background-color: white;" v-if="dataLoaded">
-        <RouterView></RouterView>
+        <RouterView :courses="courses" :isSearch="isSearch"></RouterView>
       </t-content>
     </t-layout>
 </template>
@@ -19,6 +19,16 @@
     const route = useRoute()
     const courseStore = useCourseStore()
     const postStore = usePostStore()
+
+    const courses = ref<number[]>([])
+    const isSearch = ref(false)
+
+    function setCourses(data: { ids: number[]; isSearch: boolean }) {
+      courses.value = data.ids;
+      isSearch.value = data.isSearch;
+      console.log(courses.value)
+      console.log(isSearch.value)
+    }
 
     const dataLoaded = ref(false);
 

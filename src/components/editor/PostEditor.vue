@@ -186,7 +186,7 @@
                 grading: grading.value,
                 gain: gain.value,
             },
-            likeUsers: [],
+            likeUsers: 0,
             reviews: [], // 没有评论，初始化为空
             showAuthor: true, // 根据需求设置
             showAvatar: true, // 根据需求设置

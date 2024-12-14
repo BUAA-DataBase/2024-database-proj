@@ -34,7 +34,7 @@ export const usePostStore = defineStore("post", {
                           const queryResponse = await axios.get(`/api/comments/query?id=${commentId}`)
                           if (queryResponse.data.data) {
                             let parsedComment = JSON.parse(queryResponse.data.data) as ReviewState;
-                            parsedComment.reviewId = queryResponse.data.id;
+                            parsedComment.reviewId = commentId;
                             parsedComment.likeUsers = queryResponse.data.likes
                             parsedData.reviews.push(parsedComment)
                           }
@@ -176,7 +176,8 @@ export const usePostStore = defineStore("post", {
           data: datatString
         }); // 发送GET请求到后端API
         if (response.data.result == 'ok') {
-            comment.reviewId = response.data.id;
+          console.log(response.data)
+            comment.reviewId = response.data.comment_id;
             this.posts = this.posts.map(post => {
               if (post.postId === comment.toPostId) {
                 // 将评论添加到该帖子的 reviews 数组中
@@ -278,7 +279,7 @@ export const usePostStore = defineStore("post", {
         if (value1 === 'new') {
           return new Date(b.mtime).getTime() - new Date(a.mtime).getTime(); // 最新（mtime 从新到旧）
         } else if (value1 === 'hot') {
-          return b.likeUsers.length - a.likeUsers.length; // 最热（likeNum 从高到低）
+          return b.likeUsers - a.likeUsers; // 最热（likeNum 从高到低）
         } else if (value1 === 'good') {
           return b.content.rate - a.content.rate; // 评分高-低（rate 从高到低）
         } else if (value1 === 'bad') {
@@ -314,20 +315,6 @@ export const usePostStore = defineStore("post", {
         throw new Error(`Course with ID ${author} not found.`);
       }
       return post.authorId;
-    },
-
-    // 点赞！！！
-    updateLikeNum(postId: number, userId: number) {
-      const post = this.posts.find(p => p.postId === postId);
-      if (post) {
-        // 检查 userId 是否已经存在于 likeUsers 中
-        if (!post.likeUsers.includes(userId)) {
-          // 如果不存在，则添加
-          post.likeUsers.push(userId);
-        }
-      } else {
-        console.warn(`No post found with id ${postId}`);
-      }
     },
 
     // 获取指定 postId 的帖子中的 reviews 数组长度

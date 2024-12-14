@@ -45,11 +45,37 @@ export const useCourseStore = defineStore("course", {
         console.error('Failed to fetch data:', error);
       }
     },
+
+    async search(keyword : string) : Promise<number[]> {
+      try {
+        const response = await axios.get(`/api/courses/search?keyword=${keyword}`);
+        console.log(response.data);
+        if (response.data.result == 'ok') {
+          const courses = response.data.courses;
+          return courses;
+        }
+        return [];
+      }
+      catch (error : any) {
+        console.log(error.response);
+      }
+      return [];
+    },
     
-    // 新增课程
-    addCourse(course: CourseState) {
-      course.roundRate = Math.round(course.courseRate * 2 - 0.1)/2
-      this.courses.push(course);
+    getSearchCourses(courseIds : number[], page : number) : CourseState[] {
+      if (courseIds) {
+        let courses = [...this.courses]
+        courses = courses.filter(course => courseIds.includes(course.courseId));
+        const sortedCourses = [...courses].sort((a, b) => {
+          return b.courseRate - a.courseRate; // 降序排序
+        });
+        const startIndex = (page - 1) * 10;
+        const endIndex = page * 10;
+        return sortedCourses.slice(startIndex, endIndex);
+      }
+      else {
+        return [];
+      }
     },
 
     getCourseById(courseId: number): CourseState | null {

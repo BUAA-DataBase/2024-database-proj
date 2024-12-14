@@ -110,7 +110,7 @@
     const useStore = usePostStore();
     const router = useRouter()
 
-    const likes = ref(useStore.getPostById(props.toPostId)?.likeUsers.length )
+    const likes = ref(0)
 
     const newRate = ref(Math.round(props.rate * 2 - 0.1)/2)
 
@@ -146,8 +146,8 @@
             router.push({path:"/login"})
             return;
         }
-        useStore.updateLikeNum(props.toPostId, userStore.getNowUser().userId);
-        likes.value = useStore.getPostById(props.toPostId)?.likeUsers.length as number;  // 点击时点赞数加1
+        userStore.likePost(props.toPostId);
+        likes.value = 0;  // 点击时点赞数加1
         console.log('点赞按钮被点击了');
     };
 

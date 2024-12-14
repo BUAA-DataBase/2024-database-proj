@@ -50,12 +50,13 @@
             router.push({path:"/login"})
             return;
         }
-        userStore.likeComment(props.review.reviewId);
+        console.log(props.review.reviewId)
+        await userStore.likeComment(props.review.reviewId);
         const fetchLikeNum = await postStore.fetchReviewLikes(props.review.reviewId);
         if (fetchLikeNum != -1) {
             likeNum.value = fetchLikeNum;
+            console.log('点赞:',likeNum.value)
         }
-        console.log('点赞')
     }
 
     const emit = defineEmits(['toggle-reply']);

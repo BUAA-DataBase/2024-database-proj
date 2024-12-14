@@ -61,13 +61,13 @@
                 <t-button theme="default" v-if="follow" @click="unfollowCourse" style="padding: 0 20px;">
                     已关注
                 </t-button>
-                <t-button theme="default">
+                <t-button theme="default" @click="recommend">
                     <template #icon>
                         <ThumbUpIcon />
                     </template>
                     推荐
                 </t-button>
-                <t-button theme="default">
+                <t-button theme="default" @click="notRecommend">
                     <template #icon>
                         <ThumbDownIcon />
                     </template>
@@ -136,6 +136,13 @@ async function unfollowCourse() {
     follow.value = false;
 }
 
+function recommend() {
+
+}
+
+function notRecommend() {
+    
+}
 
 
 </script>

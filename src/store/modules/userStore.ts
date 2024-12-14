@@ -163,6 +163,29 @@ export const useUserStore = defineStore('user', {
     async likeComment(commentId : number) {
       try {
         const response = await axios.post(`/api/users/like-comment?token=${this.verificationCode}&comment_id=${commentId}`)
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+          console.log("赞赞赞赞赞！")
+        }
+        else {
+          try {
+            const responseUnlike = await axios.post(`/api/users/unlike-comment?token=${this.verificationCode}&comment_id=${commentId}`)
+            console.log(responseUnlike.data);
+          }
+          catch(error : any) {
+            console.log(error.response);
+          }
+        }
+      }
+      catch (error : any) {
+        console.log(error.response.data);
+      }
+    },
+    
+    async likePost(postId : number) {
+      try {
+        const response = await axios.post(`/api/users/like-post?token=${this.verificationCode}&comment_id=${postId}`)
+        console.log(response)
       }
       catch (error : any) {
         console.log(error.response.data);
