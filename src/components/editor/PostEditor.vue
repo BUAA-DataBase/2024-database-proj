@@ -152,6 +152,8 @@
         yearOptions.value = courseStore.getCourseYears(courseName.value, teacherName.value);
     }, { immediate: true });
 
+    const reviewId = ref(0);
+
     async function handIn() {
     // 创建 PostState 对象
     console.log(userStore.getNowUser())
@@ -159,6 +161,20 @@
     if (oldPost.value) {
         newPost = oldPost.value;
         newPost.content.comment = comment.value;
+        newPost.mtime = formatDateToCustomString(new Date())
+        newPost.content.rate = rate.value
+        newPost.content.difficulty = difficulty.value
+        newPost.content.workload = workload.value
+        newPost.content.grading = grading.value
+        newPost.content.gain = gain.value
+        const user = userStore.getNowUser();
+        try {
+            reviewId.value = await postStore.modifyPost(newPost, user.verificationCode);
+            console.log(reviewId.value)
+        }
+        catch (error) {
+            console.error('Error adding post:', error);
+        }
     } else {
         newPost = {
             postId: Date.now(), // 使用时间戳作为唯一ID，或从后端获取
@@ -187,7 +203,8 @@
         // 调用 postStore 的 addPost 方法将新帖子添加到状态中
         const user = userStore.getNowUser();
         try {
-            await postStore.addPost(newPost, user.verificationCode);
+            reviewId.value = await postStore.addPost(newPost, user.verificationCode);
+            console.log(reviewId.value)
         }
         catch (error) {
             console.error('Error adding post:', error);
@@ -207,9 +224,8 @@
 
     alert('提交成功，新的帖子已添加');
     const courseId = courseStore.getCourseByNameAndTeacher(newPost.course,newPost.teacher) as number;
-    const reviewId = postStore.getPostId(newPost.author, newPost.course, newPost.teacher); 
-    console.log(reviewId)
-    router.push({name:"course", params:{id: courseId, reviewId : reviewId}})
+    console.log(reviewId.value)
+    router.push({name:"course", params:{id: courseId, reviewId : reviewId.value}})
     console.log('提交成功，新的帖子已添加');
 }
 

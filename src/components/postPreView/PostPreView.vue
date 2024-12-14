@@ -18,7 +18,7 @@
                                 {{ course }}({{ teacher }})
                             </span>
                         </t-space>
-                        <span class="time">{{ time }}</span>
+                        <span class="time">{{ mtime }}</span>
                     </div>
                     <div v-else>
                         <t-skeleton style="width:80px" animation="gradient" theme="text" />
@@ -55,7 +55,7 @@
         authorId: { type: Number, required: true },
         author: { type: String, required: true },
         avatar: { type: String, required: true },
-        time: { type: String, required: true },
+        mtime: { type: String, required: true },
         course: { type: String, required: true },
         teacher: { type: String, required: true },
         content: { type: String, required: true },
@@ -125,6 +125,7 @@
           } catch (error) {
             console.error('Error fetching user info:', error);
           }
+          cleanedText.value = props.content.replace(/[#*]/g, '');
     }, {immediate : true, deep : true})
     
 

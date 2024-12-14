@@ -5,7 +5,7 @@
         :authorId="post.authorId"
         :author="post.author"
         :avatar="post.avatar"
-        :time="post.time"
+        :mtime="post.mtime"
         :course="post.course"
         :teacher="post.teacher"
         :content="post.content.comment"
@@ -48,27 +48,27 @@
         : 1;
     });
 
-    function fetchPosts(page: number): PostState[] {
+    async function fetchPosts(page: number): Promise<PostState[]> {
         // 从 postStore 中获取排序后的评论数组
         if (props.authorId < 0) {
           console.log(page)
           return useStore.getSortedPostsByMTime(page);
         } else {
           console.log(page)
-          return useStore.getMTimeSortedPostsByAuthorId(props.authorId, page);
+          return await useStore.getMTimeSortedPostsByAuthorId(props.authorId, page);
         }
     }
 
-    onMounted(() => {
+    onMounted(async () => {
         console.log('PostPreViewList mounted');
         console.log(posts.value.length);
-        posts.value = fetchPosts(currentPage.value);
+        posts.value = await fetchPosts(currentPage.value);
     });
  
     // 监听currentPage的变化，并在变化时重新获取数据
-    watch(currentPage, (newPage) => {
+    watch(currentPage, async (newPage) => {
         console.log(newPage);
-        posts.value = fetchPosts(newPage);
+        posts.value = await fetchPosts(newPage);
         console.log(posts.value)
     });
 
