@@ -124,7 +124,6 @@ async function followCourse() {
     if (userStore.getNowUser().userId != 0) {
         await userStore.followCourse(props.courseId);
         follow.value = true;
-        console.log("i will follow" + follow.value);
     }
     else {
         alert("请先登录！")
@@ -135,7 +134,6 @@ async function followCourse() {
 async function unfollowCourse() {
     await userStore.unfollowCourse(props.courseId);
     follow.value = false;
-    console.log("i will unfollow" + follow.value);
 }
 
 

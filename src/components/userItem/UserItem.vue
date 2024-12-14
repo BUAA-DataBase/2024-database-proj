@@ -16,7 +16,7 @@
 
 <script lang="ts" setup name="">
     import { useUserStore } from '@/store/modules/userStore';
-    import {defineProps, ref} from 'vue'
+    import {defineProps, ref, watch} from 'vue'
     import { useRouter } from 'vue-router';
 
     const follow = ref(true)
@@ -33,7 +33,7 @@
         if (userStore.getNowUser().userId != 0) {
             follow.value = false
             await userStore.unfollowUser(props.thisId)
-            console.log("unfollow")
+            emit('send-data', props.thisId);
         }
         else {
             alert("请先登录！")
@@ -52,13 +52,15 @@
         if (userStore.getNowUser().userId != 0) {
             follow.value = true
             await userStore.followUser(props.thisId)
-            console.log("follow")
+            emit('send-data', -props.thisId);
         }
         else {
             alert("请先登录！")
             router.push({path:"/login"})
         }
     }
+
+    const emit = defineEmits(['send-data']);
 </script>
 
 <style scoped lang="scss">

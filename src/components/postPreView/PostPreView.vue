@@ -102,13 +102,9 @@
     watch(
         () => props,
         async (newProps, oldProps) => {
-        console.log(props.author)
-        console.log(props.authorId)
-        console.log(props.avatar)
         try {
             const responseGetInfo = await axios.get(`/api/users/info?id=${props.authorId}`); // 发送GET请求到后端API
             if (responseGetInfo.data.result == 'ok') {
-              console.log(responseGetInfo.data)
               try {
                 // 尝试解析JSON字符串
                 parsedData.value = JSON.parse(responseGetInfo.data.profile) as UserState;
@@ -118,7 +114,6 @@
                 error.value = 'Invalid JSON format!';
                 parsedData.value = rawUser.value; // 清除解析后的数据
               }
-              console.log(parsedData)
               if (thisPostAuthor.value !== parsedData.value.userName){
                 thisPostAuthor.value = parsedData.value.userName;
               }
@@ -142,7 +137,6 @@
 
     function toAuthor() {
         const authorId = props.authorId;
-        console.log(authorId);
         router.push({name: "user", params:{id : authorId}});
     }
 

@@ -66,7 +66,11 @@
     const props = defineProps({
         user: {
             type: Object as PropType<UserState>,
-            required: true
+            required: true,
+        },
+        followData: {
+            type: Number,
+            required: true,
         },
     });
 
@@ -79,8 +83,6 @@
         try {
             const followers = await userStore.getFollowers(props.user.userId);
             isFollowing.value = followers.includes(userStore.getNowUser().userId);
-            console.log(followers);
-            console.log(isFollowing.value)
         } catch (error) {
             console.error('Failed to fetch followers:', error);
             // 可以根据需要处理错误
@@ -130,8 +132,7 @@
 
     async function fetchPostsNumber(userId: number) {
         try {
-            postsNumber.value = (await userStore.getPosts(userId)).length as number; // 等待 Promise 解析
-            console.log('Number of posts:', postsNumber.value); // 现在这里将打印出实际的数字，而不是 Promise 对象
+            postsNumber.value = (await userStore.getPosts(userId)).length as number; // 等待 Promise 解析 // 现在这里将打印出实际的数字，而不是 Promise 对象
         } catch (error) {
             console.error('Error fetching posts number:', error);
         }
@@ -139,8 +140,7 @@
 
     async function fetchFollowingsNumber(userId: number) {
         try {
-            followingsNumber.value = (await userStore.getFollowings(userId)).length as number; // 等待 Promise 解析
-            console.log('Number of posts:', followingsNumber.value); // 现在这里将打印出实际的数字，而不是 Promise 对象
+            followingsNumber.value = (await userStore.getFollowings(userId)).length as number; // 等待 Promise 解析// 现在这里将打印出实际的数字，而不是 Promise 对象
         } catch (error) {
             console.error('Error fetching posts number:', error);
         }
@@ -148,8 +148,7 @@
 
     async function fetchFollowersNumber(userId: number) {
         try {
-            followersNumber.value = (await userStore.getFollowers(userId)).length as number; // 等待 Promise 解析
-            console.log('Number of posts:', followersNumber.value); // 现在这里将打印出实际的数字，而不是 Promise 对象
+            followersNumber.value = (await userStore.getFollowers(userId)).length as number; // 等待 Promise 解析// 现在这里将打印出实际的数字，而不是 Promise 对象
         } catch (error) {
             console.error('Error fetching posts number:', error);
         }
@@ -157,8 +156,7 @@
 
     async function fetchCoursesNumber(userId: number) {
         try {
-            coursesNumber.value = (await userStore.getFollowCourses(userId)).length as number; // 等待 Promise 解析
-            console.log('Number of posts:', coursesNumber.value); // 现在这里将打印出实际的数字，而不是 Promise 对象
+            coursesNumber.value = (await userStore.getFollowCourses(userId)).length as number; // 等待 Promise 解析// 现在这里将打印出实际的数字，而不是 Promise 对象
         } catch (error) {
             console.error('Error fetching posts number:', error);
         }

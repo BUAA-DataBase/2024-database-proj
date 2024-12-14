@@ -88,13 +88,10 @@
 
 
     function handleCommentSubmit(toPostId : number) {
-        console.log("handle review added")
         emit('comment-submitted');
         if (useStore.getPostById(props.toPostId) != null) {
-            console.log("enter?")
             replies.value = useStore.getPostById(props.toPostId)?.reviews;
             reply_count.value = useStore.getPostById(props.toPostId)?.reviews.length as number;
-            console.log(replies.value)
         }
     }
 
@@ -133,9 +130,7 @@
     });
  
     onMounted(() => {
-        console.log(reviewId.value);
         const thisId = props.toPostId;
-        console.log(thisId);
         if (reviewId.value === thisId && reviewSection.value) {
             reviewSection.value.scrollIntoView({ behavior: 'auto' });
         }

@@ -20,21 +20,16 @@ export const useCourseStore = defineStore("course", {
           for (const id of courseIds) {
             try {
               const courseResponse = await axios.get(`/api/courses/query?id=${id}`);
-              console.log(courseResponse.data)
               let jsonString = courseResponse.data.profile;
               jsonString = jsonString.replace(/\\\"/g,'"');
               jsonString = jsonString.replace(/\"\"/g,'');
-              console.log(jsonString);
               let parsedData : CourseState = JSON.parse(jsonString) as CourseState;
-              console.log(parsedData)
               parsedData.courseId = parseInt(id);
               parsedData.courseName = courseResponse.data.name.split('-')[0];
               parsedData.courseTeacher = courseResponse.data.name.split('-').length > 1 ? 
               courseResponse.data.name.split('-').slice(1).join('-') : '';
               parsedData.courseYear.push("2024秋");
               if (parsedData.courseId) {
-                console.log(id)
-                console.log(parsedData)
                 allCourses.push(parsedData); // 假设后端返回的是单个课程的详细信息，且格式与CourseState兼容
               }
             } catch (error) {

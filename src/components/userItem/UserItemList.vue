@@ -8,6 +8,7 @@
             :avatarImage="user.avatar"
             :userName="user.userName"
             :numberOfNewReviews="0"
+            @send-data="collectData"
         />
     </div>
     <div v-else class="no-user">
@@ -41,11 +42,10 @@ const no_user_text = computed(() => {
 })
 
 
-watch(props, async (newProps) => {
-    if (newProps.user) {
-        const followingIds = await userStore.getFollowings(newProps.user.userId);
+watch(() => props.user.userId, async (newUserId, oldUserId) => {
+    if (newUserId) {
+        const followingIds = await userStore.getFollowings(newUserId);
         const fetchedUsers: UserState[] = [];
-        console.log(followingIds)
         if (followingIds) {
             for (const userId of followingIds) {
               try {
@@ -66,6 +66,11 @@ watch(props, async (newProps) => {
     }
 }, {immediate:true, deep: true})
 
+const emit = defineEmits(['custom-event-forwarded']);
+
+const collectData = (data : number) => {
+    emit('custom-event-forwarded', data);
+};
 </script>
 
 <style scoped lang="scss">

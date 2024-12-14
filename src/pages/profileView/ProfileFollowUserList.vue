@@ -2,6 +2,7 @@
     <UserItemList style="width: 100%;" 
         :user="props.user" 
         :isMyProfile="props.isMyProfile"
+        @custom-event-forwarded="handleCustomEventForwarded"
     />
 </template>
 
@@ -19,6 +20,13 @@
             required: true
         }
     });
+
+    const emit = defineEmits(['custom-event-forwarded-again']);
+ 
+    const handleCustomEventForwarded = (data : number) => {
+        // 可以在这里处理数据，然后转发
+        emit('custom-event-forwarded-again', data);
+    };
 </script>
 
 <style scoped lang="scss">

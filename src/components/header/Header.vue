@@ -126,7 +126,6 @@
         if (useStore.getNowUser().userId != 0) {
             useStore.logout();
         }
-        console.log(useStore.getNowUser());
         router.push({path: "/login"})
     }
 
