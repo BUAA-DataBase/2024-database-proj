@@ -45,7 +45,7 @@
     })
 
     const num = computed(()=>{
-        return (useStore.getPostsByAuthor(props.user.userName)).length;
+        return (useStore.getPostsByAuthorId(props.user.userId)).length;
     })
 </script>
 

@@ -103,12 +103,15 @@
     
     const changeUser = ref<UserState>()
 
+    const emit = defineEmits(['refetch']);
+
     // 保存编辑内容并关闭文本框
     const saveAndClose = () => {
         changeUser.value = userStore.getNowUser();
         changeUser.value.introduction = tempIntroduction.value; // 更新 userStore 中的内容
         userStore.updateProfile(changeUser.value);
         editorOff.value = true; // 关闭编辑框
+        emit('refetch');
     };
 
     const isFollowing = ref(false);

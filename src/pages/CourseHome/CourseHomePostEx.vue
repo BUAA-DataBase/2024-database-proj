@@ -148,7 +148,11 @@
             router.push({path:"/login"})
             return;
         }
-        await userStore.likePost(props.toPostId);
+        if (await postStore.checkUserLikeOrNotPost(props.toPostId)) {
+            await userStore.unlikePost(props.toPostId);
+        } else {
+            await userStore.likePost(props.toPostId);
+        }
         likes.value = await postStore.getLikes(props.toPostId);  // 点击时点赞数加1
         console.log('点赞按钮被点击了');
     };

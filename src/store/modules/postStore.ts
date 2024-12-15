@@ -7,6 +7,8 @@ import { useUserStore } from './userStore';
 import { useCourseStore } from './courseStore';
 import type { post } from 'node_modules/axios/index.cjs';
 import { ErrorCodes } from 'vue';
+import { useRouter } from 'vue-router';
+import type { BlockLike } from 'typescript';
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -118,6 +120,11 @@ export const usePostStore = defineStore("post", {
       } catch (error : any) {
         let errorMessage = "";
         if (error.response && error.response.data && error.response.data.error) {
+          if (error.response.data.error == 5) {
+            const router = useRouter();
+            alert("登录已失效！")
+            router.push({ path : "/login" });
+          }
           switch (error.response.data.error) {
             case ErrorCode.TOKEN_VERIFY_ERROR:
               errorMessage = 'TOKEN错误';
@@ -159,6 +166,11 @@ export const usePostStore = defineStore("post", {
       } catch (error : any) {
         let errorMessage = "";
         if (error.response && error.response.data && error.response.data.error) {
+          if (error.response.data.error == 5) {
+            const router = useRouter();
+            alert("登录已失效！")
+            router.push({ path : "/login" });
+          }
           switch (error.response.data.error) {
             case ErrorCode.TOKEN_VERIFY_ERROR:
               errorMessage = 'TOKEN错误';
@@ -203,7 +215,12 @@ export const usePostStore = defineStore("post", {
               return post;
             });
         }
-      } catch (error : any) {
+      } catch (error : any) { 
+        if (error.response.data.error == 5) {
+          const router = useRouter();
+          alert("登录已失效！")
+          router.push({ path : "/login" });
+        }
         console.error('Error fetching user info:', error);
       }
     },
@@ -219,8 +236,8 @@ export const usePostStore = defineStore("post", {
     },
 
     // 根据作者名获取评论
-    getPostsByAuthor(author: string): PostState[] {
-      return this.posts.filter(post => post.author === author);
+    getPostsByAuthorId(authorId : number): PostState[] {
+      return this.posts.filter(post => post.authorId === authorId);
     },
 
     // 根据教师名获取评论
@@ -407,5 +424,44 @@ export const usePostStore = defineStore("post", {
         return null;
       }
     },
+
+    async checkUserLikeOrNotPost(postId : number) : Promise<boolean> {
+      try {
+        const userStore = useUserStore();
+        const response = await axios.get(`/api/posts/liked-by?id=${postId}`);
+        console.log(response.data);
+        if (response.data.liked_by) {
+          const ids = response.data.liked_by;
+          return ids.includes(userStore.getNowUser().userId);
+        }
+        else {
+          return false;
+        }
+      }
+      catch (error : any) {
+        console.log(error.response.data)
+      }
+      return false;
+    },
+
+    async checkUserLikeOrNotComment(commentId : number) : Promise<boolean> {
+      try {
+        const userStore = useUserStore();
+        const response = await axios.get(`/api/comments/liked-by?id=${commentId}`);
+        console.log(response.data);
+        if (response.data.liked_by) {
+          const ids = response.data.liked_by;
+          return ids.includes(userStore.getNowUser().userId);
+        }
+        else {
+          return false;
+        }
+      }
+      catch (error : any) {
+        console.log(error.response.data)
+      }
+      return false;
+    },
+    
   },
 });

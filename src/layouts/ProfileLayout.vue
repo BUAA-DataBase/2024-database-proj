@@ -6,10 +6,12 @@
                     :user="parsedData" 
                     :isMyProfile="isMyProfile"
                     @custom-event-forwarded-triple="handleCustomEvent"
+                    @refetch="refetch"
                 />
                 <ProfileAside class="profile-aside" 
                     :user="parsedData"
                     :followData="followListAlter"
+                    @refetch="refetch"
                 />
             </div>
         </t-content>
@@ -66,11 +68,12 @@
         ? parseInt(userIdParam, 10)
         : 0;
     });
- 
-    // 监听currentUserId的变化，并在变化时重新获取数据
-    watch(currentUserId, async (newUserId) => {
-        if (newUserId != useStore.getNowUser().userId) {
-            const responseGetInfo = await axios.get(`/api/users/info?id=${newUserId}`); // 发送GET请求到后端API
+
+    async function refetch() {
+        console.log('refetch!')
+        if (currentUserId.value != useStore.getNowUser().userId) {
+            const responseGetInfo = await axios.get(`/api/users/info?id=${currentUserId.value}`); // 发送GET请求到后端API
+            console.log(responseGetInfo)
             if (responseGetInfo.data.result == 'ok') {
               try {
                 // 尝试解析JSON字符串
@@ -87,7 +90,33 @@
         else {
             parsedData.value = useStore.getNowUser();
         }
+    }
+ 
+    // 监听currentUserId的变化，并在变化时重新获取数据
+    watch(currentUserId, async (newUserId) => {
+        if (newUserId != useStore.getNowUser().userId) {
+            const responseGetInfo = await axios.get(`/api/users/info?id=${newUserId}`); // 发送GET请求到后端API
+            console.log(responseGetInfo)
+            if (responseGetInfo.data.result == 'ok') {
+              try {
+                // 尝试解析JSON字符串
+                parsedData.value = JSON.parse(responseGetInfo.data.profile) as UserState;
+                console.log(parsedData.value)
+                error.value = null; // 清除任何先前的错误
+              } catch (e) {
+                // 捕获解析错误
+                error.value = 'Invalid JSON format!';
+                parsedData.value = rawUser.value; // 清除解析后的数据
+              }
+            }
+        }
+        else {
+            console.log("fetch from store!")
+            parsedData.value = useStore.getNowUser();
+            console.log(parsedData.value)
+        }
     }, {immediate:true});
+    
     
     const followListAlter = ref(-1)
 

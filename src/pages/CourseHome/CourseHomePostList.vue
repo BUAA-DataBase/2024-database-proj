@@ -2,11 +2,17 @@
     <div class="reviewList-container">
         <div class="review-editor-container">
             <span class="title">点评</span>
-            <t-button @click="toEditor">
+            <t-button @click="toEditor" v-if="!hasOldPost()">
                     <template #icon>
                         <PenBrushIcon />
                     </template>
                     写点评
+            </t-button>
+            <t-button @click="toEditor" v-if="hasOldPost()">
+                    <template #icon>
+                        <PenBrushIcon />
+                    </template>
+                    修改点评
             </t-button>
         </div>
         <t-divider style="margin-top: 10px"/>
@@ -65,6 +71,15 @@
         courseName: { type: String, required: true},
         courseTeacher: { type: String, required: true }
     })
+
+    function hasOldPost() {
+        if (useStore.getPostByCourseTeacherAndAuthorId(props.courseName, props.courseTeacher ,useStore2.getNowUser().userId)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     function toEditor() {
         if (useStore2.getNowUser().userId != 0) {

@@ -51,7 +51,12 @@
             return;
         }
         console.log(props.review.reviewId)
-        await userStore.likeComment(props.review.reviewId);
+        if (await postStore.checkUserLikeOrNotComment(props.review.reviewId)) {
+            await userStore.unlikeComment(props.review.reviewId);
+        }
+        else {
+            await userStore.likeComment(props.review.reviewId);
+        }
         const fetchLikeNum = await postStore.fetchReviewLikes(props.review.reviewId);
         if (fetchLikeNum != -1) {
             likeNum.value = fetchLikeNum;

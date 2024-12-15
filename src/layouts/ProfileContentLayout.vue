@@ -103,6 +103,7 @@
     }
 
     const errorMessage = ref<string | null>("")
+    const emit = defineEmits(['refetch', 'custom-event-forwarded-triple']);
 
     const handleFileChange = async (event: Event) => {
       const input = event.target as HTMLInputElement;
@@ -134,6 +135,7 @@
         if (response.data.result === 'ok') {
           console.log("Successfully uploaded!");
           useStore.updateAvatar(response.data.file_info.url);
+          emit('refetch');
         }
       } catch (error:any) {
         if (axios.isCancel(error)) {
@@ -164,11 +166,11 @@
             changeUser.value = props.user;
             changeUser.value.userName = editedUsername.value;
             useStore.updateProfile(changeUser.value)
+            emit('refetch')
         }
         isEditing.value = false;
     }
 
-    const emit = defineEmits(['custom-event-forwarded-triple']);
 
     const handleCustomEvent = (data : number) => {
         emit('custom-event-forwarded-triple', data);

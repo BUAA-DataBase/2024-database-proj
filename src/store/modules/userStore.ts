@@ -4,6 +4,7 @@ import type { PostState, UserState } from '../types'
 import { Role } from '../types'
 import axios from 'axios'
 import { ErrorCode } from '@/constants/error-codes'
+import { useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
@@ -64,6 +65,9 @@ export const useUserStore = defineStore('user', {
     /** 更新用户信息 */
     async updateProfile(profileData: Partial<UserState>) {
       Object.assign(this, profileData)
+      this.$patch(this);
+      this.saveUserToStorage();
+      console.log(this.$state);
       try {
         const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
             name: this.userName,
@@ -74,12 +78,20 @@ export const useUserStore = defineStore('user', {
             console.log("Successfully upload!");
         }
       } catch (error :any) {
-      console.error('Error fetching user info:', error);
+        if (error.response.data.error == 5) {
+          const router = useRouter();
+          alert("登录已失效！")
+          router.push({ path : "/login" });
+        }
+      console.log(error.response.data);;
       }
     },
 
     async updateAvatar(avatar : string) {
       this.avatar = `http://182.92.164.178:1024/${avatar}`;
+      this.$patch(this);
+      this.saveUserToStorage();
+      console.log(this.$state);
       try {
         const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
             name: this.userName,
@@ -89,8 +101,13 @@ export const useUserStore = defineStore('user', {
         if (response.data.result == 'ok') {
             console.log("Successfully upload!");
         }
-      } catch (error :any) {
-      console.error('Error fetching user info:', error);
+      } catch (error :any) { 
+        if (error.response.data.error == 5) {
+          const router = useRouter();
+          alert("登录已失效！")
+          router.push({ path : "/login" });
+        }
+        console.log(error.response.data);;
       }
     },
 
@@ -111,7 +128,12 @@ export const useUserStore = defineStore('user', {
               console.log("Successfully upload!");
           }
         } catch (error : any) {
-          console.error('Error fetching user info:', error);
+          if (error.response.data.error == 5) {
+            const router = useRouter();
+            alert("登录已失效！")
+            router.push({ path : "/login" });
+          }
+          console.log(error.response.data);;
         }
       }
     },
@@ -131,8 +153,13 @@ export const useUserStore = defineStore('user', {
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
           }
-        } catch (error) {
-          console.error('Error fetching user info:', error);
+        } catch (error : any) {
+          if (error.response.data.error == 5) {
+            const router = useRouter();
+            alert("登录已失效！")
+            router.push({ path : "/login" });
+          }
+          console.log(error.response.data);;
         }
       }
     },
@@ -145,8 +172,13 @@ export const useUserStore = defineStore('user', {
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
           }
-        } catch (error) {
-        console.error('Error fetching user info:', error);
+        } catch (error : any) {
+          if (error.response.data.error == 5) {
+            const router = useRouter();
+            alert("登录已失效！")
+            router.push({ path : "/login" });
+          }
+        console.log(error.response.data);;
         }
     },
 
@@ -157,8 +189,13 @@ export const useUserStore = defineStore('user', {
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
           }
-        } catch (error) {
-        console.error('Error fetching user info:', error);
+        } catch (error : any) {
+          if (error.response.data.error == 5) {
+            const router = useRouter();
+            alert("登录已失效！")
+            router.push({ path : "/login" });
+          }
+        console.log(error.response.data);;
         }
     },
 
@@ -169,17 +206,31 @@ export const useUserStore = defineStore('user', {
         if (response.data.result == 'ok') {
           console.log("赞赞赞赞赞！")
         }
-        else {
-          try {
-            const responseUnlike = await axios.post(`/api/users/unlike-comment?token=${this.verificationCode}&comment_id=${commentId}`)
-            console.log(responseUnlike.data);
-          }
-          catch(error : any) {
-            console.log(error.response);
-          }
+      }
+      catch (error : any) {
+        if (error.response.data.error == 5) {
+          const router = useRouter();
+          alert("登录已失效！")
+          router.push({ path : "/login" });
+        }
+        console.log(error.response.data);
+      }
+    },
+
+    async unlikeComment(commentId : number) {
+      try {
+        const response = await axios.post(`/api/users/unlike-comment?token=${this.verificationCode}&comment_id=${commentId}`)
+        console.log(response.data)
+        if (response.data.result == 'ok') {
+          console.log("取消点赞！")
         }
       }
       catch (error : any) {
+        if (error.response.data.error == 5) {
+          const router = useRouter();
+          alert("登录已失效！")
+          router.push({ path : "/login" });
+        }
         console.log(error.response.data);
       }
     },
@@ -191,6 +242,27 @@ export const useUserStore = defineStore('user', {
         console.log("I'm in the likePost!")
       }
       catch (error : any) {
+        if (error.response.data.error == 5) {
+          const router = useRouter();
+          alert("登录已失效！")
+          router.push({ path : "/login" });
+        }
+        console.log(error.response.data);
+      }
+    },
+
+    async unlikePost(postId : number) {
+      try {
+        const response = await axios.post(`/api/users/unlike-post?token=${this.verificationCode}&post_id=${postId}`)
+        console.log(response.data.result);
+        console.log("I'm in the unlikePost!")
+      }
+      catch (error : any) {
+        if (error.response.data.error == 5) {
+          const router = useRouter();
+          alert("登录已失效！")
+          router.push({ path : "/login" });
+        }
         console.log(error.response.data);
       }
     },
@@ -208,8 +280,8 @@ export const useUserStore = defineStore('user', {
           else {
             return [];
           }
-      } catch (error) {
-        console.error('Error fetching user info:', error);
+      } catch (error : any) {
+        console.log(error.response.data);;
       }
       return [];
     },
@@ -227,8 +299,8 @@ export const useUserStore = defineStore('user', {
           else {
             return [];
           }
-      } catch (error) {
-        console.error('Error fetching user info:', error);
+      } catch (error : any) {
+        console.log(error.response.data);;
       }
       return [];
     },
@@ -246,8 +318,8 @@ export const useUserStore = defineStore('user', {
           else {
             return [];
           }
-      } catch (error) {
-        console.error('Error fetching user info:', error);
+      } catch (error : any) {
+        console.log(error.response.data);;
       }
       return [];
     },
@@ -270,8 +342,8 @@ export const useUserStore = defineStore('user', {
         else {
           return [];
         }
-      } catch (error) {
-        console.error('Error fetching user info:', error);
+      } catch (error : any) {
+        console.log(error.response.data);;
       }
       return [];
     },
