@@ -61,18 +61,6 @@
                 <t-button theme="default" v-if="follow" @click="unfollowCourse" style="padding: 0 20px;">
                     已关注
                 </t-button>
-                <t-button theme="default">
-                    <template #icon>
-                        <ThumbUpIcon />
-                    </template>
-                    推荐
-                </t-button>
-                <t-button theme="default">
-                    <template #icon>
-                        <ThumbDownIcon />
-                    </template>
-                    不推荐
-                </t-button>
             </t-space>
         </div>
         <CourseHomePostList

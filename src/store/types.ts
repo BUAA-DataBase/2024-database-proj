@@ -27,6 +27,7 @@ export interface UserState {
     email: string
     role: Role
     major: string
+    introduction: string
     grade: string
     avatar: string
     college: string

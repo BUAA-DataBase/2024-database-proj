@@ -21,10 +21,22 @@
                     </t-button>
                 </t-space>
 
-                <t-divider/>
+                <t-divider class="specialD"/>
 
-                <div class="introductionContainer">
-                    <span class="introduction">{{ introduction }}</span>
+                <div v-if="editorOff" class="introductionContainer">
+                    <PenBrushIcon size="10px" class="pen-icon" v-if="userStore.getNowUser().userId == props.user.userId" @click="toggleEditor"/>
+                    <span class="introduction">{{ userStore.introduction }}</span>
+                </div>
+                <!-- 编辑模式下的多行文本框 -->
+                <div v-else>
+                <textarea 
+                    v-model="tempIntroduction" 
+                    @keydown.enter="saveAndClose" 
+                    @blur="saveAndClose" 
+                    rows="3"
+                    class="editTextarea"
+                    autofocus
+                ></textarea>
                 </div>
 
                 <t-divider/>
@@ -58,7 +70,7 @@
 <script lang="ts" setup name="">
     import {computed, ref, watch, type PropType} from 'vue'
     import avatarImage from '@/assets/img_avatar.jpg'
-    import { HeartIcon, ChatBubbleIcon } from 'tdesign-icons-vue-next';
+    import { HeartIcon, ChatBubbleIcon, PenBrushIcon } from 'tdesign-icons-vue-next';
     import type { UserState } from '@/store/types';
     import { useUserStore } from '@/store/modules/userStore';
     import { useRouter } from 'vue-router';
@@ -71,6 +83,24 @@
     });
 
     const userStore = useUserStore();
+
+    // 控制编辑框的显示/隐藏
+    const editorOff = ref(true);
+
+    // 临时存储编辑的内容
+    const tempIntroduction = ref(userStore.introduction);
+
+    // 切换编辑模式
+    const toggleEditor = () => {
+    editorOff.value = false; // 打开编辑框
+    tempIntroduction.value = userStore.introduction; // 加载当前的介绍内容
+    };
+
+    // 保存编辑内容并关闭文本框
+    const saveAndClose = () => {
+    userStore.introduction = tempIntroduction.value; // 更新 userStore 中的内容
+    editorOff.value = true; // 关闭编辑框
+    };
 
     const isFollowing = ref(false);
     const isLoading = ref(true);
@@ -189,13 +219,36 @@
         font-size: 17px;
         font-weight: bold;
     }
+    .introductionContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .pen-icon {
+        cursor: pointer;
+        margin-left: auto;
+    }
     .introduction {
         font-size: 12px;
         color: var(--introduction-color);
+        margin-bottom: 5px;
     }
     .countContent {
         font-size: 14px;
         font-weight: bold;
         color: var(--read-more-color);
+    }
+
+    .editTextarea {
+        width: 90%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #89bfe5;
+        border-radius: 4px;
+        resize: none;
+    }
+    .specialD {
+        margin-bottom: -8px;
     }
 </style>
