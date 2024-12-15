@@ -162,7 +162,7 @@
 
     // 保存用户名并退出编辑状态
     function saveUsername() {
-        if (editedUsername.value) {
+        if (editedUsername.value && !(/^\s*$/.test(editedUsername.value))) {
             changeUser.value = props.user;
             changeUser.value.userName = editedUsername.value;
             useStore.updateProfile(changeUser.value)

@@ -74,12 +74,12 @@
     import { useUserStore } from '@/store/modules/userStore';
     import type { HeadMenuProps } from 'tdesign-vue-next';
     import axios from 'axios';
-import { useCourseStore } from '@/store/modules/courseStore';
-import { usePostStore } from '@/store/modules/postStore';
+    import { useCourseStore } from '@/store/modules/courseStore';
+    import { usePostStore } from '@/store/modules/postStore';
 
     const value = ref('');
     const value2 = ref('');
-    const options = ref<AutoCompleteProps<string>['options']>(['计算机组成', '操作系统', '数据库']);
+    const options = ref<AutoCompleteProps<string>['options']>();
     const menuValue = ref('item1');
     const router = useRouter()
     const route = useRoute()
@@ -95,6 +95,20 @@ import { usePostStore } from '@/store/modules/postStore';
             if (name === "courses") {
                 const courses = await courseStore.search(value2.value);
                 const select = true;
+                if (courses) {}
+                else {
+                    alert("搜索失败")
+                }
+                emit('send-courses', {ids : courses, isSearch : select})
+            }
+            else {
+                router.push({ path : "/courses/1"});
+                const courses = await courseStore.search(value2.value);
+                const select = true;
+                if (courses) {}
+                else {
+                    alert("搜索失败")
+                }
                 emit('send-courses', {ids : courses, isSearch : select})
             }
         }

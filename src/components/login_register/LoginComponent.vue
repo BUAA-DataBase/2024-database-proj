@@ -136,7 +136,12 @@
                 error.value = 'Invalid JSON format!';
                 parsedData.value = rawUser.value; // 清除解析后的数据
               }
-              parsedData.value.userName = username.value;
+              if (/^\s*$/.test(username.value)) {
+                parsedData.value.userName = "BUAAer"
+              }
+              else {
+                parsedData.value.userName = username.value;
+              }
               parsedData.value.verificationCode = token.value;
               parsedData.value.email = email.value;
               parsedData.value.userId = parseInt(userId.value);
