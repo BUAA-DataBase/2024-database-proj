@@ -113,6 +113,7 @@
             }
         }
         else {
+            alert("已显示全部课程")
             const courses: never[] = [];
             const select = false
             emit('send-courses', {ids : courses, isSearch : select})
