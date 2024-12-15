@@ -85,6 +85,7 @@
         email: '',
         role: Role.Student,
         major: '',
+        introduction: '这个人还没想好怎么介绍他自己',
         grade: '',
         avatar: '',
         college: '',
