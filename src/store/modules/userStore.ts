@@ -196,6 +196,9 @@ export const useUserStore = defineStore('user', {
     },
 
     async getFollowings(userId:number) : Promise<number[]> {
+      if (userId == 0) {
+        return [];
+      }
       try {
         const response = await axios.get(`/api/users/followings?id=${userId}`); // 发送GET请求到后端API
         const followings = response.data.followings;
@@ -212,6 +215,9 @@ export const useUserStore = defineStore('user', {
     },
 
     async getFollowers(userId:number) : Promise<number[]> {
+      if (userId == 0) {
+        return [];
+      }
       try {
         const response = await axios.get(`/api/users/followers?id=${userId}`); // 发送GET请求到后端API
         const followers = response.data.followers;
@@ -228,6 +234,9 @@ export const useUserStore = defineStore('user', {
     },
 
     async getFollowCourses(userId:number) : Promise<number[]> {
+      if (userId == 0) {
+        return [];
+      }
       try {
         const response = await axios.get(`/api/users/following-courses?id=${userId}`); // 发送GET请求到后端API
         const courses = response.data.following_courses;
@@ -244,6 +253,9 @@ export const useUserStore = defineStore('user', {
     },
 
     async getPosts(userId:number) : Promise<number[]> {
+      if (userId == 0) {
+        return [];
+      }
       try {
         const response = await axios.get(`/api/posts/list?id=${userId}`); // 发送GET请求到后端API
         const posts = response.data.posts;

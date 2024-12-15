@@ -44,6 +44,7 @@
         email: '',
         role: Role.Student,
         major: '',
+        introduction: '',
         grade: '',
         avatar: '',
         college: '',
@@ -74,6 +75,7 @@
               try {
                 // 尝试解析JSON字符串
                 parsedData.value = JSON.parse(responseGetInfo.data.profile) as UserState;
+                console.log(parsedData.value)
                 error.value = null; // 清除任何先前的错误
               } catch (e) {
                 // 捕获解析错误

@@ -25,7 +25,7 @@
 
                 <div v-if="editorOff" class="introductionContainer">
                     <PenBrushIcon size="10px" class="pen-icon" v-if="userStore.getNowUser().userId == props.user.userId" @click="toggleEditor"/>
-                    <span class="introduction">{{ userStore.introduction }}</span>
+                    <span class="introduction">{{ props.user.introduction }}</span>
                 </div>
                 <!-- 编辑模式下的多行文本框 -->
                 <div v-else>
@@ -92,7 +92,7 @@
     const editorOff = ref(true);
 
     // 临时存储编辑的内容
-    const tempIntroduction = ref(userStore.introduction);
+    const tempIntroduction = ref(props.user.introduction);
 
     // 切换编辑模式
     const toggleEditor = () => {
@@ -100,10 +100,15 @@
     tempIntroduction.value = userStore.introduction; // 加载当前的介绍内容
     };
 
+    
+    const changeUser = ref<UserState>()
+
     // 保存编辑内容并关闭文本框
     const saveAndClose = () => {
-    userStore.introduction = tempIntroduction.value; // 更新 userStore 中的内容
-    editorOff.value = true; // 关闭编辑框
+        changeUser.value = userStore.getNowUser();
+        changeUser.value.introduction = tempIntroduction.value; // 更新 userStore 中的内容
+        userStore.updateProfile(changeUser.value);
+        editorOff.value = true; // 关闭编辑框
     };
 
     const isFollowing = ref(false);
