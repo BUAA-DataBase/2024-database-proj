@@ -130,24 +130,26 @@
         : 0;
     });
  
-    onMounted(() => {
+    onMounted(async () => {
         const thisId = props.toPostId;
         if (reviewId.value === thisId && reviewSection.value) {
             reviewSection.value.scrollIntoView({ behavior: 'auto' });
         }
+        likes.value = await postStore.getLikes(props.toPostId);
     })
 
     const userStore = useUserStore()
+    const postStore = usePostStore()
 
     // 点赞按钮的点击处理函数
-    const handleLikeClick = () => {
+    const handleLikeClick = async () => {
         if (userStore.getNowUser().userId == 0) {
             alert("请先登录！");
             router.push({path:"/login"})
             return;
         }
-        userStore.likePost(props.toPostId);
-        likes.value = 0;  // 点击时点赞数加1
+        await userStore.likePost(props.toPostId);
+        likes.value = await postStore.getLikes(props.toPostId);  // 点击时点赞数加1
         console.log('点赞按钮被点击了');
     };
 

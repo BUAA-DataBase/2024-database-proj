@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" setup name="">
-    import {defineProps, ref} from 'vue'
+    import {defineProps, onMounted, ref} from 'vue'
     import { HeartIcon, ThumbUpIcon, ThumbDownIcon} from 'tdesign-icons-vue-next';
     import CourseHomePostList from './CourseHomePostList.vue';
     import { useUserStore } from '@/store/modules/userStore';
@@ -118,12 +118,16 @@ const newRate = ref(Math.round(props.courseRate * 2 - 0.1)/2)
 const userStore = useUserStore();
 const router = useRouter()
 
-const follow = ref(userStore.isFollowingCourse(props.courseId));
+const follow = ref(true);
+
+onMounted (async () => {
+    follow.value = await userStore.isFollowingCourse(props.courseId)
+})
 
 async function followCourse() {
     if (userStore.getNowUser().userId != 0) {
         await userStore.followCourse(props.courseId);
-        follow.value = true;
+        follow.value = !follow.value
     }
     else {
         alert("请先登录！")
@@ -133,7 +137,7 @@ async function followCourse() {
 
 async function unfollowCourse() {
     await userStore.unfollowCourse(props.courseId);
-    follow.value = false;
+    follow.value = !follow.value
 }
 
 function recommend() {

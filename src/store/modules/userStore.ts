@@ -116,8 +116,9 @@ export const useUserStore = defineStore('user', {
     },
 
     /** 是否已关注课程 **/
-    isFollowingCourse(courseId: number): boolean {
-      return this.followedCourses.includes(courseId)
+    async isFollowingCourse(courseId: number): Promise<boolean> {
+      const followCourses = await this.getFollowCourses(this.userId)
+      return followCourses.includes(courseId)
     },
 
     /** 取消关注课程 */
@@ -184,8 +185,9 @@ export const useUserStore = defineStore('user', {
     
     async likePost(postId : number) {
       try {
-        const response = await axios.post(`/api/users/like-post?token=${this.verificationCode}&comment_id=${postId}`)
-        console.log(response)
+        const response = await axios.post(`/api/users/like-post?token=${this.verificationCode}&post_id=${postId}`)
+        console.log(response.data.result);
+        console.log("I'm in the likePost!")
       }
       catch (error : any) {
         console.log(error.response.data);

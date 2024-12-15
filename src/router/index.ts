@@ -7,6 +7,7 @@ import Register from '@/components/login_register/RegisterComponent.vue'
 import User from '@/layouts/ProfileLayout.vue'
 import Course from '@/layouts/CourseHomeLayout.vue'
 import Editor from '@/components/editor/PostEditor.vue'
+import { useUserStore } from '@/store/modules/userStore'
 
 const routes = [
   {
@@ -42,10 +43,12 @@ const routes = [
   },
   {
     path: '/login',
+    name: 'login',
     component: Login,
   },
   {
     path: '/register',
+    name: 'register',
     component: Register,
   },
   {
@@ -59,6 +62,32 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+
+const allowedRoutes = ['latestComments', 'courses', 'login', 'register'];
+
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore()
+  const userId = userStore.getNowUser().userId;
+  
+  if (userId === 0) {
+    // 当 userId 为 0 时，检查即将跳转的路由是否在允许的范围内
+    if (allowedRoutes.includes(to.name as string)) {
+      next(); // 允许跳转
+    } else {
+      // 如果不在允许的范围内，则重定向到 login 页面
+      alert("请先登录以查询详情！")
+      next({ name: 'login' });
+    }
+  } else {
+    for (let key in to.params) {
+      if (to.params[key] === '0') {
+        next({ path: '/latestComments/1' });
+        return; 
+      }
+    }
+    next();
+  }
+});
 
 router.afterEach((to, from) => {
   // 检查目标路由的名称是否为'course'且params中是否包含reviewId

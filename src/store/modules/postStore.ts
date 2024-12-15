@@ -6,6 +6,7 @@ import { ErrorCode } from '@/constants/error-codes'
 import { useUserStore } from './userStore';
 import { useCourseStore } from './courseStore';
 import type { post } from 'node_modules/axios/index.cjs';
+import { ErrorCodes } from 'vue';
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -46,6 +47,19 @@ export const usePostStore = defineStore("post", {
                     }
                   } catch (e) {
                     console.error(`Failed to fetch comment with ID ${id}:`, e);
+                  }
+                  try {
+                    const likeResponse = await axios.get(`/api/posts/liked-by?id=${id}`);
+                    if (likeResponse.data.liked_by) {
+                      const likes = likeResponse.data.liked_by;
+                      parsedData.likeUsers = likes.length;
+                    }
+                    else {
+                      parsedData.likeUsers = 0;
+                    }
+                  }
+                  catch (error) {
+                    console.error(`Failed to fetch likes with ID ${id}:`, error);
                   }
                   allPosts.push(parsedData); 
                 }
@@ -248,6 +262,24 @@ export const usePostStore = defineStore("post", {
       const startIndex = (page - 1) * 10;
       const endIndex = page * 10;
       return sortedPosts.slice(startIndex, endIndex);
+    },
+
+    async getLikes(postId : number) : Promise<number> {
+      try {
+        const response = await axios.get(`/api/posts/liked-by?id=${postId}`);
+        console.log(response.data);
+        if (response.data.liked_by) {
+          const ids = response.data.liked_by;
+          return ids.length;
+        }
+        else {
+          return 0;
+        }
+      }
+      catch (error : any) {
+        console.log(error.response.data)
+      }
+      return 0;
     },
 
     filterAndSortPosts(
