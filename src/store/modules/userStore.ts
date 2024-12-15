@@ -13,6 +13,7 @@ export const useUserStore = defineStore('user', {
     password: '', // 通常密码不应该存储在前端，但这里是演示
     email: '',
     role: Role.Anonymous,
+    introduction: '计算机小哥哥一枚',
     major: '',
     grade: '',
     avatar: '',
