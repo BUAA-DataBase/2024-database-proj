@@ -30,11 +30,9 @@ export const useUserStore = defineStore('user', {
   actions: {
     /** 登录操作 */
     login(userData: Partial<UserState>) {
-      console.log(userData.verificationCode)
       if (userData.userName && userData.email && userData.verificationCode) {
         this.$patch(userData);
         this.saveUserToStorage();
-        console.log("successfully log in!")
       } else {
         throw new Error('Invalid login credentials')
       }
@@ -67,38 +65,31 @@ export const useUserStore = defineStore('user', {
     async updateProfile(profileData: Partial<UserState>) {
       Object.assign(this, profileData)
       try {
-        console.log(this)
         const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
             name: this.userName,
             email: this.email,
             profile: this
         }); // 发送GET请求到后端API
-        console.log(response.data)
         if (response.data.result == 'ok') {
             console.log("Successfully upload!");
         }
       } catch (error :any) {
-        console.log(error.response.data)
       console.error('Error fetching user info:', error);
       }
     },
 
     async updateAvatar(avatar : string) {
       this.avatar = `http://182.92.164.178:1024/${avatar}`;
-      console.log(JSON.stringify(this.$state))
       try {
-        console.log(this.$state)
         const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
             name: this.userName,
             email: this.email,
             profile: this
         }); // 发送GET请求到后端API
-        console.log(response.data)
         if (response.data.result == 'ok') {
             console.log("Successfully upload!");
         }
       } catch (error :any) {
-        console.log(error.response.data)
       console.error('Error fetching user info:', error);
       }
     },
@@ -115,14 +106,11 @@ export const useUserStore = defineStore('user', {
       if (!this.followedCourses.includes(courseId)) {
         this.followedCourses.push(courseId)
         try {
-          console.log(this.verificationCode)
           const response = await axios.post(`/api/users/follow-course?token=${this.verificationCode}&follow_id=${courseId}`); // 发送GET请求到后端API
-          console.log(response.data)
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
           }
         } catch (error : any) {
-          console.log(error.response.data)
           console.error('Error fetching user info:', error);
         }
       }
@@ -138,9 +126,7 @@ export const useUserStore = defineStore('user', {
       if (this.followedCourses.includes(courseId)) {
         this.followedCourses = this.followedCourses.filter(id => id != courseId)
         try {
-          console.log(this)
           const response = await axios.post(`/api/users/unfollow-course?token=${this.verificationCode}&unfollow_id=${courseId}`); // 发送GET请求到后端API
-          console.log(response.data)
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
           }
@@ -154,9 +140,7 @@ export const useUserStore = defineStore('user', {
     async followUser(userId: number) {
         this.following.push(userId)
         try {
-          console.log(this)
           const response = await axios.post(`/api/users/follow-user?token=${this.verificationCode}&follow_id=${userId}`); // 发送GET请求到后端API
-          console.log(response.data)
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
           }
@@ -168,9 +152,7 @@ export const useUserStore = defineStore('user', {
     /** 取消关注用户 */
     async unfollowUser(userId: number) {
         try {
-          console.log(this)
           const response = await axios.post(`/api/users/unfollow-user?token=${this.verificationCode}&unfollow_id=${userId}`); // 发送GET请求到后端API
-          console.log(response.data)
           if (response.data.result == 'ok') {
               console.log("Successfully upload!");
           }
@@ -183,6 +165,28 @@ export const useUserStore = defineStore('user', {
       try {
         const response = await axios.post(`/api/users/like-comment?token=${this.verificationCode}&comment_id=${commentId}`)
         console.log(response.data)
+        if (response.data.result == 'ok') {
+          console.log("赞赞赞赞赞！")
+        }
+        else {
+          try {
+            const responseUnlike = await axios.post(`/api/users/unlike-comment?token=${this.verificationCode}&comment_id=${commentId}`)
+            console.log(responseUnlike.data);
+          }
+          catch(error : any) {
+            console.log(error.response);
+          }
+        }
+      }
+      catch (error : any) {
+        console.log(error.response.data);
+      }
+    },
+    
+    async likePost(postId : number) {
+      try {
+        const response = await axios.post(`/api/users/like-post?token=${this.verificationCode}&comment_id=${postId}`)
+        console.log(response)
       }
       catch (error : any) {
         console.log(error.response.data);
@@ -191,17 +195,14 @@ export const useUserStore = defineStore('user', {
 
     async getFollowings(userId:number) : Promise<number[]> {
       try {
-        console.log(this)
         const response = await axios.get(`/api/users/followings?id=${userId}`); // 发送GET请求到后端API
         const followings = response.data.followings;
           if (followings) {
-            console.log(response.data)
             return followings;
           }
           else {
             return [];
           }
-        console.log("download data successfully")
       } catch (error) {
         console.error('Error fetching user info:', error);
       }
@@ -210,9 +211,7 @@ export const useUserStore = defineStore('user', {
 
     async getFollowers(userId:number) : Promise<number[]> {
       try {
-        console.log(this)
         const response = await axios.get(`/api/users/followers?id=${userId}`); // 发送GET请求到后端API
-        console.log(response.data)
         const followers = response.data.followers;
           if (followers) {
             return followers;
@@ -220,7 +219,6 @@ export const useUserStore = defineStore('user', {
           else {
             return [];
           }
-        console.log("download data successfully")
       } catch (error) {
         console.error('Error fetching user info:', error);
       }
@@ -229,9 +227,7 @@ export const useUserStore = defineStore('user', {
 
     async getFollowCourses(userId:number) : Promise<number[]> {
       try {
-        console.log(this)
         const response = await axios.get(`/api/users/following-courses?id=${userId}`); // 发送GET请求到后端API
-        console.log(response.data)
         const courses = response.data.following_courses;
           if (courses) {
             return courses;
@@ -239,7 +235,6 @@ export const useUserStore = defineStore('user', {
           else {
             return [];
           }
-        console.log("download data successfully")
       } catch (error) {
         console.error('Error fetching user info:', error);
       }
@@ -248,9 +243,7 @@ export const useUserStore = defineStore('user', {
 
     async getPosts(userId:number) : Promise<number[]> {
       try {
-        console.log(this)
         const response = await axios.get(`/api/posts/list?id=${userId}`); // 发送GET请求到后端API
-        console.log(response.data)
         const posts = response.data.posts;
         if (response.data.result == 'ok') {
           if (posts) {
@@ -263,7 +256,6 @@ export const useUserStore = defineStore('user', {
         else {
           return [];
         }
-        console.log("download data successfully")
       } catch (error) {
         console.error('Error fetching user info:', error);
       }

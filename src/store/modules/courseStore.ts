@@ -20,21 +20,16 @@ export const useCourseStore = defineStore("course", {
           for (const id of courseIds) {
             try {
               const courseResponse = await axios.get(`/api/courses/query?id=${id}`);
-              console.log(courseResponse.data)
               let jsonString = courseResponse.data.profile;
               jsonString = jsonString.replace(/\\\"/g,'"');
               jsonString = jsonString.replace(/\"\"/g,'');
-              console.log(jsonString);
               let parsedData : CourseState = JSON.parse(jsonString) as CourseState;
-              console.log(parsedData)
               parsedData.courseId = parseInt(id);
               parsedData.courseName = courseResponse.data.name.split('-')[0];
               parsedData.courseTeacher = courseResponse.data.name.split('-').length > 1 ? 
               courseResponse.data.name.split('-').slice(1).join('-') : '';
               parsedData.courseYear.push("2024秋");
               if (parsedData.courseId) {
-                console.log(id)
-                console.log(parsedData)
                 allCourses.push(parsedData); // 假设后端返回的是单个课程的详细信息，且格式与CourseState兼容
               }
             } catch (error) {
@@ -50,11 +45,37 @@ export const useCourseStore = defineStore("course", {
         console.error('Failed to fetch data:', error);
       }
     },
+
+    async search(keyword : string) : Promise<number[]> {
+      try {
+        const response = await axios.get(`/api/courses/search?keyword=${keyword}`);
+        console.log(response.data);
+        if (response.data.result == 'ok') {
+          const courses = response.data.courses;
+          return courses;
+        }
+        return [];
+      }
+      catch (error : any) {
+        console.log(error.response);
+      }
+      return [];
+    },
     
-    // 新增课程
-    addCourse(course: CourseState) {
-      course.roundRate = Math.round(course.courseRate * 2 - 0.1)/2
-      this.courses.push(course);
+    getSearchCourses(courseIds : number[], page : number) : CourseState[] {
+      if (courseIds) {
+        let courses = [...this.courses]
+        courses = courses.filter(course => courseIds.includes(course.courseId));
+        const sortedCourses = [...courses].sort((a, b) => {
+          return b.courseRate - a.courseRate; // 降序排序
+        });
+        const startIndex = (page - 1) * 10;
+        const endIndex = page * 10;
+        return sortedCourses.slice(startIndex, endIndex);
+      }
+      else {
+        return [];
+      }
     },
 
     getCourseById(courseId: number): CourseState | null {

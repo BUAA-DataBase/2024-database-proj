@@ -92,7 +92,6 @@
             
             if (response.data.token && response.data.id) {
                 token.value = response.data.token;
-                console.log(response.data.token)
                 userId.value = response.data.id;
             }
             else {
@@ -103,7 +102,6 @@
         } catch (error:any) {
           // 检查error.response是否存在
           if (error.response && error.response.data && error.response.data.error) {
-            console.log(error.response.data)
             switch (error.response.data.error) {
               case ErrorCode.USER_NOT_EXIST_ERROR:
                 errorMessage.value = '用户不存在';
@@ -142,7 +140,6 @@
               parsedData.value.email = email.value;
               parsedData.value.userId = parseInt(userId.value);
               userStore.login(parsedData.value);
-              console.log(userStore.getNowUser())
             }
           } catch (error) {
             console.error('Error fetching user info:', error);

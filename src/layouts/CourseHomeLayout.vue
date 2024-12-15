@@ -93,13 +93,11 @@
  
     // 监听currentPage的变化，并在变化时重新获取数据
     watch(currentId, (newId) => {
-        console.log(currentId.value);
         course.value = fetchCourse(newId);
     }, {immediate: true}) ;
 
     
     watch(reviewId, (newId) => {
-        console.log(currentId.value);
         if (newId != 0) {
             course.value = fetchCourse(currentId.value);
         }

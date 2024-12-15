@@ -57,6 +57,7 @@
             <ProfileFollowUserList v-if="menuValue === 'item2'" 
                 :user="props.user"
                 :isMyProfile="isMyProfile"
+                @custom-event-forwarded-again="handleCustomEvent"
             />
         </div>
     </div>
@@ -86,10 +87,6 @@
             required: true
         }
     });
-
-    onMounted(()=>{
-        console.log(props.user)
-    })
 
     const menuValue = ref('item1');
     const changeUser = ref<UserState>()
@@ -133,24 +130,19 @@
           headers: {
           }
         });
- 
-        console.log(response.data);
 
         if (response.data.result === 'ok') {
           console.log("Successfully uploaded!");
           useStore.updateAvatar(response.data.file_info.url);
-          console.log(useStore.getNowUser().avatar)
         }
       } catch (error:any) {
         if (axios.isCancel(error)) {
           console.log('Request canceled', error.message);
         } else if (error.response) {
           // 服务器响应了一个状态码，并且状态码在2xx之外
-          console.log(error.response.data);
           errorMessage.value = 'Failed to upload image.'; // 或者使用error.response.data中的具体错误信息
         } else if (error.request) {
           // 请求已经发出，但没有收到响应
-          console.log(error.request);
           errorMessage.value = 'No response from server.';
         } else {
           // 在设置请求时发生了错误
@@ -176,7 +168,11 @@
         isEditing.value = false;
     }
 
+    const emit = defineEmits(['custom-event-forwarded-triple']);
 
+    const handleCustomEvent = (data : number) => {
+        emit('custom-event-forwarded-triple', data);
+    };
 </script>
 
 <style scoped lang="scss">

@@ -5,10 +5,11 @@
                 <ProfileContentLayout 
                     :user="parsedData" 
                     :isMyProfile="isMyProfile"
+                    @custom-event-forwarded-triple="handleCustomEvent"
                 />
                 <ProfileAside class="profile-aside" 
                     :user="parsedData"
-                    :isMyProfile="isMyProfile"
+                    :followData="followListAlter"
                 />
             </div>
         </t-content>
@@ -34,12 +35,6 @@
     const thisId = parseInt(useroute.params.id as string);
 
     const isMyProfile = ref(myId === thisId);
-
-    onMounted(() => {
-        console.log("myId: "+ myId)
-        console.log("thisId: "+ thisId)
-        console.log("isMyProfile: "+ isMyProfile.value)
-    });
 
     const rawUser = ref<UserState>({
         userId: 0,
@@ -75,20 +70,16 @@
     watch(currentUserId, async (newUserId) => {
         if (newUserId != useStore.getNowUser().userId) {
             const responseGetInfo = await axios.get(`/api/users/info?id=${newUserId}`); // 发送GET请求到后端API
-            console.log(responseGetInfo.data)
             if (responseGetInfo.data.result == 'ok') {
-              console.log(responseGetInfo.data)
               try {
                 // 尝试解析JSON字符串
                 parsedData.value = JSON.parse(responseGetInfo.data.profile) as UserState;
                 error.value = null; // 清除任何先前的错误
               } catch (e) {
-              console.log(e)
                 // 捕获解析错误
                 error.value = 'Invalid JSON format!';
                 parsedData.value = rawUser.value; // 清除解析后的数据
               }
-              console.log(parsedData)
             }
         }
         else {
@@ -96,6 +87,12 @@
         }
     }, {immediate:true});
     
+    const followListAlter = ref(-1)
+
+    const handleCustomEvent = (data:number) => {
+        // 处理从 A 组件传递过来的数据
+        followListAlter.value = data;
+    };
 </script>
 
 <style scoped lang="scss">

@@ -31,6 +31,11 @@
     import {useCourseStore} from '../store/modules/courseStore'
     import type { CourseState } from '../store/types'
 
+    const props = defineProps({
+        courses: { type: Array, default: () => [] as number[]}, 
+        isSearch: { type: Boolean, default: false},
+    })
+
     const router = useRouter();
     const route = useRoute();
 
@@ -53,14 +58,20 @@
         // 从 commentStore 中获取排序后的评论数组
         return useStore.getSortedCoursesByRate(page, false);
     }
-
-    onMounted(() => {
-        courses.value = fetchCourses(currentPage.value);
-    });
  
     // 监听currentPage的变化，并在变化时重新获取数据
-    watch(currentPage, (newPage) => {
-        courses.value = fetchCourses(newPage);
+    watch([
+        () => props.courses,
+        () => props.isSearch,
+        currentPage
+    ], ([newCourses, newIsSearch, newPage]) => {
+        if (!newIsSearch) {
+            courses.value = fetchCourses(newPage);
+        } else {
+            courses.value = useStore.getSearchCourses(newCourses as number[], newPage);
+        }
+    }, {
+        immediate: true,
     });
 
     function convertDifficulty(difficultyNumber: number) {

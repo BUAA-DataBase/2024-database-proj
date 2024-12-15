@@ -21,28 +21,20 @@ export const usePostStore = defineStore("post", {
           for (const id of postIds) {
             try {
               const postResponse = await axios.get(`/api/posts/query?id=${id}`);
-              console.log(postResponse.data)
               if (postResponse.data.feedback) {
                 let parsedData = JSON.parse(postResponse.data.feedback) as PostState;
-                console.log(parsedData)
                 parsedData.postId = parseInt(id);
                 if (parsedData.postId && parsedData.postId != 0) {
-                  console.log(id)
-                  console.log(parsedData)
                   try {
                     const commentResponse = await axios.get(`/api/posts/get-comments?id=${id}`)
                     const commentIds = commentResponse.data.comments;
-                    console.log(commentIds)
                     if (commentIds) {
                       for (const commentId of commentIds) {
                         try {
                           const queryResponse = await axios.get(`/api/comments/query?id=${commentId}`)
-                          console.log(queryResponse.data)
                           if (queryResponse.data.data) {
                             let parsedComment = JSON.parse(queryResponse.data.data) as ReviewState;
-                            console.log(parsedComment)
-                            console.log(queryResponse.data.id)
-                            parsedComment.reviewId = queryResponse.data.id;
+                            parsedComment.reviewId = commentId;
                             parsedComment.likeUsers = queryResponse.data.likes
                             parsedData.reviews.push(parsedComment)
                           }
@@ -73,11 +65,8 @@ export const usePostStore = defineStore("post", {
     async fetchReviewLikes(commentId : number) : Promise<number> {
       try {
         const queryResponse = await axios.get(`/api/comments/query?id=${commentId}`)
-        console.log(queryResponse.data)
         if (queryResponse.data.data) {
           let parsedComment = JSON.parse(queryResponse.data.data) as ReviewState;
-          console.log(parsedComment)
-          console.log(queryResponse.data.likes)
           return queryResponse.data.likes;
         }
         return -1;
@@ -91,23 +80,17 @@ export const usePostStore = defineStore("post", {
     async addPost(post: PostState, verificationCode: string) : Promise<number> {
       this.posts.push(post);
       let course_name = `${post.course}-${post.teacher}`;
-      console.log(course_name)
-      console.log(verificationCode)
       const jsonString = JSON.stringify(post)
-      console.log(jsonString)
       try {
-        console.log(post)
         const response = await axios.post(`/api/posts/new?token=${verificationCode}`,{
           course_name: course_name,
           recommendation: post.content.rate,
           feedback: post,
           data: post.content.comment
         }); // 发送GET请求到后端API
-        console.log(response.data)
         if (response.data.result == 'ok') {
             console.log("Successfully upload post!");
             post.postId = response.data.post_id;
-            console.log(post);
             const userStore = useUserStore();
             userStore.pushPost(post);
             const courseStore = useCourseStore();
@@ -115,14 +98,12 @@ export const usePostStore = defineStore("post", {
               post.course,
               post.teacher
             );
-            console.log(post.postId)
             return post.postId;
         }
         return 0;
       } catch (error : any) {
         let errorMessage = "";
         if (error.response && error.response.data && error.response.data.error) {
-          console.log(error.response.data)
           switch (error.response.data.error) {
             case ErrorCode.TOKEN_VERIFY_ERROR:
               errorMessage = 'TOKEN错误';
@@ -148,19 +129,14 @@ export const usePostStore = defineStore("post", {
 
     async modifyPost(post: PostState, verificationCode: string) : Promise<number> {
       let course_name = `${post.course}-${post.teacher}`;
-      console.log(course_name)
-      console.log(verificationCode)
       const jsonString = JSON.stringify(post)
-      console.log(jsonString)
       try {
-        console.log(post)
         const response = await axios.post(`/api/posts/modify?token=${verificationCode}&post_id=${post.postId}`,{
           course_name: course_name,
           recommendation: post.content.rate,
           feedback: post,
           data: post.content.comment
         }); // 发送GET请求到后端API
-        console.log(response.data)
         if (response.data.result == 'ok') {
             console.log("Successfully upload post!");
             return post.postId;
@@ -169,7 +145,6 @@ export const usePostStore = defineStore("post", {
       } catch (error : any) {
         let errorMessage = "";
         if (error.response && error.response.data && error.response.data.error) {
-          console.log(error.response.data)
           switch (error.response.data.error) {
             case ErrorCode.TOKEN_VERIFY_ERROR:
               errorMessage = 'TOKEN错误';
@@ -197,16 +172,12 @@ export const usePostStore = defineStore("post", {
         // 遍历 posts 数组，找到匹配 toPostId 的帖子
       try {
         const datatString = JSON.stringify(comment)
-        console.log(datatString)
-        console.log(verificationCode)
-        console.log(comment.toPostId)
         const response = await axios.post(`/api/posts/add-comment?token=${verificationCode}&id=${comment.toPostId}`,{
           data: datatString
         }); // 发送GET请求到后端API
-        console.log(response.data)
         if (response.data.result == 'ok') {
-            console.log("Successfully upload!");
-            comment.reviewId = response.data.id;
+          console.log(response.data)
+            comment.reviewId = response.data.comment_id;
             this.posts = this.posts.map(post => {
               if (post.postId === comment.toPostId) {
                 // 将评论添加到该帖子的 reviews 数组中
@@ -219,7 +190,6 @@ export const usePostStore = defineStore("post", {
             });
         }
       } catch (error : any) {
-        console.log(error.response.data)
         console.error('Error fetching user info:', error);
       }
     },
@@ -309,7 +279,7 @@ export const usePostStore = defineStore("post", {
         if (value1 === 'new') {
           return new Date(b.mtime).getTime() - new Date(a.mtime).getTime(); // 最新（mtime 从新到旧）
         } else if (value1 === 'hot') {
-          return b.likeUsers.length - a.likeUsers.length; // 最热（likeNum 从高到低）
+          return b.likeUsers - a.likeUsers; // 最热（likeNum 从高到低）
         } else if (value1 === 'good') {
           return b.content.rate - a.content.rate; // 评分高-低（rate 从高到低）
         } else if (value1 === 'bad') {
@@ -345,20 +315,6 @@ export const usePostStore = defineStore("post", {
         throw new Error(`Course with ID ${author} not found.`);
       }
       return post.authorId;
-    },
-
-    // 点赞！！！
-    updateLikeNum(postId: number, userId: number) {
-      const post = this.posts.find(p => p.postId === postId);
-      if (post) {
-        // 检查 userId 是否已经存在于 likeUsers 中
-        if (!post.likeUsers.includes(userId)) {
-          // 如果不存在，则添加
-          post.likeUsers.push(userId);
-        }
-      } else {
-        console.warn(`No post found with id ${postId}`);
-      }
     },
 
     // 获取指定 postId 的帖子中的 reviews 数组长度

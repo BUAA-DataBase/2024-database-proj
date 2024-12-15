@@ -36,10 +36,8 @@
     MessagePlugin.success(`转到第${index}页`);
     const name = route.name;
     router.push({ name: name, params: { page: index }})
-    console.log(pageInfo);
   };
   const onChange: PaginationProps['onChange'] = (pageInfo) => {
-    console.log(pageInfo);
   };
 </script>
 

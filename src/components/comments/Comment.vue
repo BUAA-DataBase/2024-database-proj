@@ -108,7 +108,6 @@ export default {
 
     const setIsReply = () => {
       isReply.value = true;
-      console.log(isReply.value)
     }
     // 由于 datetime 应该在评论创建时设置，这里我们模拟一个 formattedDatetime，
     // 但在实际应用中应该在父组件创建评论对象时设置它。
