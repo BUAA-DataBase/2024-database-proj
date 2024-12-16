@@ -13,12 +13,6 @@
                         已关注
                     </t-button>
 
-                    <t-button theme="default">
-                        <template #icon>
-                            <ChatBubbleIcon />
-                        </template>
-                        私聊
-                    </t-button>
                 </t-space>
 
                 <t-divider class="specialD"/>

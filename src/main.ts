@@ -11,9 +11,9 @@ import { useUserStore } from './store/modules/userStore';
 
 const app = createApp(App)
 
+app.use(router)
 app.use(createPinia())
 app.use(TDesign)
-app.use(router)
 
 const userStore = useUserStore();
 userStore.loadUserFromStorage();

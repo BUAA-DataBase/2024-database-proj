@@ -107,8 +107,6 @@ export const usePostStore = defineStore("post", {
         if (response.data.result == 'ok') {
             console.log("Successfully upload post!");
             post.postId = response.data.post_id;
-            const userStore = useUserStore();
-            userStore.pushPost(post);
             const courseStore = useCourseStore();
             courseStore.upDateParams(
               post.course,

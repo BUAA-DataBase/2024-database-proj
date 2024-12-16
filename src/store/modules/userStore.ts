@@ -11,21 +11,13 @@ export const useUserStore = defineStore('user', {
     userId: 0,
     verificationCode: '',
     userName: '',
-    password: '', // 通常密码不应该存储在前端，但这里是演示
     email: '',
     role: Role.Anonymous,
     introduction: '计算机小哥哥一枚',
     major: '',
     grade: '',
     avatar: '',
-    college: '',
-    gender: '',
-    followedCourses: [],
-    followers: [],
-    following: [],
-    blockedUsers: [],
-    posts: [],
-    registrationDate: new Date()
+    gender: ''
   }),
 
   actions: {
@@ -40,7 +32,19 @@ export const useUserStore = defineStore('user', {
     },
 
     saveUserToStorage() {
-      localStorage.setItem('user', JSON.stringify(this.$state));
+      const clonedState = {
+        userId: this.userId,
+        verificationCode: this.verificationCode,
+        userName: this.userName,
+        email: this.email,
+        role: this.role,
+        introduction: this.introduction,
+        major: this.major,
+        grade: this.grade,
+        avatar: this.avatar,
+        gender: this.gender
+      }
+      localStorage.setItem('user', JSON.stringify(clonedState));
     },
     loadUserFromStorage() {
       const userData = localStorage.getItem('user');
@@ -67,12 +71,24 @@ export const useUserStore = defineStore('user', {
       Object.assign(this, profileData)
       this.$patch(this);
       this.saveUserToStorage();
-      console.log(this.$state);
+      const clonedState = {
+        userId: this.userId,
+        verificationCode: "",
+        userName: this.userName,
+        email: this.email,
+        role: this.role,
+        introduction: this.introduction,
+        major: this.major,
+        grade: this.grade,
+        avatar: this.avatar,
+        gender: this.gender
+      }
+      console.log(clonedState);
       try {
         const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
             name: this.userName,
             email: this.email,
-            profile: this
+            profile: clonedState
         }); // 发送GET请求到后端API
         if (response.data.result == 'ok') {
             console.log("Successfully upload!");
@@ -91,12 +107,24 @@ export const useUserStore = defineStore('user', {
       this.avatar = `http://182.92.164.178:1024/${avatar}`;
       this.$patch(this);
       this.saveUserToStorage();
-      console.log(this.$state);
+      const clonedState = {
+        userId: this.userId,
+        verificationCode: "",
+        userName: this.userName,
+        email: this.email,
+        role: this.role,
+        introduction: this.introduction,
+        major: this.major,
+        grade: this.grade,
+        avatar: this.avatar,
+        gender: this.gender
+      }
+      console.log(clonedState);
       try {
         const response = await axios.post(`/api/users/info?token=${this.verificationCode}`,{
             name: this.userName,
             email: this.email,
-            profile: this
+            profile: clonedState
         }); // 发送GET请求到后端API
         if (response.data.result == 'ok') {
             console.log("Successfully upload!");
@@ -113,15 +141,13 @@ export const useUserStore = defineStore('user', {
 
     async pushPost(post : PostState) {
       if (post.postId != 0) {
-        this.$state.posts.push(post);
         this.updateProfile(this.$state);
       }
     },
 
     /** 关注课程 */
     async followCourse(courseId : number) {
-      if (!this.followedCourses.includes(courseId)) {
-        this.followedCourses.push(courseId)
+      if (!(await this.getFollowCourses(this.userId)).includes(courseId)) {
         try {
           const response = await axios.post(`/api/users/follow-course?token=${this.verificationCode}&follow_id=${courseId}`); // 发送GET请求到后端API
           if (response.data.result == 'ok') {
@@ -146,8 +172,7 @@ export const useUserStore = defineStore('user', {
 
     /** 取消关注课程 */
     async unfollowCourse(courseId: number) {
-      if (this.followedCourses.includes(courseId)) {
-        this.followedCourses = this.followedCourses.filter(id => id != courseId)
+      if ((await this.getFollowCourses(this.userId)).includes(courseId)) {
         try {
           const response = await axios.post(`/api/users/unfollow-course?token=${this.verificationCode}&unfollow_id=${courseId}`); // 发送GET请求到后端API
           if (response.data.result == 'ok') {
@@ -166,7 +191,6 @@ export const useUserStore = defineStore('user', {
 
     /** 关注用户 */
     async followUser(userId: number) {
-        this.following.push(userId)
         try {
           const response = await axios.post(`/api/users/follow-user?token=${this.verificationCode}&follow_id=${userId}`); // 发送GET请求到后端API
           if (response.data.result == 'ok') {

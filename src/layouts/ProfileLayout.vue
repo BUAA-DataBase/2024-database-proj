@@ -42,21 +42,13 @@
         userId: 0,
         verificationCode: '',
         userName: '',
-        password: '',
         email: '',
         role: Role.Student,
         major: '',
         introduction: '',
         grade: '',
         avatar: '',
-        college: '',
         gender: '',
-        followedCourses: [],
-        followers: [],
-        following: [],
-        blockedUsers: [],
-        posts: [],
-        registrationDate: new Date(), // 或者其他默认值
     });
     const parsedData = ref<UserState>(rawUser.value);
     const error = ref<string | null>(null);

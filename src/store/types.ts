@@ -23,21 +23,13 @@ export interface UserState {
     userId: number
     verificationCode: string
     userName: string
-    password: string
     email: string
     role: Role
     major: string
     introduction: string
     grade: string
     avatar: string
-    college: string
     gender: string
-    followedCourses: number[]
-    followers: string[]
-    following: number[]
-    blockedUsers: number[]
-    posts: PostState[]
-    registrationDate: Date
 }
 
 export interface CourseState {

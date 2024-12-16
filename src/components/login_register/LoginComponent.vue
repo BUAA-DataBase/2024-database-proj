@@ -45,21 +45,13 @@
         userId: 0,
         verificationCode: '',
         userName: '',
-        password: '',
         email: '',
         role: Role.Student,
         major: '',
         introduction: '这个人还没有想好怎么介绍自己',
         grade: '',
         avatar: '',
-        college: '',
         gender: '',
-        followedCourses: [],
-        followers: [],
-        following: [],
-        blockedUsers: [],
-        posts:[],
-        registrationDate: new Date(), // 或者其他默认值
       });
       const parsedData = ref<UserState>(rawUser.value);
       const error = ref<string | null>(null);
