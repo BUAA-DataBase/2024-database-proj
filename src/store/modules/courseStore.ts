@@ -23,12 +23,19 @@ export const useCourseStore = defineStore("course", {
               let jsonString = courseResponse.data.profile;
               jsonString = jsonString.replace(/\\\"/g,'"');
               jsonString = jsonString.replace(/\"\"/g,'');
-              let parsedData : CourseState = JSON.parse(jsonString) as CourseState;
+              jsonString = jsonString.trim();
+              const fixedJsonString = jsonString.slice(1, -1); // 去掉最外层引号
+              let parsedData : CourseState = JSON.parse(fixedJsonString) as CourseState;
               parsedData.courseId = parseInt(id);
               parsedData.courseName = courseResponse.data.name.split('-')[0];
               parsedData.courseTeacher = courseResponse.data.name.split('-').length > 1 ? 
               courseResponse.data.name.split('-').slice(1).join('-') : '';
-              parsedData.courseYear.push("2024秋");
+              parsedData.courseYear.push("2022秋")
+              parsedData.courseYear.push("2023春")
+              parsedData.courseYear.push("2023秋")
+              parsedData.courseYear.push("2024春")
+              parsedData.courseYear.push("2024秋")
+              parsedData.courseDepartment = "计算机系"
               if (parsedData.courseId) {
                 allCourses.push(parsedData); // 假设后端返回的是单个课程的详细信息，且格式与CourseState兼容
               }
@@ -62,16 +69,14 @@ export const useCourseStore = defineStore("course", {
       return [];
     },
     
-    getSearchCourses(courseIds : number[], page : number) : CourseState[] {
+    getSearchCourses(courseIds : number[]) : CourseState[] {
       if (courseIds) {
         let courses = [...this.courses]
         courses = courses.filter(course => courseIds.includes(course.courseId));
         const sortedCourses = [...courses].sort((a, b) => {
           return b.courseRate - a.courseRate; // 降序排序
         });
-        const startIndex = (page - 1) * 10;
-        const endIndex = page * 10;
-        return sortedCourses.slice(startIndex, endIndex);
+        return sortedCourses;
       }
       else {
         return [];

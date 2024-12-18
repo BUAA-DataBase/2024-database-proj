@@ -149,6 +149,10 @@
     const reviewId = ref(0);
 
     async function handIn() {
+    if (!(courseName.value && teacherName.value && year.value && comment.value)) {
+        alert("请填写所有信息！")
+        return;
+    }
     // 创建 PostState 对象
     let newPost: PostState;
     if (oldPost.value) {

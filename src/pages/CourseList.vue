@@ -18,7 +18,7 @@
             :gain="convertGain(course.courseGain)"
         />
         </div>
-        <Pagination :totalNum="useStore.getCoursesSize()"/>
+        <Pagination :totalNum="courseNum"/>
     </div>
 </template>
 
@@ -40,6 +40,7 @@
     const route = useRoute();
 
     const useStore = useCourseStore();
+    const courseNum = ref(0);
 
     const goToCourse = (courseId: number) => {
         router.push({name: 'course' , params:{id : courseId}})
@@ -67,8 +68,13 @@
     ], ([newCourses, newIsSearch, newPage]) => {
         if (!newIsSearch) {
             courses.value = fetchCourses(newPage);
+            courseNum.value = useStore.getCoursesSize();
+            console.log(courseNum.value)
         } else {
-            courses.value = useStore.getSearchCourses(newCourses as number[], newPage);
+            courses.value = useStore.getSearchCourses(newCourses as number[]);
+            courseNum.value = courses.value.length;
+            courses.value = courses.value.slice((newPage - 1) * 10, newPage * 10 - 1)
+            console.log(courseNum.value)
         }
     }, {
         immediate: true,

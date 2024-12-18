@@ -105,6 +105,7 @@ export const useUserStore = defineStore('user', {
 
     async updateAvatar(avatar : string) {
       this.avatar = `http://182.92.164.178:1024/${avatar}`;
+      console.log(this.avatar);
       this.$patch(this);
       this.saveUserToStorage();
       const clonedState = {

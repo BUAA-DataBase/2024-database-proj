@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { PostState, ReviewState } from '../types'
+import type { PostState, ReviewState, UserState } from '../types'
 import type { SelectProps } from 'tdesign-vue-next'
 import axios from 'axios';
 import { ErrorCode } from '@/constants/error-codes'
@@ -62,6 +62,17 @@ export const usePostStore = defineStore("post", {
                   }
                   catch (error) {
                     console.error(`Failed to fetch likes with ID ${id}:`, error);
+                  }
+                  try {
+                    const responseAuthor = await axios.get(`/api/users/info?id=${parsedData.authorId}`);
+                    if (responseAuthor.data.result == 'ok') {
+                      const author : UserState = JSON.parse(responseAuthor.data.profile) as UserState
+                      parsedData.author = author.userName;
+                      parsedData.avatar = author.avatar;
+                    }
+                  }
+                  catch (error) {
+                    console.error(`Failed to fetch author with ID ${id}:`, error);
                   }
                   allPosts.push(parsedData); 
                 }
